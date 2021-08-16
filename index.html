@@ -6,28 +6,30 @@
     <title>Unity WebGL Player | Sapporo-2D</title>
   </head>
   <body style="text-align: center">
-
+    
+    
     <canvas id="unity-canvas" style="
 
-      position: fixed; /* absolute */
-      top: 0;
-      left: 0;
-      width: 100%;    /* 100% */
-      height: 100%;   /* 100% */
-  
-      background: #808080">
-      
+    position: fixed; /* absolute */
+    top: 0;
+    left: 0;
+    width: 100%;    /* 100% */
+    height: 100%;   /* 100% */
+
+    background: #808080">
     
+  
     </canvas>
 
 
 
-    <script src="Build/Aug_12.loader.js"></script>
+
+    <script src="Build/Aug_15.loader.js"></script>
     <script>
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/Aug_12.data",
-        frameworkUrl: "Build/Aug_12.framework.js",
-        codeUrl: "Build/Aug_12.wasm",
+        dataUrl: "Build/Aug_15.data",
+        frameworkUrl: "Build/Aug_15.framework.js",
+        codeUrl: "Build/Aug_15.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Sapporo-2D",
