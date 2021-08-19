@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name=“viewport” content=“width=device-width, initial-scale=1.0">
     <title>Unity WebGL Player | Sapporo-2D</title>
   </head>
   <body style="text-align: center">
-
+    
     <canvas id="unity-canvas" style="
 
     position: fixed; /* absolute */
@@ -20,13 +21,15 @@
   
     </canvas>
 
-    
-    <script src="Build/Aug_15.loader.js"></script>
+
+
+
+    <script src="Build/Aug_19.loader.js"></script>
     <script>
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/Aug_15.data",
-        frameworkUrl: "Build/Aug_15.framework.js",
-        codeUrl: "Build/Aug_15.wasm",
+        dataUrl: "Build/Aug_19.data",
+        frameworkUrl: "Build/Aug_19.framework.js",
+        codeUrl: "Build/Aug_19.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Sapporo-2D",
