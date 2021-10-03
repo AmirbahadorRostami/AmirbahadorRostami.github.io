@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="AmirbahadorRostami" content="Amirbahador's Protfolio Website">
+
+
+    <title>Artifacts</title>
+
+    <link href="CSS/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Kameron:400,700" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Kameron:400,700');
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="main.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/p5.min.js"></script>
+    <script src="js/addons/p5.dom.min.js"></script>
+    <script src="js/addons/p5.sound.min.js"></script>
+    <script type="text/javascript" src="slick/slick.min.js"></script>
+
+    <script src="sketch.js"></script>
+    <script src="control.js"></script>
+
+
+</head>
+
+<body>
+
+
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="container-fluidd col-md-12 col-sm-12 col-lg-12">
+                <header class="masthead clearfix ">
+                    <div class="inner">
+                        <script>
+                            new p5(NameSketch, 'TitleAnim');
+                        </script>
+
+                        <a class="nav-link active" rel="home">
+                            <h1 class="masthead-brand" id="TitleAnim">Artifacts</h1>
+                            <p class="masthead-des">An Experiential Design Studio</p>
+                        </a>
+                    </div>
+                </header>
+
+                <!-- main Div of the page all sub sections are in here-->
+
+                <main role="main" class="inner_cover">
+                    <script>
+                        new p5(bgSketch, 'anim');
+                    </script>
+
+                    <div class="sketch-holder" id="anim">
+                        <!-- Project Album-->
+
+                        <div class="container">
+
+                            <div class="card">
+
+                                <div id="about">
+
+                                    <img src="./Media/img-tester/BioWord.png" alt="my pic" id="aboutImg">
+
+                                    <p id="about_text">
+                                        BioWords is a web based Artificial Life experience, that invites the participants to write in sentences 
+                                        that would be interpreted into Artificial creatures that would roam the screen.
+                                        Sentences written by users are processed using natural language processing algorithms to determine the Sentiment score of the given sentence. 
+                                        Each sentence is then broken up into individual words and each word is represents a sequence of letter which is 
+                                        interpreted as the DNA that creates unique a BioWord that is spawned into the virtual world.
+                                        The behaviour of each BioWord is based on its own DNA and the sentiment score that it carries from their parent sentence.
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>   
+            </div>
+        </div>
+    </div>    
+</body>
+
+</html>
