@@ -7,7 +7,7 @@
   </head>
   <body style="text-align: center">
     
-    <canvas id="unity-canvas" width=1920 height=1080 style="width: 100%; height: 100%; background: #231F20"></canvas>
+    <canvas id="unity-canvas" style="width: 100%; height: 100%; background: #231F20"></canvas>
 
 
     <script src="Build/Builds.loader.js"></script>
@@ -21,13 +21,9 @@
 
       }
 
-
-
+      console.log(window.orientation);
 
       document.addEventListener("orientationchange", function(event){
-
-          console.log(window.orientation)
-
           switch(window.orientation) 
             {  
                 case -90: case 90:
