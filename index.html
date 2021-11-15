@@ -19,7 +19,15 @@
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
 
-        document.addEventListener("orientationchange", function(event){
+      }
+
+
+
+
+      document.addEventListener("orientationchange", function(event){
+
+          console.log(window.orientation)
+
           switch(window.orientation) 
             {  
                 case -90: case 90:
@@ -31,10 +39,6 @@
             }
         });
 
-
-
-
-      }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
         dataUrl: "Build/Builds.data",
