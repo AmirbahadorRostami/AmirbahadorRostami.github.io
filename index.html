@@ -21,19 +21,19 @@
 
       }
 
-      console.log(window.orientation);
+      // console.log(window.orientation);
 
-      document.addEventListener("orientationchange", function(event){
-          switch(window.orientation) 
-            {  
-                case -90: case 90:
-                    /* Device is in landscape mode */
-                    break; 
-                default:
-                    /* Device is in portrait mode */
-                  screen.orientation.lock("landscape-primary");
-            }
-        });
+      // document.addEventListener("orientationchange", function(event){
+      //     switch(window.orientation) 
+      //       {  
+      //           case -90: case 90:
+      //               /* Device is in landscape mode */
+      //               break; 
+      //           default:
+      //               /* Device is in portrait mode */
+      //             screen.orientation.lock("landscape-primary");
+      //       }
+      //   });
 
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
