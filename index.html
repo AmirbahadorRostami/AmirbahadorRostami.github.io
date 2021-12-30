@@ -1,33 +1,212 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Tweed</title>
-  </head>
-  <body style="text-align: center">
-    <canvas id="unity-canvas" width=1920 height=1080 style="width: 100%; height: 100%; background: #000000"></canvas>
-    <script src="Build/Builds.loader.js"></script>
-    <script>
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-      }
+<!doctype html>
+<html lang="en">
 
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/Builds.data",
-        frameworkUrl: "Build/Builds.framework.js",
-        codeUrl: "Build/Builds.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "Tweed",
-        productVersion: "1.0",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
-      });
-    </script>
-  </body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="AmirbahadorRostami" content="Amirbahador's Protfolio Website">
+
+
+    <title>Amirbahdor Rostami</title>
+
+    <link href="CSS/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Kameron:400,700" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Kameron:400,700');
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="main.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/p5.min.js"></script>
+    <script src="js/addons/p5.dom.min.js"></script>
+    <script src="js/addons/p5.sound.min.js"></script>
+    <script type="text/javascript" src="slick/slick.min.js"></script>
+
+    <script src="sketch.js"></script>
+    <script src="control.js"></script>
+
+
+</head>
+
+<body>
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="container-fluidd col-md-12 col-sm-12 col-lg-12">
+                <header class="masthead clearfix ">
+                    <div class="inner">
+
+
+                        <a class="nav-link active" rel="home">
+                            <h1 class="masthead-brand" id="TitleAnim">Amirbahador Rostami</h1>
+                            <p class="masthead-des">Tech-Artist and Producer</p>
+                        </a>
+
+                        <img src="Media/Social/facebook.png" alt="FbIcon" class="social">
+                        <img src="Media/Social/instagram.png" alt="IgIcon" class="social">
+                        <img src="Media/Social/linkedin.png" alt="IgIcon" class="social">
+                        <img src="Media/Social/soundcloud.png" alt="IgIcon" class="social">
+
+
+                        <nav class="nav-masthead  d-flex flex-row justify-content-center my-flex-container my-0">
+                            <div class="p-2 my-flex-item nav-link my-0" rel="project">Work</div>
+                            <div class="p-2 my-flex-item nav-link my-0" rel="music">Music</div>
+                            <div class="p-2 my-flex-item nav-link my-0" rel="about">About</div>
+
+                        </nav>
+                    </div>
+                </header>
+
+                <!-- main Div of the page all sub sections are in here-->
+
+                <main role="main" class="inner_cover">
+                    <script>
+                        new p5(bgSketch, 'anim');
+                    </script>
+
+                    <div class="sketch-holder" id="anim">
+                        <!-- Project Album-->
+
+                        <div class="panel active" id="home">
+                        </div>
+
+                        <div class="panel" id="project">
+                            <div class="container">
+                                <div class="row text-center for-style mt-0">
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="https://remoterealities.com/project/ephemeral-pulses-of-a-finite-scroll/" 
+                                            target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/remote.jpg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Ephemeral pulses of a finite scroll</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="./BioWords.html" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/Biowords.gif" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">BioWords</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/Data.jpg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Person is a Data Structure</p>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="panel" id="about" >
+
+                            <div class="container">
+
+                                <div>
+                                    <img id="aboutImg" src="./Media/ProfilePics/Bahador.png" alt="unableUploudPic">       
+                                </div>
+
+                                <div id = "aboutTxtHolder">
+                                    <p id="about_text">
+                                        Hi my name is Amirbahador,<br>
+                                        I’m a software developer by choice and an artist by nature. <br>
+                                        I’m interested in using technology for artistic expression in both audio and visual context.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="panel" id="music" >
+
+                            <div class="container">
+                                <div class="row text-center for-style mt-0">
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/pic8.jpeg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Lorem</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/pic9.jpg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Lorem</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/pic1.jpeg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Lorem</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/white.png" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">white color</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="#" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/pic2.png" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">Lorem</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                    
+            </div>
+
+            </main>
+        </div>
+    </div>
+    </div>
+
+
+
+</body>
+
 </html>
