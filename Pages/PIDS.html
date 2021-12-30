@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="AmirbahadorRostami" content="Amirbahador's Protfolio Website">
+
+
+    <title>Artifacts</title>
+
+    <link href="CSS/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Kameron:400,700" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Kameron:400,700');
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="main.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/p5.min.js"></script>
+    <script src="js/addons/p5.dom.min.js"></script>
+    <script src="js/addons/p5.sound.min.js"></script>
+    <script type="text/javascript" src="slick/slick.min.js"></script>
+
+    <script src="sketch.js"></script>
+    <script src="control.js"></script>
+
+
+</head>
+
+<body>
+
+
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="container-fluidd col-md-12 col-sm-12 col-lg-12">
+                <header class="masthead clearfix ">
+                    <div class="inner">
+                        <script>
+                            new p5(NameSketch, 'TitleAnim');
+                        </script>
+
+                        <a class="nav-link active" rel="home">
+                            <h1 class="masthead-brand" id="TitleAnim">Artifacts</h1>
+                            <p class="masthead-des">An Experiential Design Studio</p>
+                        </a>
+                    </div>
+                </header>
+
+                <!-- main Div of the page all sub sections are in here-->
+
+                <main role="main" class="inner_cover">
+                    <script>
+                        new p5(bgSketch, 'anim');
+                    </script>
+
+                    <div class="sketch-holder" id="anim">
+                        <!-- Project Album-->
+
+                        <div class="container">
+
+                            <div class="card">
+
+                                <div id="about">
+
+                                    <img src="./Media/img-tester/Data.jpeg" alt="my pic" id="aboutImg">
+
+                                    <p id="about_text">
+  
+                                        Person is a Data Structure is an installation piece exploring ideas around surveillance, systems, and the relationship between the individual and the collective. 
+                                        The piece was installed in Eleanor Winters Art Gallery in Winters College, York University. The gallery space was split into two sperate but technologically connected spaces. 
+                                        The first space is the entry point, the Mirror Space. Visitors will enter the space and be greeted by a hallway of six offset mirrors, each lit softly from above.
+                                        Each mirror is paired with its own parabolic speaker. When a visitor enters the Mirror Space, they will hear faint whispers emanating at spots in front of each mirror.
+                                        Approaching the first mirror, they will find a spot in which they can clearly hear a voice. At the first mirror, the beginning of a story is told to the visitor, 
+                                        all the while a surreptitiously hidden camera above or next to the mirror will be recording video footage of the visitors face. As the story is being played back to them,
+                                        the captured footage is analyzed by machine learning algorithms to extract features and saved in our database. 
+                                        the captured clips of the visitor in the Mirror Space, will be used in the second part of the installation: the Screen Space.
+                                        The Screen Space will take up the majority of the gallery. The space will be flooded with monitors, arranged in various formations that may include stacked pillars, monitors on the ground angled towards the ceiling, cubic or pyramid formations, and other sculptural forms.
+                                        The screens will be showing a combination of live and pre-recorded footage from the Mirror Space, footage of past visitors that has been digitally transformed and augmented. 
+                                        Each monitors is be outfitted with individual webcams. When a visitor approaches one of these monitors, their face will again be scanned, and using the features extracted by ML algorithms we will display a curated version of their recorded video to them. 
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>   
+            </div>
+        </div>
+    </div>    
+</body>
+
+</html>
