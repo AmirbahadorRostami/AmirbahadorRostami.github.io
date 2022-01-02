@@ -19,7 +19,8 @@ let bgSketch = function(p){
     }
 
     p.setup = function() {
-        p.createCanvas(p.windowWidth ,p.windowHeight);
+        let cnv = p.createCanvas(p.windowWidth ,p.windowHeight);
+        cnv.parent('bgSketch');
         p.pixelDensity(1.0);
         p.background(0);
         prob = p.random();
@@ -30,7 +31,7 @@ let bgSketch = function(p){
       var alpha =100;
       if(y < p.windowHeight) {
 
-          var col = p.color(167, 20, 20, 180);
+          var col = p.color(167, 20, 20, 180 );
 
           p.stroke(col);
 

@@ -76,13 +76,19 @@ html,body {
 }
 
 /* styling for js animation*/
-canvas {
+#bgSketch {
   position: fixed;
   top:0;
   left:0;
   width:100%;
   height:100%;
   z-index: -1 !important;
+}
+
+#bwHolder{
+  position: inherit;
+  width: 800px;
+  height:800px;
 }
 
 /* styling for Proj Albums*/
@@ -156,7 +162,6 @@ canvas {
     font-size: 130%;
     font-weight: 700; 
 }
-
 
 #aboutImg {
   position: relative;

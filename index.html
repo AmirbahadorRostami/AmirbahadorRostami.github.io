@@ -33,6 +33,8 @@
     <script src="sketch.js"></script>
     <script src="control.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.7.1/gl-matrix-min.js"></script>
+
 
 </head>
 
@@ -67,9 +69,13 @@
                 <!-- main Div of the page all sub sections are in here-->
 
                 <main role="main" class="inner_cover">
-                    <script>
-                        new p5(bgSketch, 'anim');
-                    </script>
+
+                    <div id= "bgSketch">
+                        <script>
+                            new p5(bgSketch, 'anim');
+                        </script>
+                    </div>
+
 
                     <div class="sketch-holder" id="anim">
                         <!-- Project Album-->
@@ -108,6 +114,17 @@
                                                     src="./Media/img-tester/Data.jpg" alt="unableUploudPic">
                                             </a>
                                             <p card="card-text">Person is a Data Structure</p>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-center">
+                                        <div>
+                                            <a href="./Pages/cellularAutomata.html" target="blank" class="d-block square">
+                                                <img id="abphoto" class="img-fluid  image-size-personal"
+                                                    src="./Media/img-tester/pic3.jpg" alt="unableUploudPic">
+                                            </a>
+                                            <p card="card-text">cellularAutomata</p>
                                         </div>
                                     </div>
 

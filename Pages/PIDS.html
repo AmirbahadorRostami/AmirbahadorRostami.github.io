@@ -8,9 +8,9 @@
     <meta name="AmirbahadorRostami" content="Amirbahador's Protfolio Website">
 
 
-    <title>Artifacts</title>
+    <title>Amirbahador rostami</title>
 
-    <link href="CSS/bootstrap.min.css" rel="stylesheet">
+    <link href="../CSS/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css?family=Kameron:400,700" rel="stylesheet">
@@ -21,17 +21,16 @@
 
 
     <!-- Custom styles for this template -->
-    <link href="main.css" rel="stylesheet">
+    <link href="../main.css" rel="stylesheet">
 
     <!-- JS -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/p5.min.js"></script>
-    <script src="js/addons/p5.dom.min.js"></script>
-    <script src="js/addons/p5.sound.min.js"></script>
-    <script type="text/javascript" src="slick/slick.min.js"></script>
-
-    <script src="sketch.js"></script>
-    <script src="control.js"></script>
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/p5.min.js"></script>
+    <script src="../js/addons/p5.dom.min.js"></script>
+    <script src="../js/addons/p5.sound.min.js"></script>
+    <script type="text/javascript" src="../slick/slick.min.js"></script>
+    <script src="../sketch.js"></script>
+    <script src="../control.js"></script>
 
 
 </head>
@@ -45,7 +44,7 @@
                 <header class="masthead clearfix ">
                     <div class="inner">
                         <script>
-                            new p5(NameSketch, 'TitleAnim');
+                            //new p5(NameSketch, 'TitleAnim');
                         </script>
 
                         <a class="nav-link active" rel="home">
@@ -58,10 +57,11 @@
                 <!-- main Div of the page all sub sections are in here-->
 
                 <main role="main" class="inner_cover">
-                    <script>
-                        new p5(bgSketch, 'anim');
-                    </script>
-
+                    <div id= "bgSketch">
+                        <script>
+                            new p5(bgSketch, 'anim');
+                        </script>
+                    </div>
                     <div class="sketch-holder" id="anim">
                         <!-- Project Album-->
 
@@ -71,7 +71,7 @@
 
                                 <div id="about">
 
-                                    <img src="./Media/img-tester/Data.jpeg" alt="my pic" id="aboutImg">
+                                    <img src="../Media/img-tester/Data.jpeg" alt="my pic" id="aboutImg">
 
                                     <p id="about_text">
   
