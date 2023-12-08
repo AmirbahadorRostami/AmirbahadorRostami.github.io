@@ -170,6 +170,12 @@ html,body {
   margin-bottom: .75rem;
 }
 
+#about_header{
+  text-align: left;
+  font-family: 'Kameron', serif;
+  color:rgb(255, 255, 255);
+}
+
 #about_text{
     text-align: left;
     font-family: 'Kameron', serif;
@@ -179,7 +185,8 @@ html,body {
     margin-block-end: 1em;
     margin-inline-start: 1em;
     margin-inline-end: 1em;
-  }
+}
+
 #aboutTxtHolder{
   margin: auto;
   width: 50%;
