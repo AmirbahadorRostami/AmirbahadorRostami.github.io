@@ -1,16 +1,10 @@
 ---
-import { SITE } from '../config/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="description" content={SITE.description} />
-    <title>{SITE.title}</title>
-  </head>
-  <body>
-    <main><h1>Professional maker of curious things.</h1></main>
-  </body>
-</html>
+<BaseLayout>
+  <section class="container">
+    <p class="eyebrow">Creative technologist / musician / tinkerer</p>
+    <h1>Professional maker of curious things.</h1>
+  </section>
+</BaseLayout>

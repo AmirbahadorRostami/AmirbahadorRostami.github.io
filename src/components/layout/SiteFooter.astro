@@ -1,0 +1,14 @@
+---
+import { SITE } from '../../config/site';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p>&copy; {new Date().getFullYear()} {SITE.name}. Toronto, Canada.</p>
+    <ul aria-label="Elsewhere">
+      {SITE.linkedInUrl && <li><a href={SITE.linkedInUrl}>LinkedIn</a></li>}
+      {SITE.spotifyUrl && <li><a href={SITE.spotifyUrl}>Spotify</a></li>}
+      {SITE.soundCloudUrl && <li><a href={SITE.soundCloudUrl}>SoundCloud</a></li>}
+    </ul>
+  </div>
+</footer>

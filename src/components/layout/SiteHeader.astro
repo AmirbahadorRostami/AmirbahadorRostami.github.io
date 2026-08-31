@@ -1,0 +1,41 @@
+---
+import { SITE } from '../../config/site';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-brand" href="/">{SITE.name}</a>
+    <button class="menu-button" type="button" aria-controls="primary-menu" aria-expanded="false" data-menu-button>
+      Menu
+    </button>
+    <nav id="primary-menu" class="primary-menu" aria-label="Primary" data-primary-menu>
+      <ul>
+        {SITE.navigation.map(({ label, href }) => (
+          <li><a href={href} aria-current={currentPath === href ? 'page' : undefined}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const menu = document.querySelector<HTMLElement>('[data-primary-menu]');
+  const mobileQuery = window.matchMedia('(max-width: 44rem)');
+
+  if (menuButton && menu) {
+    const setMenuState = (expanded: boolean) => {
+      menuButton.setAttribute('aria-expanded', String(expanded));
+      menu.hidden = !expanded;
+    };
+
+    const syncMenu = () => setMenuState(!mobileQuery.matches);
+    syncMenu();
+    mobileQuery.addEventListener('change', syncMenu);
+    menuButton.addEventListener('click', () => {
+      setMenuState(menuButton.getAttribute('aria-expanded') !== 'true');
+    });
+  }
+</script>
