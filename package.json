@@ -10,6 +10,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "media:prepare": "node scripts/prepare-media.mjs",
     "test": "npm run test:unit && npm run build && npm run test:e2e",
     "test:unit": "vitest run",
     "test:e2e": "playwright test"

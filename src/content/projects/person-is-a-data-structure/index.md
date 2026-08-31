@@ -8,7 +8,7 @@ featured: false
 categories: [interactive-installation, surveillance, machine-learning]
 roles: [Creative technologist, Installation developer]
 tools: [Machine learning, Cameras, Database, Parabolic speakers]
-hero: ../../../../Media/img-tester/Data.jpg
+hero: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
 heroAlt: A dark installation of clustered monitors displaying fragmented close-ups of faces
 context: Installed at the Eleanor Winters Art Gallery, Winters College, York University
 collaborators: []

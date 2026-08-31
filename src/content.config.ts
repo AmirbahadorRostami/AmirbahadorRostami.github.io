@@ -15,7 +15,7 @@ const video = z.object({
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: nonemptyString,
     alternateTitle: nonemptyString.optional(),
     year: nonemptyString.optional(),
@@ -27,7 +27,7 @@ const projects = defineCollection({
     categories: z.array(nonemptyString).min(1),
     roles: z.array(nonemptyString).min(1),
     tools: z.array(nonemptyString).min(1),
-    hero: nonemptyString,
+    hero: image(),
     heroAlt: nonemptyString,
     context: nonemptyString.optional(),
     collaborators: z.array(nonemptyString).default([]),

@@ -8,7 +8,7 @@ featured: false
 categories: [creative-coding, generative-art, web-experiment]
 roles: [Creative coder]
 tools: [JavaScript, CodePen]
-hero: ../../../../Media/img-tester/CATumbnail.png
+hero: ../../../assets/projects/cellular-automata/cellular-automata-card.webp
 heroAlt: Dense white branching cellular patterns on a black background
 collaborators: []
 credits: []

@@ -9,8 +9,8 @@ featured: true
 categories: [augmented-reality, social-experience, public-space]
 roles: [Creative technologist, XR developer]
 tools: [Augmented reality, Mobile application]
-hero: ../../../../Media/img-tester/Encounter.png
-heroAlt: A glowing outlined letter E over layered blue and purple waves
+hero: ../../../assets/projects/encounters/encounters-card.webp
+heroAlt: A luminous letter E floating above layered blue lines in the Encounters artwork
 context: Main app-based artistic experience commissioned for Congress 2023
 collaborators: []
 credits: []

@@ -9,7 +9,7 @@ featured: true
 categories: [technology-art, installation]
 roles: [Tech artist]
 tools: [Digital media]
-hero: ../../../../Media/img-tester/Remote.jpg
+hero: ../../../assets/projects/remote-realities/remote-realities-card.webp
 heroAlt: A visitor beside a suspended translucent installation in a blue-lit gallery
 collaborators: []
 credits: []

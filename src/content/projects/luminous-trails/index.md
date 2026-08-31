@@ -8,8 +8,8 @@ featured: true
 categories: [augmented-reality, geolocation, public-space]
 roles: [Creative technologist, XR developer]
 tools: [Augmented reality, Geolocation]
-hero: ../../../../Media/img-tester/Luminous.png
-heroAlt: A person using a phone at night amid colorful luminous trails near the CN Tower
+hero: ../../../assets/projects/luminous-trails/luminous-trails-card.webp
+heroAlt: A person holding a phone at night among luminous trails near the CN Tower
 context: An augmented-reality exploration of Toronto
 collaborators: []
 credits: []
