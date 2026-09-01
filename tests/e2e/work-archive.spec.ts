@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import {
+  findProjectCardGeometryViolations,
+  measureProjectCards,
+} from './helpers/project-card-geometry';
 
 const projectTitles = [
   'Encounters',
@@ -38,4 +42,11 @@ test('keeps every project visible when JavaScript is unavailable', async ({ brow
   await expect(page.locator('[data-project-card]')).toHaveCount(6);
   await expect(page.locator('[data-project-card]:not([hidden])')).toHaveCount(6);
   await context.close();
+});
+
+test('archive cards keep compact 4:3 image geometry on desktop and mobile', async ({ page }) => {
+  const measurements = await measureProjectCards(page, '/work/', '.work-archive');
+  const violations = findProjectCardGeometryViolations(measurements);
+
+  expect(violations, JSON.stringify(measurements, null, 2)).toEqual([]);
 });

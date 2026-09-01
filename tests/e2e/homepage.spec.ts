@@ -1,4 +1,8 @@
 import { expect, test } from '@playwright/test';
+import {
+  findProjectCardGeometryViolations,
+  measureProjectCards,
+} from './helpers/project-card-geometry';
 
 const sectionOrder = [
   'hero',
@@ -93,6 +97,13 @@ test('selected work and music use wrapping grid layouts instead of horizontal st
 
   expect(mobileLayouts.work).toEqual({ columns: 1, overflows: false });
   expect(mobileLayouts.music).toEqual({ columns: 1, overflows: false });
+});
+
+test('selected work cards keep compact 4:3 image geometry on desktop and mobile', async ({ page }) => {
+  const measurements = await measureProjectCards(page, '/', '#selected-work');
+  const violations = findProjectCardGeometryViolations(measurements);
+
+  expect(violations, JSON.stringify(measurements, null, 2)).toEqual([]);
 });
 
 test('experience preview stays focused and the contact invitation welcomes the full opportunity set', async ({ page }) => {
