@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MusicCard from './MusicCard.astro';
+
+export interface Props {
+  records: CollectionEntry<'music'>[];
+}
+
+const { records } = Astro.props;
+---
+
+<ul class="music-grid" data-music-grid>
+  {records.map((record) => (
+    <li><MusicCard record={record} /></li>
+  ))}
+</ul>
+
+<style>
+  .music-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 1.5rem 0 0; padding: 0; }
+  .music-grid > li { min-width: 0; }
+
+  @media (max-width: 58rem) {
+    .music-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 42rem) {
+    .music-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
