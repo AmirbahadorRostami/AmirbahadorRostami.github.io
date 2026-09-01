@@ -1,0 +1,116 @@
+<div
+  class="signal-field"
+  aria-hidden="true"
+  data-signal-field
+  data-animation-state="static"
+>
+  <svg viewBox="0 0 720 640" focusable="false">
+    <defs>
+      <radialGradient id="signal-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.82" />
+        <stop offset="100%" stop-color="var(--signal)" stop-opacity="0" />
+      </radialGradient>
+      <linearGradient id="signal-line" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.08" />
+        <stop offset="48%" stop-color="var(--signal)" stop-opacity="0.62" />
+        <stop offset="100%" stop-color="var(--coral)" stop-opacity="0.12" />
+      </linearGradient>
+    </defs>
+    <path class="signal-field__thread" d="M40 486 C184 224 284 570 432 284 S626 122 694 218" />
+    <path class="signal-field__thread signal-field__thread--echo" d="M26 346 C184 102 280 464 454 184 S620 224 704 70" />
+    <circle class="signal-field__ring" cx="448" cy="262" r="148" />
+    <circle class="signal-field__ring signal-field__ring--small" cx="214" cy="424" r="88" />
+    <g class="signal-field__orb signal-field__orb--one" data-signal-orb>
+      <circle class="signal-field__glow" cx="160" cy="168" r="84" />
+      <circle class="signal-field__point" cx="160" cy="168" r="7" />
+    </g>
+    <g class="signal-field__orb signal-field__orb--two" data-signal-orb>
+      <circle class="signal-field__glow" cx="510" cy="422" r="108" />
+      <circle class="signal-field__point signal-field__point--coral" cx="510" cy="422" r="9" />
+    </g>
+    <g class="signal-field__orb signal-field__orb--three" data-signal-orb>
+      <circle class="signal-field__glow" cx="594" cy="132" r="54" />
+      <circle class="signal-field__point" cx="594" cy="132" r="5" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .signal-field {
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+  }
+
+  svg { height: 100%; opacity: .82; position: absolute; right: -8%; top: 0; width: min(64rem, 72vw); }
+  .signal-field__thread { fill: none; stroke: url(#signal-line); stroke-width: 1.5; }
+  .signal-field__thread--echo { opacity: .5; }
+  .signal-field__ring { fill: none; opacity: .2; stroke: var(--signal); stroke-dasharray: 2 12; }
+  .signal-field__ring--small { opacity: .12; }
+  .signal-field__glow { fill: url(#signal-glow); }
+  .signal-field__point { fill: var(--signal); }
+  .signal-field__point--coral { fill: var(--coral); }
+
+  .signal-field__orb {
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-play-state: paused;
+    animation-timing-function: ease-in-out;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .signal-field__orb--one { animation-name: signal-drift-one; }
+  .signal-field__orb--two { animation-delay: -3s; animation-duration: 13s; animation-name: signal-drift-two; }
+  .signal-field__orb--three { animation-delay: -6s; animation-duration: 16s; animation-name: signal-drift-three; }
+  .signal-field[data-animation-state='running'] .signal-field__orb { animation-play-state: running; }
+
+  @keyframes signal-drift-one {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(52px, 30px, 0) scale(.88); }
+  }
+
+  @keyframes signal-drift-two {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(.92); }
+    50% { transform: translate3d(-62px, -38px, 0) scale(1.08); }
+  }
+
+  @keyframes signal-drift-three {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(-32px, 52px, 0); }
+  }
+
+  @media (max-width: 42rem) {
+    svg { opacity: .48; right: -42%; width: 44rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signal-field__orb { animation-play-state: paused !important; }
+  }
+</style>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-signal-field]').forEach((field) => {
+    let isIntersecting = false;
+
+    const updateState = () => {
+      field.dataset.animationState = reducedMotion.matches
+        ? 'static'
+        : isIntersecting
+          ? 'running'
+          : 'paused';
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isIntersecting = entry?.isIntersecting ?? false;
+      updateState();
+    });
+
+    reducedMotion.addEventListener('change', updateState);
+    observer.observe(field);
+    updateState();
+  });
+</script>

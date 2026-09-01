@@ -1,0 +1,45 @@
+---
+import SignalField from '../interactive/SignalField.astro';
+---
+
+<section id="hero" class="hero">
+  <SignalField />
+  <div class="container hero__content">
+    <p class="eyebrow">Creative technologist / musician / nerd</p>
+    <h1>Creative tinkerer. Musician. Professional maker of curious things.</h1>
+    <p class="hero__introduction">
+      I create immersive experiences, software, and sound that bring people together in unexpected ways.
+    </p>
+    <a class="hero__link" href="#selected-work">Follow the curious signal <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    min-height: min(52rem, calc(100svh - 4.5rem));
+    overflow: hidden;
+    padding-block: clamp(5rem, 14vw, 10rem);
+    position: relative;
+  }
+
+  .hero::after {
+    background: linear-gradient(90deg, var(--ink) 12%, transparent 78%);
+    content: '';
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .hero__content { position: relative; z-index: 1; }
+  h1 { max-width: 12ch; }
+  .hero__introduction { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.4rem); margin: 2rem 0 0; max-width: 42rem; }
+  .hero__link { color: var(--signal); display: inline-flex; font-family: var(--font-mono); gap: .55rem; margin-top: 2rem; text-decoration-thickness: 1px; text-underline-offset: .3em; }
+
+  @media (max-width: 42rem) {
+    .hero { min-height: auto; }
+    .hero::after { background: linear-gradient(90deg, var(--ink) 25%, rgb(8 9 11 / .48)); }
+  }
+</style>
