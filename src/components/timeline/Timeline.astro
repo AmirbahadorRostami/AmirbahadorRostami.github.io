@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TimelineEntry from './TimelineEntry.astro';
+
+export interface Props {
+  entries: CollectionEntry<'experience'>[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ol class="timeline" data-timeline role="list">
+  {entries.map((entry) => <TimelineEntry entry={entry} />)}
+</ol>
+
+<style>
+  .timeline { list-style: none; margin: clamp(2.5rem, 6vw, 4.5rem) 0 0; padding: 0; }
+</style>

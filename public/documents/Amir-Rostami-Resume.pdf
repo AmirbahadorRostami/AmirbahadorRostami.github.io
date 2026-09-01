@@ -1,0 +1,202 @@
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/Contents 9 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+5 0 obj
+<<
+/Contents 10 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+6 0 obj
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
+endobj
+7 0 obj
+<<
+/Author (Amir Rostami) /CreationDate (D:20000101000000+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20000101000000+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (Professional resume) /Title (Amir Rostami Resume) /Trapped /False
+>>
+endobj
+8 0 obj
+<<
+/Count 2 /Kids [ 4 0 R 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Length 7902
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 239.6733 761.0418 Tm /F2 18 Tf 21.6 TL 99.00093 Tz .16 .18 .21 rg (AMIR ROSTAMI) Tj ET
+.16 .18 .21 rg
+BT /F1 8 Tf 9.6 TL ET
+BT 1 0 0 1 260.644 745.9526 Tm (Toronto, Ontario, Canada) Tj T* ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 721.7837 Tm /F2 11 Tf 13.2 TL 99.65411 Tz .16 .18 .21 rg (PROFESSIONAL SUMMARY) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 704.6047 Tm /F1 10 Tf 12 TL 99.97596 Tz .16 .18 .21 rg (Senior Software Engineer with 7+ years of experience designing and delivering large-scale, production-ready) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 693.1057 Tm /F1 10 Tf 12 TL 99.97277 Tz .16 .18 .21 rg (systems across mobile, backend, cloud, and real-time applications. Proven track record building high-throughput) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 681.6066 Tm /F1 10 Tf 12 TL 99.9698 Tz .16 .18 .21 rg (distributed architectures, RESTful and gRPC APIs, CI/CD pipelines, and enterprise integrations for clients in) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 670.1076 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (fintech, iGaming, SaaS, and media. Strong background in full software lifecycle - from requirements and system) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 658.6086 Tm /F1 10 Tf 12 TL 99.97231 Tz .16 .18 .21 rg (design to testing, deployment, and post-launch optimization. Adept at collaborating cross-functionally with) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 647.1096 Tm /F1 10 Tf 12 TL 99.82441 Tz .16 .18 .21 rg (product, design, and engineering teams in Agile environments. Passionate about clean architecture, code quality,) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 635.6105 Tm /F1 10 Tf 12 TL 99.97668 Tz .16 .18 .21 rg (and engineering process improvement.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 611.1416 Tm /F2 11 Tf 13.2 TL 99.93294 Tz .16 .18 .21 rg (CORE COMPETENCIES) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 593.9626 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (Distributed Systems - RESTful & gRPC API Design - Mobile Development \(iOS/Android\) - Cloud Infrastructure) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 582.4636 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (\(AWS, Azure, GCP\) - CI/CD & DevOps - Real-Time Systems - Enterprise Integrations - Microservices) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 570.9645 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (Architecture - Database Design - Agile/Scrum) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 546.4956 Tm /F2 11 Tf 13.2 TL 99.93224 Tz .16 .18 .21 rg (TECHNICAL SKILLS) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 529.3166 Tm /F2 10 Tf 12 TL 94.92876 Tz .16 .18 .21 rg (Languages: C#, Python, TypeScript, JavaScript, Kotlin, Swift, Java, C++, C) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 516.3176 Tm /F2 10 Tf 12 TL 96.83022 Tz .16 .18 .21 rg (Frameworks & Backend: .NET Core, ASP.NET, Node.js, React.js, Django) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 503.3186 Tm /F2 10 Tf 12 TL 94.24709 Tz .16 .18 .21 rg (Cloud & DevOps: AWS, Azure, GCP, Docker, Kubernetes, Jenkins, GitHub Actions, Artifactory) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 490.3195 Tm /F2 10 Tf 12 TL 96.40109 Tz .16 .18 .21 rg (Databases: PostgreSQL, MongoDB, Redis, MySQL, NoSQL) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 477.3205 Tm /F2 10 Tf 12 TL 96.09226 Tz .16 .18 .21 rg (APIs & Integration: RESTful APIs, gRPC, WebSockets, Webhooks, HubSpot API, Salesforce API) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 464.3215 Tm /F2 10 Tf 12 TL 97.54689 Tz .16 .18 .21 rg (Automation & Low-Code: Make.com, Zapier, n8n) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 451.3225 Tm /F2 10 Tf 12 TL 93.04968 Tz .16 .18 .21 rg (Testing: Unit Testing, Integration Testing, Performance Profiling, TDD) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 426.8535 Tm /F2 11 Tf 13.2 TL 99.93064 Tz .16 .18 .21 rg (PROFESSIONAL EXPERIENCE) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 404.6745 Tm /F2 10 Tf 12 TL 99.96087 Tz .16 .18 .21 rg (Mobile Software Engineer | Product Madness | Montreal, QC | November 2025 - June 2026) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 391.1755 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Designed and optimized mobile application systems using multithreaded programming patterns to maximize) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 379.6765 Tm /F1 10 Tf 12 TL 99.97115 Tz .16 .18 .21 rg (throughput and minimize latency on iOS and Android targets.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 367.1774 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Authored comprehensive unit and integration test suites; performed profiling and debugging cycles to) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 355.6784 Tm /F1 10 Tf 12 TL 99.97309 Tz .16 .18 .21 rg (achieve performance and stability benchmarks.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 343.1794 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Integrated with CI/CD pipelines using Jenkins, Artifactory, and GCP to automate build, test, and release) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 331.6804 Tm /F1 10 Tf 12 TL 99.97363 Tz .16 .18 .21 rg (workflows.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 319.1813 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Contributed to system architecture discussions and design reviews in Agile sprint cadences, driving code) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 307.6823 Tm /F1 10 Tf 12 TL 99.96846 Tz .16 .18 .21 rg (quality improvements across the team.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 287.1833 Tm /F2 10 Tf 12 TL 99.67155 Tz .16 .18 .21 rg (Integration Engineer | Sector Growth | Toronto, ON | March 2025 - November 2025) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 273.6843 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Designed and implemented end-to-end custom API integrations for enterprise clients, enabling seamless) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 262.1853 Tm /F1 10 Tf 12 TL 99.96942 Tz .16 .18 .21 rg (data exchange across disparate systems.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 249.6862 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Engineered robust data migration pipelines ensuring high availability, data integrity, and minimal downtime) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 238.1872 Tm /F1 10 Tf 12 TL 99.97425 Tz .16 .18 .21 rg (during large-scale transfers.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 225.6882 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Built CRM integrations with HubSpot, Salesforce, and Monday.com, reducing manual data operations and) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 214.1892 Tm /F1 10 Tf 12 TL 99.97061 Tz .16 .18 .21 rg (increasing CRM data accuracy for clients.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 201.6901 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Delivered AI-assisted workflow automation and RAG \(Retrieval-Augmented Generation\) solutions using) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 190.1911 Tm /F1 10 Tf 12 TL 99.81041 Tz .16 .18 .21 rg (Make.com, Zapier, and n8n, cutting manual process time by an estimated 60%.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 169.6921 Tm /F2 10 Tf 12 TL 98.68345 Tz .16 .18 .21 rg (Co-Founder & Lead Engineer | Artifacts Lab | Toronto, ON | January 2020 - Present) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 156.1931 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Founded and led the engineering practice, translating complex client business requirements into scalable) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 144.694 Tm /F1 10 Tf 12 TL 99.97006 Tz .16 .18 .21 rg (technical architectures and functional systems.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 132.195 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Owned end-to-end delivery across multiple concurrent client engagements, coordinating design,) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 120.696 Tm /F1 10 Tf 12 TL 99.89831 Tz .16 .18 .21 rg (development, and QA phases from kickoff through launch.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 108.197 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Managed cross-functional teams and external contractors, establishing engineering standards and code) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 96.69795 Tm /F1 10 Tf 12 TL 99.6488 Tz .16 .18 .21 rg (review practices that improved delivery consistency.) Tj ET
+ 
+endstream
+endobj
+10 0 obj
+<<
+/Length 9354
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 768.801 Tm /F2 10 Tf 12 TL 99.31746 Tz .16 .18 .21 rg (Senior Software Engineer | Hard Rock Digital | Toronto, ON | February 2024 - February 2025) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 755.302 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Designed and implemented scalable system architectures for flagship iGaming platforms processing millions) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 743.8029 Tm /F1 10 Tf 12 TL 99.69358 Tz .16 .18 .21 rg (of real-time transactions with high reliability and low latency.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 731.3039 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Built and maintained production-grade C#/.NET backend systems including in-app messaging, reward) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 719.8049 Tm /F1 10 Tf 12 TL 99.97488 Tz .16 .18 .21 rg (engines, and real-time gameplay event processing.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 707.3059 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Introduced unit and integration testing frameworks that reduced production defect rates and improved) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 695.8068 Tm /F1 10 Tf 12 TL 99.97273 Tz .16 .18 .21 rg (regression coverage across mission-critical features.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 683.3078 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Automated CI/CD pipelines using GitHub Actions, reducing manual deployment effort and accelerating) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 671.8088 Tm /F1 10 Tf 12 TL 99.97486 Tz .16 .18 .21 rg (release cycles for a multi-team engineering organization.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 659.3098 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Coordinated directly with internal and external stakeholders to gather requirements, align priorities, and ship) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 647.8107 Tm /F1 10 Tf 12 TL 99.97116 Tz .16 .18 .21 rg (robust, high-impact features on schedule.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 627.3117 Tm /F2 10 Tf 12 TL 99.49034 Tz .16 .18 .21 rg (Senior Software Engineering Instructor | Circuit Stream | Toronto, ON | January 2023 - February 2025) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 613.8127 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Designed and delivered technical curriculum covering software engineering best practices, SOLID principles,) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 602.3137 Tm /F1 10 Tf 12 TL 99.96786 Tz .16 .18 .21 rg (OOP design patterns, and production-scale system architecture.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 589.8146 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Mentored cohorts of junior and intermediate developers from requirements definition through full system) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 578.3156 Tm /F1 10 Tf 12 TL 99.57371 Tz .16 .18 .21 rg (delivery, with a focus on career readiness.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 565.8166 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Conducted code reviews and architectural trade-off sessions, accelerating students' transition into) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 554.3176 Tm /F1 10 Tf 12 TL 99.98114 Tz .16 .18 .21 rg (professional engineering roles.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 533.8186 Tm /F2 10 Tf 12 TL 100 Tz .16 .18 .21 rg (Senior Software Engineer | TerraZero | Toronto, ON | March 2023 - November 2023) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 520.3195 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Owned feature delivery end-to-end across the product lifecycle, from design through production deployment) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 508.8205 Tm /F1 10 Tf 12 TL 99.97808 Tz .16 .18 .21 rg (and monitoring.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 496.3215 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Collaborated with cross-functional teams \(art, design, product\) to align technical execution with product) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 484.8225 Tm /F1 10 Tf 12 TL 99.97564 Tz .16 .18 .21 rg (goals, consistently meeting delivery deadlines.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 472.3234 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Drove continuous process improvement and code quality initiatives, contributing architectural) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 460.8244 Tm /F1 10 Tf 12 TL 99.97231 Tz .16 .18 .21 rg (recommendations that reduced technical debt.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 440.3254 Tm /F2 10 Tf 12 TL 100 Tz .16 .18 .21 rg (Software Engineer - Interactive Systems | Infinite Frame Media | Toronto, ON | July 2022 - December 2022) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 426.8264 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Contributed to development of 'The Choice,' an interactive documentary platform requiring real-time) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 415.3273 Tm /F1 10 Tf 12 TL 99.97351 Tz .16 .18 .21 rg (event-driven state management and multimedia synchronization.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 402.8283 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Implemented interactive user experience systems blending video playback, animation, and real-time user) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 391.3293 Tm /F1 10 Tf 12 TL 99.97916 Tz .16 .18 .21 rg (input within a low-latency pipeline.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 370.8303 Tm /F2 10 Tf 12 TL 97.11605 Tz .16 .18 .21 rg (R&D Software Engineer | Antimodular Research | Montreal, QC | April 2022 - August 2022) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 357.3312 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Developed custom hardware-software integration solutions for large-scale interactive public installations,) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 345.8322 Tm /F1 10 Tf 12 TL 99.97196 Tz .16 .18 .21 rg (combining embedded systems with real-time software backends.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 333.3332 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Collaborated with world-renowned artist Rafael Lozano-Hemmer, delivering novel sensor-driven software) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 321.8342 Tm /F1 10 Tf 12 TL 99.97029 Tz .16 .18 .21 rg (systems for public art exhibition environments.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 301.3352 Tm /F2 10 Tf 12 TL 97.85637 Tz .16 .18 .21 rg (Software Engineer - AR Applications | Studio Above & Below | London, UK | April 2022 - July 2022) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 287.8361 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Extended AR application features for 'Digital Atmosphere,' a data-driven sculpture with real-time weather API) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 276.3371 Tm /F1 10 Tf 12 TL 99.9738 Tz .16 .18 .21 rg (integration rendered in augmented reality on iOS.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 263.8381 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Built real-time data visualization pipeline connecting external REST APIs to 3D AR rendering, deployed to) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 252.3391 Tm /F1 10 Tf 12 TL 99.97021 Tz .16 .18 .21 rg (production on iOS using ARKit.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 231.84 Tm /F2 10 Tf 12 TL 97.18996 Tz .16 .18 .21 rg (Research Software Engineer | BMS Lab, University of Twente | Netherlands | January 2020 - September 2020) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 218.341 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Developed custom VR simulation environments and data collection systems for academic psychological) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 206.842 Tm /F1 10 Tf 12 TL 99.97224 Tz .16 .18 .21 rg (research studies.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 194.343 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Collaborated with graduate researchers to design technically sound experimental tooling, producing reliable) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 182.8439 Tm /F1 10 Tf 12 TL 99.97449 Tz .16 .18 .21 rg (datasets for peer-reviewed publications.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 158.375 Tm /F2 11 Tf 13.2 TL 99.50873 Tz .16 .18 .21 rg (NOTABLE PROJECTS & RESEARCH) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 141.196 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- AliceLab for Computational World Making \(York University\) - Developed generative algorithms and) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 129.697 Tm /F1 10 Tf 12 TL 99.96903 Tz .16 .18 .21 rg (interactive digital systems for computational art research.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 117.1979 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Dispersion Lab \(York University\) - Built Kinect-based motion tracking system with real-time computer vision:) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 105.6989 Tm /F1 10 Tf 12 TL 99.97041 Tz .16 .18 .21 rg (boundary extraction, subject tracking, and pose detection.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 62.25 93.19991 Tm /F1 10 Tf 12 TL 100 Tz .16 .18 .21 rg (- Philip Beesley Architect / Living Architecture Systems Group - Designed a multi-sensory reactive audio) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 81.70088 Tm /F1 10 Tf 12 TL 99.96899 Tz .16 .18 .21 rg (system using distributed microprocessors and sensors; deployed at the Royal Ontario Museum as part of the) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 75.75 70.20186 Tm /F1 10 Tf 12 TL 99.97223 Tz .16 .18 .21 rg ('Amatria' installation.) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 45.73293 Tm /F2 11 Tf 13.2 TL 98.69461 Tz .16 .18 .21 rg (EDUCATION) Tj ET
+BT 1 0 0 1 0 0 Tm 1 0 0 1 54 23.55391 Tm /F2 10 Tf 12 TL 97.06392 Tz .16 .18 .21 rg (Bachelor of Science, Computational Arts , Minor in Game Development | York University | Toronto, ON) Tj ET
+ 
+endstream
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000061 00000 n 
+0000000102 00000 n 
+0000000209 00000 n 
+0000000321 00000 n 
+0000000514 00000 n 
+0000000708 00000 n 
+0000000776 00000 n 
+0000001059 00000 n 
+0000001124 00000 n 
+0000009077 00000 n 
+trailer
+<<
+/ID 
+[<a409849d12eea580015c0449dde3e5e3><a409849d12eea580015c0449dde3e5e3>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 7 0 R
+/Root 6 0 R
+/Size 11
+>>
+startxref
+18483
+%%EOF
