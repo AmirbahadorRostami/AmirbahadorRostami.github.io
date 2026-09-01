@@ -1,0 +1,142 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import encountersHeader from '../../assets/projects/encounters/encounters-header.webp';
+import encountersInteraction from '../../assets/projects/encounters/encounters-interaction.webp';
+import encountersPond from '../../assets/projects/encounters/encounters-pond.webp';
+import luminous0508 from '../../assets/projects/luminous-trails/luminous-trails-0508.webp';
+import luminous0509 from '../../assets/projects/luminous-trails/luminous-trails-0509.webp';
+import luminous1796 from '../../assets/projects/luminous-trails/luminous-trails-1796.webp';
+import luminous1799 from '../../assets/projects/luminous-trails/luminous-trails-1799.webp';
+import luminous1801 from '../../assets/projects/luminous-trails/luminous-trails-1801.webp';
+import luminous1844 from '../../assets/projects/luminous-trails/luminous-trails-1844.webp';
+import luminousNov12a from '../../assets/projects/luminous-trails/luminous-trails-nov12a.webp';
+import luminousNov12b from '../../assets/projects/luminous-trails/luminous-trails-nov12b.webp';
+
+export interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+type ProjectImage = {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+};
+
+const projectImages: Record<string, ProjectImage[]> = {
+  encounters: [
+    {
+      src: encountersHeader,
+      alt: 'A luminous virtual swimmer seen beneath the surface of an Encounters water body',
+      caption: 'An imagined underwater landscape revealed inside a virtual body of water.',
+    },
+    {
+      src: encountersInteraction,
+      alt: 'Two Encounters participants facing one another while holding their phones outdoors',
+      caption: 'Participants use the mobile experience together on the York University campus.',
+    },
+    {
+      src: encountersPond,
+      alt: 'Encounters mobile view placing a virtual pond and figure on a campus path',
+      caption: 'The augmented-reality interface places a virtual gathering point in public space.',
+    },
+  ],
+  'luminous-trails': [
+    {
+      src: luminous0508,
+      alt: 'Blue augmented-reality trails crossing Nathan Phillips Square at night',
+      caption: 'A luminous route crossing Nathan Phillips Square in Toronto.',
+    },
+    {
+      src: luminous0509,
+      alt: 'Branching blue augmented-reality trails among people at Nathan Phillips Square',
+      caption: 'Several geolocated paths branch through the square.',
+    },
+    {
+      src: luminous1796,
+      alt: 'A blue augmented-reality trail passing the illuminated Toronto sign',
+      caption: 'A participant’s trail becomes visible near the Toronto sign.',
+    },
+    {
+      src: luminous1799,
+      alt: 'Branching augmented-reality trails below Toronto office towers at night',
+      caption: 'Luminous paths overlap in the downtown landscape.',
+    },
+    {
+      src: luminous1801,
+      alt: 'Blue augmented-reality trails curving around visitors in a city square',
+      caption: 'The mobile view layers a route over the movement of visitors.',
+    },
+    {
+      src: luminous1844,
+      alt: 'A blue augmented-reality trail stretching across a downtown Toronto intersection',
+      caption: 'A trail follows the participant from one city block to the next.',
+    },
+    {
+      src: luminousNov12a,
+      alt: 'Luminous augmented-reality trails crossing a wet downtown plaza at night',
+      caption: 'Virtual paths remain visible across a rain-lit plaza.',
+    },
+    {
+      src: luminousNov12b,
+      alt: 'A close augmented-reality view of blue trails near Toronto Eaton Centre',
+      caption: 'A close view of a trail at Toronto Eaton Centre.',
+    },
+  ],
+};
+
+const { project } = Astro.props;
+const images = projectImages[project.id] ?? [];
+const hasMedia = images.length > 0 || project.data.videos.length > 0;
+---
+
+{hasMedia && (
+  <section class="project-media" data-project-media aria-labelledby="project-media-title">
+    <h2 id="project-media-title">Project media</h2>
+    {images.length > 0 && (
+      <div class="project-media__images">
+        {images.map((image) => (
+          <figure>
+            <Image src={image.src} alt={image.alt} layout="constrained" />
+            <figcaption>{image.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+    {project.data.videos.length > 0 && (
+      <div class="project-media__videos">
+        {project.data.videos.map((video) => (
+          <figure>
+            <div class="project-media__video-frame">
+              <iframe
+                src={video.url}
+                title={video.title}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <figcaption>{video.title}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+  </section>
+)}
+
+<style>
+  .project-media { display: grid; gap: 1.5rem; }
+  h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); letter-spacing: -.04em; margin: 0; }
+  .project-media__images { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  figure { margin: 0; min-width: 0; }
+  figure :global(img) { background: var(--surface-raised); height: auto; width: 100%; }
+  figcaption { color: var(--muted); font-size: .85rem; margin-top: .65rem; }
+  .project-media__videos { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-media__video-frame { aspect-ratio: 16 / 9; background: var(--surface-raised); }
+  iframe { border: 0; height: 100%; width: 100%; }
+
+  @media (max-width: 42rem) {
+    .project-media__images, .project-media__videos { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

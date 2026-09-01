@@ -1,0 +1,15 @@
+---
+export interface Props {
+  enabled: boolean;
+  title: string;
+}
+
+const { enabled } = Astro.props;
+---
+
+{enabled && (
+  <section aria-labelledby="live-experiment-title">
+    <h2 id="live-experiment-title">Live experiment</h2>
+    <slot />
+  </section>
+)}
