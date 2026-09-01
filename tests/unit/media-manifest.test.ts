@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import sharp from 'sharp';
 import { MEDIA_JOBS } from '../../scripts/prepare-media.mjs';
+
+const repositoryRoot = resolve(import.meta.dirname, '../..');
 
 describe('media manifest', () => {
   it('has a hero image for every launch project', () => {
@@ -26,6 +31,7 @@ describe('media manifest', () => {
         'src/assets/projects/luminous-trails/luminous-trails-card.webp',
         'src/assets/projects/remote-realities/remote-realities-card.webp',
         'src/assets/projects/biowords/biowords-card.gif',
+        'src/assets/projects/biowords/biowords-card.webp',
         'src/assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp',
         'src/assets/projects/cellular-automata/cellular-automata-card.webp',
         'src/assets/profile/amir-rostami.webp',
@@ -42,9 +48,42 @@ describe('media manifest', () => {
         project: 'biowords',
         source: 'Media/img-tester/BioWords.gif',
         destination: 'src/assets/projects/biowords/biowords-card.gif',
+        operation: 'copy',
       }),
     ]);
+    expect(MEDIA_JOBS).toContainEqual(expect.objectContaining({
+      project: 'biowords',
+      source: 'Media/img-tester/BioWords.gif',
+      destination: 'src/assets/projects/biowords/biowords-card.webp',
+      operation: 'first-frame',
+    }));
     expect(staticJobs.every((job) => job.destination.endsWith('.webp'))).toBe(true);
+  });
+
+  it('keeps the BioWords animation byte-identical and generates a one-frame hero', async () => {
+    const source = resolve(repositoryRoot, 'Media/img-tester/BioWords.gif');
+    const preservedAnimation = resolve(
+      repositoryRoot,
+      'src/assets/projects/biowords/biowords-card.gif',
+    );
+    const staticHero = resolve(
+      repositoryRoot,
+      'src/assets/projects/biowords/biowords-card.webp',
+    );
+
+    const [sourceBytes, preservedBytes, sourceMetadata, preservedMetadata, stillMetadata] = await Promise.all([
+      readFile(source),
+      readFile(preservedAnimation),
+      sharp(source).metadata(),
+      sharp(preservedAnimation).metadata(),
+      sharp(staticHero).metadata(),
+    ]);
+
+    expect(preservedBytes.equals(sourceBytes)).toBe(true);
+    expect(sourceMetadata.pages).toBeGreaterThan(1);
+    expect(preservedMetadata.pages).toBe(sourceMetadata.pages);
+    expect(stillMetadata.format).toBe('webp');
+    expect(stillMetadata.pages ?? 1).toBe(1);
   });
 
   it('keeps the selected Luminous Trails detail sources available for project pages', () => {

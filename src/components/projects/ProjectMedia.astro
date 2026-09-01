@@ -88,6 +88,24 @@ const projectImages: Record<string, ProjectImage[]> = {
 const { project } = Astro.props;
 const images = projectImages[project.id] ?? [];
 const hasMedia = images.length > 0 || project.data.videos.length > 0;
+
+function youtubeVideoId(url: string): string {
+  const parsedUrl = new URL(url);
+  const videoId = parsedUrl.hostname === 'www.youtube.com'
+    ? parsedUrl.pathname.match(/^\/embed\/([A-Za-z0-9_-]+)$/)?.[1]
+    : undefined;
+
+  if (!videoId) {
+    throw new Error(`Unsupported project video URL: ${url}`);
+  }
+
+  return videoId;
+}
+
+const videos = project.data.videos.map((video) => ({
+  ...video,
+  videoId: youtubeVideoId(video.url),
+}));
 ---
 
 {hasMedia && (
@@ -103,19 +121,30 @@ const hasMedia = images.length > 0 || project.data.videos.length > 0;
         ))}
       </div>
     )}
-    {project.data.videos.length > 0 && (
+    {videos.length > 0 && (
       <div class="project-media__videos">
-        {project.data.videos.map((video) => (
+        {videos.map((video) => (
           <figure>
-            <div class="project-media__video-frame">
-              <iframe
-                src={video.url}
-                title={video.title}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
+            <div
+              class="project-media__video-frame"
+              data-video-facade
+              data-video-id={video.videoId}
+              data-video-title={video.title}
+              data-state="idle"
+            >
+              <button type="button" aria-pressed="false">
+                <span class="project-media__play-icon" aria-hidden="true">▶</span>
+                <span>Play {video.title}</span>
+              </button>
+              <noscript>
+                <p>
+                  Embedded video requires JavaScript.
+                  <a
+                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                    aria-label={`Watch ${video.title} on YouTube`}
+                  >Watch on YouTube</a>.
+                </p>
+              </noscript>
             </div>
             <figcaption>{video.title}</figcaption>
           </figure>
@@ -133,10 +162,46 @@ const hasMedia = images.length > 0 || project.data.videos.length > 0;
   figure :global(img) { background: var(--surface-raised); height: auto; width: 100%; }
   figcaption { color: var(--muted); font-size: .85rem; margin-top: .65rem; }
   .project-media__videos { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .project-media__video-frame { aspect-ratio: 16 / 9; background: var(--surface-raised); }
-  iframe { border: 0; height: 100%; width: 100%; }
+  .project-media__video-frame { align-items: stretch; aspect-ratio: 16 / 9; background: var(--surface-raised); display: flex; }
+  .project-media__video-frame button { align-items: center; background: var(--surface-raised); border: 1px solid var(--line); color: var(--paper); cursor: pointer; display: flex; flex: 1; flex-direction: column; font: inherit; gap: 1rem; justify-content: center; padding: 1.5rem; text-align: center; }
+  .project-media__video-frame button:hover { border-color: var(--signal); color: var(--signal); }
+  .project-media__play-icon { color: var(--signal); font-size: clamp(2rem, 8vw, 4rem); line-height: 1; }
+  .project-media__video-frame noscript { align-self: center; padding: 1.5rem; }
+  .project-media__video-frame noscript p { margin: 0; }
+  .project-media__video-frame noscript a { color: var(--signal); }
+  .project-media__video-frame :global(iframe) { border: 0; height: 100%; width: 100%; }
 
   @media (max-width: 42rem) {
     .project-media__images, .project-media__videos { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
+
+<script>
+  const videoFacades = document.querySelectorAll<HTMLElement>('[data-video-facade]');
+
+  for (const facade of videoFacades) {
+    const button = facade.querySelector<HTMLButtonElement>('button');
+
+    if (!button || facade.dataset.initialized === 'true') continue;
+    facade.dataset.initialized = 'true';
+
+    button.addEventListener('click', () => {
+      const videoId = facade.dataset.videoId;
+      const title = facade.dataset.videoTitle;
+
+      if (!videoId || !title) return;
+
+      button.setAttribute('aria-pressed', 'true');
+      facade.dataset.state = 'loaded';
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
+      iframe.title = title;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.allow = 'encrypted-media';
+      iframe.allowFullscreen = true;
+      button.replaceWith(iframe);
+    }, { once: true });
+  }
+</script>

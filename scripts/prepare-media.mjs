@@ -84,6 +84,13 @@ export const MEDIA_JOBS = [
     project: 'biowords',
     source: 'Media/img-tester/BioWords.gif',
     destination: 'src/assets/projects/biowords/biowords-card.gif',
+    operation: 'copy',
+  },
+  {
+    project: 'biowords',
+    source: 'Media/img-tester/BioWords.gif',
+    destination: 'src/assets/projects/biowords/biowords-card.webp',
+    operation: 'first-frame',
   },
   {
     project: 'person-is-a-data-structure',
@@ -124,12 +131,27 @@ function assertManifest() {
       throw new Error(`Media destination must stay in src/assets: ${job.destination}`);
     }
 
-    const isGif = job.destination.endsWith('.gif');
-    if (isGif !== (job.source === 'Media/img-tester/BioWords.gif')) {
-      throw new Error(`Only the BioWords animation may be copied as GIF: ${job.destination}`);
+    const operation = job.operation ?? 'optimize';
+    if (!['optimize', 'copy', 'first-frame'].includes(operation)) {
+      throw new Error(`Unknown media operation "${operation}": ${job.destination}`);
     }
-    if (!isGif && !job.destination.endsWith('.webp')) {
-      throw new Error(`Static media must be written as WebP: ${job.destination}`);
+
+    if (operation === 'copy') {
+      if (
+        job.source !== 'Media/img-tester/BioWords.gif'
+        || job.destination !== 'src/assets/projects/biowords/biowords-card.gif'
+      ) {
+        throw new Error(`Only the preserved BioWords animation may use copy: ${job.destination}`);
+      }
+    } else if (!job.destination.endsWith('.webp')) {
+      throw new Error(`Processed media must be written as WebP: ${job.destination}`);
+    }
+
+    if (
+      operation === 'first-frame'
+      && job.source !== 'Media/img-tester/BioWords.gif'
+    ) {
+      throw new Error(`First-frame extraction is reserved for BioWords: ${job.source}`);
     }
   }
 }
@@ -149,10 +171,14 @@ export async function prepareMedia() {
 
     await mkdir(dirname(destination), { recursive: true });
 
-    if (job.destination.endsWith('.gif')) {
+    const operation = job.operation ?? 'optimize';
+
+    if (operation === 'copy') {
       await copyFile(source, destination);
     } else {
-      await sharp(source)
+      const inputOptions = operation === 'first-frame' ? { page: 0, pages: 1 } : undefined;
+
+      await sharp(source, inputOptions)
         .rotate()
         .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
         .webp({ quality: 82 })

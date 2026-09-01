@@ -30,7 +30,13 @@ const { data } = project;
       {data.alternateTitle && <p class="project-hero__alternate">Also presented as <em>{data.alternateTitle}</em></p>}
       <p class="project-hero__premise">{data.summary}</p>
       <figure class="project-hero__image">
-        <Image src={data.hero} alt={data.heroAlt} layout="constrained" />
+        <Image
+          src={data.hero}
+          alt={data.heroAlt}
+          layout="constrained"
+          loading="eager"
+          fetchpriority="high"
+        />
       </figure>
     </header>
 

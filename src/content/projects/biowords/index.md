@@ -8,8 +8,8 @@ featured: false
 categories: [artificial-life, generative-art, web-experience]
 roles: [Creative coder, Web developer]
 tools: [JavaScript, p5.js, Natural language processing]
-hero: ../../../assets/projects/biowords/biowords-card.gif
-heroAlt: Small line-drawn BioWord creatures moving across a white field
+hero: ../../../assets/projects/biowords/biowords-card.webp
+heroAlt: Small line-drawn BioWord creatures arranged across a white field
 context: Web-based artificial-life experience
 collaborators: []
 credits: []
