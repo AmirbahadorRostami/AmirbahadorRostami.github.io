@@ -1,6 +1,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { auditPdf } from '../helpers/pdf-audit';
 
 const organizations = [
   'Product Madness',
@@ -20,34 +21,6 @@ const organizations = [
 
 const emailPattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const phonePattern = /(?<!\d)(?:\+?1[\s.()-]*)?(?:\(?\d{3}\)?[\s.-]*)\d{3}[\s.-]*\d{4}(?!\d)/;
-
-function decodePdfString(value: string): string {
-  return value.replace(/\\([nrtbf()\\]|[0-7]{1,3})/g, (_match, escaped: string) => {
-    const named: Record<string, string> = {
-      b: '\b',
-      f: '\f',
-      n: '\n',
-      r: '\r',
-      t: '\t',
-      '(': '(',
-      ')': ')',
-      '\\': '\\',
-    };
-
-    return escaped in named ? named[escaped] : String.fromCharCode(Number.parseInt(escaped, 8));
-  });
-}
-
-function extractUncompressedPdfText(pdf: Buffer): string {
-  const source = pdf.toString('latin1');
-  const textRuns = [...source.matchAll(/\(((?:\\.|[^\\)])*)\)\s*Tj/g)];
-
-  if (textRuns.length === 0) {
-    throw new Error('The public resume must contain directly extractable, uncompressed text.');
-  }
-
-  return textRuns.map(([, text]) => decodePdfString(text)).join(' ');
-}
 
 test('about page leads with the approved identity, portrait, and connective biography', async ({ page }) => {
   await page.goto('/about/');
@@ -101,6 +74,14 @@ test('about page provides education, contextual skills, and a private-safe resum
     'Creative technology',
     'Sound and music',
   ]);
+  const siblingLandmarks = await page
+    .locator('section[aria-label="Education"], section[aria-labelledby="skills-title"]')
+    .evaluateAll(([educationSection, skillsSection]) => (
+      educationSection.parentElement === skillsSection.parentElement &&
+      !educationSection.contains(skillsSection) &&
+      !skillsSection.contains(educationSection)
+    ));
+  expect(siblingLandmarks).toBe(true);
 
   const resume = page.getByRole('link', { name: /download.*résumé.*pdf/i });
   await expect(resume).toHaveAttribute('href', '/documents/Amir-Rostami-Resume.pdf');
@@ -113,10 +94,22 @@ test('about page provides education, contextual skills, and a private-safe resum
   const deployedResume = join(process.cwd(), 'dist/documents/Amir-Rostami-Resume.pdf');
   expect(statSync(deployedResume).size).toBeGreaterThan(1_000);
 
-  const extractedText = extractUncompressedPdfText(readFileSync(deployedResume));
-  expect(extractedText).toContain('PROFESSIONAL EXPERIENCE');
-  expect(extractedText).not.toMatch(emailPattern);
-  expect(extractedText).not.toMatch(phonePattern);
+  const pdfAudit = await auditPdf(new Uint8Array(readFileSync(deployedResume)));
+  const parserVisibleContent = [
+    pdfAudit.searchableText,
+    pdfAudit.metadataText,
+    pdfAudit.parserExposedText,
+  ].join('\n');
+  expect(pdfAudit.searchableText).toContain('PROFESSIONAL EXPERIENCE');
+  expect(parserVisibleContent).not.toMatch(emailPattern);
+  expect(parserVisibleContent).not.toMatch(phonePattern);
+  expect(pdfAudit.attachmentCount).toBe(0);
+  expect(pdfAudit.embeddedFileObjectCount).toBe(0);
+  expect(pdfAudit.fieldCount).toBe(0);
+  expect(pdfAudit.actionObjectCount).toBe(0);
+  expect(pdfAudit.externalUrlCount).toBe(0);
+  expect(pdfAudit.javascriptActionCount).toBe(0);
+  expect(pdfAudit.pages.every((pdfPage) => pdfPage.annotationCount === 0)).toBe(true);
 });
 
 test('about timeline remains readable without horizontal overflow', async ({ page }) => {
@@ -143,4 +136,46 @@ test('about timeline remains readable without horizontal overflow', async ({ pag
     entryColumns: Array(13).fill(1),
     entriesOverflow: false,
   });
+});
+
+test('about portrait keeps a bounded 4:5 crop without distortion or overflow', async ({ page }) => {
+  const measure = async () => page.evaluate(() => {
+    const hero = document.querySelector<HTMLElement>('.about-hero');
+    const image = document.querySelector<HTMLImageElement>('.about-hero__portrait img');
+    if (!hero || !image || !image.parentElement) throw new Error('Missing About portrait geometry.');
+
+    const frame = image.parentElement;
+    const frameRect = frame.getBoundingClientRect();
+    const imageRect = image.getBoundingClientRect();
+
+    return {
+      frameAspect: frameRect.width / frameRect.height,
+      heroHeight: hero.getBoundingClientRect().height,
+      imageAspect: imageRect.width / imageRect.height,
+      imageFillsFrame:
+        Math.abs(imageRect.width - frameRect.width) < 1 &&
+        Math.abs(imageRect.height - frameRect.height) < 1,
+      objectFit: getComputedStyle(image).objectFit,
+      overflows: document.documentElement.scrollWidth > window.innerWidth,
+    };
+  });
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto('/about/');
+  const desktop = await measure();
+  expect(desktop.frameAspect).toBeCloseTo(4 / 5, 2);
+  expect(desktop.imageAspect).toBeCloseTo(4 / 5, 2);
+  expect(desktop.imageFillsFrame).toBe(true);
+  expect(desktop.objectFit).toBe('cover');
+  expect(desktop.heroHeight).toBeLessThanOrEqual(1000);
+  expect(desktop.overflows).toBe(false);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const mobile = await measure();
+  expect(mobile.frameAspect).toBeCloseTo(4 / 5, 2);
+  expect(mobile.imageAspect).toBeCloseTo(4 / 5, 2);
+  expect(mobile.imageFillsFrame).toBe(true);
+  expect(mobile.objectFit).toBe('cover');
+  expect(mobile.heroHeight).toBeLessThanOrEqual(1450);
+  expect(mobile.overflows).toBe(false);
 });

@@ -40,14 +40,16 @@ if (experience.length !== 13) {
         </a>
       </div>
       <figure class="about-hero__portrait">
-        <Image
-          src={portrait}
-          alt="Pixel-art portrait of Amir Rostami"
-          widths={[480, 720, 960]}
-          sizes="(max-width: 48rem) calc(100vw - 2rem), 38vw"
-          loading="eager"
-          fetchpriority="high"
-        />
+        <div class="about-hero__portrait-frame" data-portrait-frame>
+          <Image
+            src={portrait}
+            alt="Pixel-art portrait of Amir Rostami"
+            widths={[480, 720, 960]}
+            sizes="(max-width: 48rem) calc(100vw - 2rem), 38vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
         <figcaption>Engineer, artist, musician, and committed question-asker.</figcaption>
       </figure>
     </section>
@@ -65,16 +67,16 @@ if (experience.length !== 13) {
       </div>
     </section>
 
-    <section class="about-section" aria-labelledby="education-title">
+    <div class="about-section">
       <div class="container about-foundations">
-        <div class="about-foundations__education" role="region" aria-label="Education">
+        <section class="about-foundations__education" aria-label="Education">
           <p class="eyebrow">Education</p>
           <h2 id="education-title">Computational arts, with game logic in the margins.</h2>
           <p class="about-foundations__credential">Bachelor of Science in Computational Arts, Minor in Game Development</p>
           <p>York University · Toronto, Ontario</p>
-        </div>
+        </section>
 
-        <div class="about-foundations__skills" role="region" aria-labelledby="skills-title">
+        <section class="about-foundations__skills" aria-labelledby="skills-title">
           <p class="eyebrow">Working vocabulary</p>
           <h2 id="skills-title">Skills in context</h2>
           <div class="skills-grid">
@@ -91,9 +93,9 @@ if (experience.length !== 13) {
               <p>Reactive audio systems, sensor-driven sound, authored music, and listening as a design tool.</p>
             </section>
           </div>
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
   </article>
 </BaseLayout>
 
@@ -107,7 +109,8 @@ if (experience.length !== 13) {
   .about-hero__biography p + p { margin-top: 1rem; }
   .about-hero__resume { align-items: center; border: 1px solid var(--signal); color: var(--signal); display: inline-flex; font-family: var(--font-mono); gap: .65rem; margin-top: 2rem; padding: .8rem 1rem; text-underline-offset: .25em; }
   .about-hero__portrait { margin: 0; }
-  .about-hero__portrait :global(img) { aspect-ratio: 4 / 5; border: 1px solid var(--line); object-fit: cover; width: 100%; }
+  .about-hero__portrait-frame { aspect-ratio: 4 / 5; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; width: 100%; }
+  .about-hero__portrait-frame :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }
   .about-hero__portrait figcaption { color: var(--muted); font-family: var(--font-mono); font-size: .72rem; margin-top: .75rem; }
   .about-section { border-top: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
   .about-section__heading { align-items: end; display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.25fr) minmax(16rem, .75fr); }

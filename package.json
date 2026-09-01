@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "media:prepare": "node scripts/prepare-media.mjs",
+    "resume:build": "node scripts/build-public-resume.mjs",
     "test": "npm run test:unit && npm run build && npm run test:e2e",
     "test:unit": "vitest run",
     "test:e2e": "playwright test"
@@ -25,6 +26,8 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
     "@playwright/test": "^1.55.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.3.289",
     "vitest": "^3.2.0"
   }
 }
