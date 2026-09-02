@@ -2,6 +2,27 @@ import { expect, test } from '@playwright/test';
 
 const endpoint = 'https://contact.test/submit';
 
+function contrastRatio(foreground: string, background: string): number {
+  const relativeLuminance = (color: string) => {
+    const values = color.match(/\d+(?:\.\d+)?/g)?.map(Number);
+    if (!values || values.length < 3) throw new Error(`Expected an RGB color, received ${color}`);
+
+    const [red, green, blue] = values.map((value) => {
+      const channel = value / 255;
+      return channel <= 0.04045
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4;
+    });
+
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  };
+
+  const [lighter, darker] = [relativeLuminance(foreground), relativeLuminance(background)].sort(
+    (first, second) => second - first,
+  );
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
 async function fillValidContactForm(page: import('@playwright/test').Page) {
   await page.getByLabel('Name').fill('Ada Lovelace');
   await page.getByLabel('Reply email').fill('ada@example.com');
@@ -71,4 +92,21 @@ test('generated contact HTML contains no email address or phone-number-shaped te
 
   expect(html).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
   expect(html).not.toMatch(/\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
+});
+
+test('renders active contact-control boundaries with at least 3:1 contrast', async ({ page }) => {
+  await page.goto('/contact/');
+
+  const controls = await page
+    .locator('[data-contact-form] input:not([name="company"]), [data-contact-form] select, [data-contact-form] textarea')
+    .evaluateAll((elements) => {
+      const surrounding = getComputedStyle(document.documentElement).backgroundColor;
+      return elements.map((element) => {
+        const styles = getComputedStyle(element);
+        return { border: styles.borderTopColor, surrounding };
+      });
+    });
+
+  const ratios = controls.map(({ border, surrounding }) => contrastRatio(border, surrounding));
+  expect(ratios.every((ratio) => ratio >= 3), JSON.stringify(ratios)).toBe(true);
 });

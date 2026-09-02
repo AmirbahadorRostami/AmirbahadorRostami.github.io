@@ -194,13 +194,14 @@ const configured = endpoint.length > 0;
 </script>
 
 <style>
+  .contact-form { --contact-control-border: #5a6371; }
   .contact-form__inner { max-width: 48rem; }
   .contact-form__intro { color: var(--muted); font-size: 1.1rem; margin: 1.75rem 0 0; max-width: 42rem; }
   form { margin-top: 2.5rem; }
   .contact-form__fields { display: grid; gap: 1.25rem; }
   .contact-form__field { display: grid; gap: .45rem; }
   label { font-weight: 700; }
-  input, select, textarea { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--paper); font: inherit; padding: .75rem; width: 100%; }
+  input, select, textarea { background: var(--surface-raised); border: 1px solid var(--contact-control-border); border-radius: var(--radius-sm); color: var(--paper); font: inherit; padding: .75rem; width: 100%; }
   textarea { resize: vertical; }
   input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: var(--coral); }
   .contact-form__error { color: var(--coral); margin: 0; min-height: 1.5rem; }
