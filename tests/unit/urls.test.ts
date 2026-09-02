@@ -9,4 +9,9 @@ describe('URL helpers', () => {
   it('builds canonical URLs from the configured origin', () => {
     expect(absoluteUrl('/music/')).toBe('https://amirbahadorrostami.github.io/music/');
   });
+
+  it('preserves file-like paths without a trailing slash', () => {
+    expect(normalizePath('/404.html')).toBe('/404.html');
+    expect(absoluteUrl('/404.html')).toBe('https://amirbahadorrostami.github.io/404.html');
+  });
 });

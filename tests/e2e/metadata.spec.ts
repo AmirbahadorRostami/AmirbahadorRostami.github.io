@@ -5,7 +5,7 @@ const origin = 'https://amirbahadorrostami.github.io';
 const routes = [
   { path: '/', canonical: `${origin}/`, title: 'Amir Rostami — Creative Technologist & Musician' },
   { path: '/music/', canonical: `${origin}/music/`, title: 'Music | Amir Bahador Rostami' },
-  { path: '/404.html', canonical: `${origin}/404/`, title: 'Page not found | Amir Rostami' },
+  { path: '/404.html', canonical: `${origin}/404.html`, title: 'Page not found | Amir Rostami' },
 ];
 
 for (const route of routes) {
@@ -17,6 +17,7 @@ for (const route of routes) {
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', route.title);
     await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /\S/);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', route.canonical);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `${origin}/og.png`);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', route.title);
