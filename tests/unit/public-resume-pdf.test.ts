@@ -55,6 +55,7 @@ describe('public resume PDF', () => {
     expect(audit.openActionCount).toBe(0);
     expect(audit.pages.every((page) => page.annotationCount === 0)).toBe(true);
     expect(audit.pages.every((page) => page.imageOperationCount === 0)).toBe(true);
+    expect(audit.unreadableStreamCount).toBe(0);
   });
 
   test('is tagged in English with semantic structure, Unicode maps, and print-safe margins', async () => {

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));

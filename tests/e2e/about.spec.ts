@@ -110,6 +110,7 @@ test('about page provides education, contextual skills, and a private-safe resum
   expect(pdfAudit.externalUrlCount).toBe(0);
   expect(pdfAudit.javascriptActionCount).toBe(0);
   expect(pdfAudit.pages.every((pdfPage) => pdfPage.annotationCount === 0)).toBe(true);
+  expect(pdfAudit.unreadableStreamCount).toBe(0);
 });
 
 test('about timeline remains readable without horizontal overflow', async ({ page }) => {
