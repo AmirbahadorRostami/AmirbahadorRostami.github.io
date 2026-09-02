@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found | Amir Rostami"
+  description="This page could not be found. Explore Amir Rostami's work, music, about page, or contact page."
+  canonicalPath="/404/"
+>
+  <section class="not-found container" aria-labelledby="not-found-title">
+    <p class="eyebrow">Signal lost</p>
+    <h1 id="not-found-title">Page not found.</h1>
+    <p class="not-found__message">That path has gone quiet. Pick up the signal from one of these familiar places.</p>
+    <nav class="not-found__links" aria-label="Portfolio sections">
+      <a href="/work/">Work</a>
+      <a href="/music/">Music</a>
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { display: grid; gap: 1.5rem; min-height: 45vh; place-content: center start; }
+  .not-found h1 { max-width: 10ch; }
+  .not-found__message { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.35rem); margin: 0; max-width: 42ch; }
+  .not-found__links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .5rem; }
+  .not-found__links a { border: 1px solid var(--line); color: var(--signal); font-family: var(--font-mono); padding: .7rem .9rem; text-decoration: none; }
+  .not-found__links a:hover { border-color: var(--signal); color: var(--paper); }
+</style>

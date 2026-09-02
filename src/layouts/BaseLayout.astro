@@ -13,9 +13,14 @@ export interface Props {
   image?: string;
 }
 
-const { title = SITE.title, description = SITE.description, canonicalPath = Astro.url.pathname, image } = Astro.props;
+const {
+  title = SITE.title,
+  description = SITE.description,
+  canonicalPath = Astro.url.pathname,
+  image = '/og.png',
+} = Astro.props;
 const canonicalUrl = absoluteUrl(canonicalPath);
-const imageUrl = image ? new URL(image, SITE.origin).toString() : undefined;
+const imageUrl = new URL(image, SITE.origin).toString();
 ---
 
 <!doctype html>
@@ -30,11 +35,11 @@ const imageUrl = image ? new URL(image, SITE.origin).toString() : undefined;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    {imageUrl && <meta property="og:image" content={imageUrl} />}
-    <meta name="twitter:card" content={imageUrl ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+    <meta name="twitter:image" content={imageUrl} />
     <title>{title}</title>
   </head>
   <body>
