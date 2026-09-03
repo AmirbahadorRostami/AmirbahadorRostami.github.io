@@ -37,5 +37,11 @@ const currentPath = Astro.url.pathname;
     menuButton.addEventListener('click', () => {
       setMenuState(menuButton.getAttribute('aria-expanded') !== 'true');
     });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+        setMenuState(false);
+        menuButton.focus();
+      }
+    });
   }
 </script>

@@ -50,11 +50,29 @@ test('loading a SoundCloud player activates only the selected card and keeps its
 
   await expect(card.locator('iframe')).toHaveCount(1);
   await expect(card.locator('iframe')).not.toHaveAttribute('autoplay', /.+/);
+  await expect(card.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
+  await expect(card.locator('iframe')).not.toHaveAttribute('src', /auto_play|autoplay/i);
   await expect(card.getByRole('link', { name: 'Listen to La Paloma on SoundCloud' })).toHaveAttribute(
     'href',
     'https://soundcloud.com/amir-bahador-rostami/lapaloma',
   );
   await expect(page.locator('[data-music-card] iframe')).toHaveCount(1);
+});
+
+test('a player loader controls its named player region without granting autoplay', async ({ page }) => {
+  await page.goto('/music/');
+
+  const card = page.locator('[data-music-card]', { hasText: 'La Paloma' });
+  const button = card.getByRole('button', { name: 'Load player for La Paloma' });
+  const player = card.locator('[data-music-player]');
+
+  await expect(player).toHaveAttribute('id', /\S/);
+  const playerId = await player.getAttribute('id');
+  expect(playerId).not.toBeNull();
+  await expect(button).toHaveAttribute('aria-controls', playerId!);
+  await button.click();
+  await expect(player.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
+  await expect(player.locator('iframe')).not.toHaveAttribute('src', /auto_play|autoplay/i);
 });
 
 test('loading a Spotify player activates only the selected card and keeps its outbound fallback', async ({ page }) => {
@@ -65,6 +83,7 @@ test('loading a Spotify player activates only the selected card and keeps its ou
 
   await expect(card.locator('iframe')).toHaveCount(1);
   await expect(card.locator('iframe')).not.toHaveAttribute('autoplay', /.+/);
+  await expect(card.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
   await expect(card.getByRole('link', { name: 'Listen to Try on Spotify' })).toHaveAttribute(
     'href',
     'https://open.spotify.com/track/05lEafQvKSkcxqADBNBWKj',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { access, readFile } from 'node:fs/promises';
+import { relative, resolve } from 'node:path';
 import sharp from 'sharp';
 import { MEDIA_JOBS } from '../../scripts/prepare-media.mjs';
 
@@ -37,6 +37,22 @@ describe('media manifest', () => {
         'src/assets/profile/amir-rostami.webp',
       ]),
     );
+  });
+
+  it('keeps sources and generated outputs inside their approved repository roots', async () => {
+    await Promise.all(MEDIA_JOBS.map(async (job) => {
+      const source = resolve(repositoryRoot, job.source);
+      const destination = resolve(repositoryRoot, job.destination);
+      const sourceRelative = relative(resolve(repositoryRoot, 'Media'), source);
+      const destinationRelative = relative(resolve(repositoryRoot, 'src/assets'), destination);
+
+      expect(sourceRelative).not.toMatch(/^\.\.(?:[\\/]|$)/);
+      expect(destinationRelative).not.toMatch(/^\.\.(?:[\\/]|$)/);
+      expect(job.source).not.toMatch(/(?:^|[\\/])\.\.(?:[\\/]|$)/);
+      expect(job.destination).not.toMatch(/(?:^|[\\/])\.\.(?:[\\/]|$)/);
+      await expect(access(source)).resolves.toBeUndefined();
+      await expect(access(destination)).resolves.toBeUndefined();
+    }));
   });
 
   it('uses WebP for static masters and preserves the BioWords GIF', () => {

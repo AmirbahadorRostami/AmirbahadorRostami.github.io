@@ -39,6 +39,26 @@ describe('launch inventory', () => {
     expect(projectSlugs).toEqual([...EXPECTED_PROJECT_SLUGS].sort());
   });
 
+  it('keeps every project record complete enough for archive and detail consumers', () => {
+    for (const slug of EXPECTED_PROJECT_SLUGS) {
+      const source = readFileSync(resolve(contentRoot, 'projects', slug, 'index.md'), 'utf8');
+      const [, frontmatter = '', body = ''] = source.split(/^---\s*$/m);
+
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^title:\s*\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^summary:\s*\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^cardSummary:\s*\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^depth:\s*(flagship|short)\s*$/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^order:\s*[1-9]\d*\s*$/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^categories:\s*\[\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^roles:\s*\[\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^tools:\s*\[\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^hero:\s*\.\.\/\.\.\/\.\.\/assets\//m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^heroAlt:\s*\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^draft:\s*false\s*$/m);
+      expect(body.trim(), `${slug} body`).not.toBe('');
+    }
+  });
+
   it('keeps the approved timeline at 13 reverse-chronological records without contact details', () => {
     const records = readJsonCollection('experience').sort(
       (left, right) => Number(left.order) - Number(right.order),

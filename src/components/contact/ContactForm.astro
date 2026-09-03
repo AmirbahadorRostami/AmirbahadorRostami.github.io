@@ -138,7 +138,13 @@ const configured = endpoint.length > 0;
       for (const control of controls) control.disabled = disabled;
 
       if (submitButton) {
-        submitButton.textContent = state === 'sending' ? 'Sending…' : state === 'error' ? 'Retry message' : 'Send message';
+        submitButton.textContent = state === 'sending'
+          ? 'Sending…'
+          : state === 'error'
+            ? 'Retry message'
+            : state === 'unconfigured'
+              ? 'Form unavailable'
+              : 'Send message';
       }
     };
 

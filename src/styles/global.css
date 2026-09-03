@@ -7,7 +7,7 @@
   --muted: #a2a7b1;
   --signal: #77f1da;
   --coral: #ff6c57;
-  --line: #2a2e36;
+  --line: #626c7a;
   --focus: #fff4a8;
   --radius-sm: 0.5rem;
   --radius-md: 0.875rem;
@@ -21,6 +21,7 @@ html { background: var(--ink); color: var(--paper); scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; font-family: var(--font-display); line-height: 1.5; }
 img, video, iframe { display: block; max-width: 100%; }
 a { color: inherit; }
+button { min-height: 44px; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
 .container { width: min(calc(100% - 2rem), var(--content)); margin-inline: auto; }
 .eyebrow { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }

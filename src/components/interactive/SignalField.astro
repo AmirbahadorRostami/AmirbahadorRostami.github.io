@@ -3,6 +3,7 @@
   aria-hidden="true"
   data-signal-field
   data-animation-state="static"
+  data-motion="full"
 >
   <svg viewBox="0 0 720 640" focusable="false">
     <defs>
@@ -97,6 +98,7 @@
     let isIntersecting = false;
 
     const updateState = () => {
+      field.dataset.motion = reducedMotion.matches ? 'reduced' : 'full';
       field.dataset.animationState = reducedMotion.matches
         ? 'static'
         : isIntersecting

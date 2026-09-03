@@ -11,6 +11,7 @@ const { description, duration, platform, title, url } = record.data;
 const embedUrl = deriveMusicEmbedUrl(platform, url);
 const platformLabel = platform === 'soundcloud' ? 'SoundCloud' : 'Spotify';
 const embedPermissions = embedPermissionsFor(platform);
+const playerId = `music-player-${record.id}`;
 ---
 
 <article class="music-card" data-music-card>
@@ -21,6 +22,7 @@ const embedPermissions = embedPermissionsFor(platform);
   <a href={url} rel="noopener noreferrer" target="_blank">Listen to {title} on {platformLabel}</a>
   <button
     aria-expanded="false"
+    aria-controls={playerId}
     aria-label={`Load player for ${title}`}
     class="music-card__load-player"
     data-embed-allow={embedPermissions}
@@ -32,7 +34,7 @@ const embedPermissions = embedPermissionsFor(platform);
   >
     Load private player
   </button>
-  <div class="music-card__player" data-music-player></div>
+  <div id={playerId} class="music-card__player" data-music-player></div>
 </article>
 
 <script>

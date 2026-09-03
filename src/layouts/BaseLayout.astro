@@ -45,7 +45,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
   <body>
     <SkipLink />
     <SiteHeader />
-    <main id="main-content"><slot /></main>
+    <main id="main-content" tabindex="-1"><slot /></main>
     <SiteFooter />
   </body>
 </html>
