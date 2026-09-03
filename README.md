@@ -8,6 +8,7 @@ Use Node.js 24 locally. The deployment action defaults to Node 24, so matching i
 
 ```bash
 npm install
+npx playwright install chromium
 npm run dev
 ```
 
@@ -41,6 +42,8 @@ PUBLIC_CONTACT_FORM_ENDPOINT=https://your-form-provider.example/submit
 ```
 
 Never commit `.env`, a recipient email address, or provider credentials. When the variable is empty, the form explains that direct delivery is being connected and remains unavailable rather than exposing private contact details. A provider can be replaced later by pointing the same variable at a compatible endpoint that accepts the form payload; the UI and content model do not need to change. A future serverless or first-party host can replace that endpoint in the same way.
+
+For GitHub Pages, add an Actions repository variable named `PUBLIC_CONTACT_FORM_ENDPOINT` under **Settings → Secrets and variables → Actions → Variables**. The deployment workflow passes that public value to Astro at build time. Do not put a recipient address or provider credential in this variable; browser form endpoints are public by design. Leaving the variable unset keeps the deployed form safely unavailable.
 
 ## Deployment
 

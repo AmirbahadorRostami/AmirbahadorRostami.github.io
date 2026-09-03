@@ -561,7 +561,7 @@ Test representative mobile, tablet, and desktop sizes. Confirm no horizontal ove
 - [x] Mobile navigation and grids work correctly
 - [x] Keyboard navigation and focus states work correctly
 - [x] Reduced-motion behavior works correctly
-- [ ] Every route has valid metadata and a social preview
+- [x] Every route has valid metadata and a social preview
 - [x] Images are optimized and responsive
 - [ ] Production deployment passes smoke testing
 

@@ -20,6 +20,9 @@ describe('GitHub Pages deployment', () => {
     expect(workflow).toMatch(/jobs:\s*\n\s*build:/);
     expect(workflow).toMatch(/uses:\s*actions\/checkout@v7/);
     expect(workflow).toMatch(/uses:\s*withastro\/action@v6/);
+    expect(workflow).toMatch(
+      /PUBLIC_CONTACT_FORM_ENDPOINT:\s*\$\{\{\s*vars\.PUBLIC_CONTACT_FORM_ENDPOINT\s*\}\}/,
+    );
     expect(workflow).toMatch(/deploy:\s*\n\s*needs:\s*build/);
     expect(workflow).toMatch(/name:\s*github-pages/);
     expect(workflow).toMatch(/url:\s*\$\{\{ steps\.deployment\.outputs\.page_url \}\}/);
