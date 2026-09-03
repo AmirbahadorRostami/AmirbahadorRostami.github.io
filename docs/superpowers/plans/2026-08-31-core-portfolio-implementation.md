@@ -83,7 +83,7 @@ README.md                           Setup, content editing, testing, deployment
 - Produces: npm scripts `dev`, `build`, `preview`, `check`, `test`, `test:unit`, and `test:e2e`.
 - Consumes: no earlier task output.
 
-- [ ] **Step 1: Create a feature branch and ignore local/generated state**
+- [x] **Step 1: Create a feature branch and ignore local/generated state**
 
 Run:
 
@@ -104,7 +104,7 @@ test-results/
 .DS_Store
 ```
 
-- [ ] **Step 2: Add the Astro package contract**
+- [x] **Step 2: Add the Astro package contract**
 
 Create `package.json`:
 
@@ -146,7 +146,7 @@ npx playwright install chromium
 
 Expected: `package-lock.json` exists and npm exits successfully.
 
-- [ ] **Step 3: Write the failing public-site configuration test**
+- [x] **Step 3: Write the failing public-site configuration test**
 
 Create `tests/unit/site-config.test.ts`:
 
@@ -171,7 +171,7 @@ describe('SITE', () => {
 });
 ```
 
-- [ ] **Step 4: Run the test and verify the missing-module failure**
+- [x] **Step 4: Run the test and verify the missing-module failure**
 
 Run:
 
@@ -181,7 +181,7 @@ npm run test:unit -- tests/unit/site-config.test.ts
 
 Expected: FAIL because `src/config/site.ts` does not exist.
 
-- [ ] **Step 5: Implement the site configuration and Astro shell**
+- [x] **Step 5: Implement the site configuration and Astro shell**
 
 Create `src/config/site.ts`:
 
@@ -265,7 +265,7 @@ import { getViteConfig } from 'astro/config';
 export default getViteConfig({ test: { include: ['tests/unit/**/*.test.ts'] } });
 ```
 
-- [ ] **Step 6: Verify the foundation**
+- [x] **Step 6: Verify the foundation**
 
 Run:
 
@@ -276,7 +276,7 @@ npm run build
 
 Expected: unit tests PASS; Astro check and build PASS; `dist/index.html` exists.
 
-- [ ] **Step 7: Commit the foundation**
+- [x] **Step 7: Commit the foundation**
 
 ```bash
 git add .gitignore package.json package-lock.json astro.config.mjs tsconfig.json vitest.config.ts src/env.d.ts src/config/site.ts src/pages/index.astro tests/unit/site-config.test.ts
@@ -300,7 +300,7 @@ git commit -m "build: establish Astro portfolio foundation"
 - Produces: `absoluteUrl(path: string): string` and `BaseLayout` props `{ title, description, image?, canonicalPath? }`.
 - Produces: consistent header/footer landmarks and shared CSS tokens used by all later tasks.
 
-- [ ] **Step 1: Write the failing canonical URL tests**
+- [x] **Step 1: Write the failing canonical URL tests**
 
 Create `tests/unit/urls.test.ts`:
 
@@ -319,12 +319,12 @@ describe('URL helpers', () => {
 });
 ```
 
-- [ ] **Step 2: Verify the helpers are missing**
+- [x] **Step 2: Verify the helpers are missing**
 
 Run: `npm run test:unit -- tests/unit/urls.test.ts`  
 Expected: FAIL because `src/lib/urls.ts` does not exist.
 
-- [ ] **Step 3: Implement the helpers**
+- [x] **Step 3: Implement the helpers**
 
 Create `src/lib/urls.ts`:
 
@@ -341,7 +341,7 @@ export function absoluteUrl(path: string): string {
 }
 ```
 
-- [ ] **Step 4: Build the design tokens and accessibility baseline**
+- [x] **Step 4: Build the design tokens and accessibility baseline**
 
 Create `src/styles/global.css` with these required tokens and rules:
 
@@ -379,7 +379,7 @@ a { color: inherit; }
 }
 ```
 
-- [ ] **Step 5: Create the shared layout components**
+- [x] **Step 5: Create the shared layout components**
 
 Implement:
 
@@ -395,7 +395,7 @@ export interface Props {
 
 `BaseLayout.astro` must import `global.css`, emit canonical/Open Graph/X metadata, include `SkipLink`, `SiteHeader`, a `<main id="main-content">` slot, and `SiteFooter`. `SiteHeader.astro` must use a real `<nav aria-label="Primary">`, indicate the current route with `aria-current="page"`, and use a button with `aria-expanded` for its mobile menu. `SiteFooter.astro` must omit LinkedIn or Spotify links while their configured URLs are empty.
 
-- [ ] **Step 6: Render the homepage through `BaseLayout`**
+- [x] **Step 6: Render the homepage through `BaseLayout`**
 
 Replace `src/pages/index.astro` with:
 
@@ -412,7 +412,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 ```
 
-- [ ] **Step 7: Verify and commit the shell**
+- [x] **Step 7: Verify and commit the shell**
 
 Run:
 
@@ -448,7 +448,7 @@ git commit -m "feat: add Curious Signal site shell"
 - Music schema exposes `title`, `platform`, `url`, `order`, `featured`, `duration`, `description`, and `draft`.
 - Experience schema exposes `role`, `organization`, `period`, `order`, `summary`, `category`, and `featured`.
 
-- [ ] **Step 1: Write the failing launch-inventory contract**
+- [x] **Step 1: Write the failing launch-inventory contract**
 
 Create `tests/unit/content-contract.test.ts`:
 
@@ -473,7 +473,7 @@ describe('launch inventory', () => {
 Run: `npm run test:unit -- tests/unit/content-contract.test.ts`  
 Expected: FAIL because `src/lib/content.ts` does not exist.
 
-- [ ] **Step 2: Define the content schemas**
+- [x] **Step 2: Define the content schemas**
 
 Create `src/content.config.ts` using Astro's `glob()` loader and Zod schemas. Use the exact enums:
 
@@ -485,7 +485,7 @@ category: z.enum(['engineering', 'creative-technology', 'research', 'teaching', 
 
 Make collaborator, credit, link, video, and outcome arrays default to `[]`; make `liveExperiment`, `featured`, and `draft` default to `false`. Require nonempty title, summary, cardSummary, hero alt text, roles, tools, and categories for every project.
 
-- [ ] **Step 3: Add the six project records with honest launch copy**
+- [x] **Step 3: Add the six project records with honest launch copy**
 
 Each Markdown file must contain complete required frontmatter and an existing-source narrative. Use these public titles and depths:
 
@@ -557,13 +557,13 @@ cellular-automata: ../../../../Media/img-tester/CATumbnail.png
 
 Task 4 replaces these temporary source references with optimized `src/assets` references before any page component uses them.
 
-- [ ] **Step 4: Seed music and timeline collections**
+- [x] **Step 4: Seed music and timeline collections**
 
 Add JSON records for the known SoundCloud works `La Paloma`, `Float`, `Flow`, `Idk`, and `Googoosh - Lalai (Bahador Remake)` using the existing URLs. Mark `Float`, `Flow`, and `La Paloma` as featured unless Amir supplies a different order before this task executes. Resolve the two existing Spotify embed IDs through Spotify's public oEmbed response; add their returned titles as records only when the title response succeeds.
 
 Add timeline records from the approved resume with chronological `order`, concise summaries, and categories. Do not include the resume's public email or phone in any record.
 
-- [ ] **Step 5: Implement the inventory constant and verify schema validity**
+- [x] **Step 5: Implement the inventory constant and verify schema validity**
 
 Create the initial `src/lib/content.ts` export:
 
@@ -587,7 +587,7 @@ npm run build
 
 Expected: PASS; Astro reports no content-schema errors.
 
-- [ ] **Step 6: Commit the typed content foundation**
+- [x] **Step 6: Commit the typed content foundation**
 
 ```bash
 git add src/content.config.ts src/content src/lib/content.ts tests/unit/content-contract.test.ts
@@ -608,7 +608,7 @@ git commit -m "feat: add typed portfolio content collections"
 - Produces deterministic optimized master files no wider than 1920 pixels, quality 82, with stable kebab-case names.
 - Project content consumes relative build-time image paths validated by Astro's `image()` schema helper.
 
-- [ ] **Step 1: Write the failing media-manifest test**
+- [x] **Step 1: Write the failing media-manifest test**
 
 Create `tests/unit/media-manifest.test.ts`:
 
@@ -625,12 +625,12 @@ describe('media manifest', () => {
 });
 ```
 
-- [ ] **Step 2: Verify the pipeline is missing**
+- [x] **Step 2: Verify the pipeline is missing**
 
 Run: `npm run test:unit -- tests/unit/media-manifest.test.ts`  
 Expected: FAIL because the script does not exist.
 
-- [ ] **Step 3: Implement deterministic image preparation**
+- [x] **Step 3: Implement deterministic image preparation**
 
 Create `scripts/prepare-media.mjs` exporting `MEDIA_JOBS`, with exact source mappings from the current repository. For static images, use Sharp:
 
@@ -650,7 +650,7 @@ Add the script:
 "media:prepare": "node scripts/prepare-media.mjs"
 ```
 
-- [ ] **Step 4: Generate assets and wire project hero paths**
+- [x] **Step 4: Generate assets and wire project hero paths**
 
 Run:
 
@@ -665,7 +665,7 @@ hero: ../../../assets/projects/encounters/encounters-card.webp
 heroAlt: A luminous letter E floating above layered blue lines in the Encounters artwork
 ```
 
-- [ ] **Step 5: Verify output size and build-time image validation**
+- [x] **Step 5: Verify output size and build-time image validation**
 
 Run:
 
@@ -677,7 +677,7 @@ du -sh src/assets
 
 Expected: tests and build PASS; optimized assets are materially smaller than the current 87 MB `Media/` directory.
 
-- [ ] **Step 6: Commit the pipeline and optimized masters**
+- [x] **Step 6: Commit the pipeline and optimized masters**
 
 ```bash
 git add scripts/prepare-media.mjs package.json package-lock.json src/assets src/content/projects tests/unit/media-manifest.test.ts
@@ -699,7 +699,7 @@ git commit -m "perf: add optimized portfolio media pipeline"
 - Produces: `getPublishedProjects()`, `getFeaturedProjects()`, and `getProjectCategories()`.
 - `ProjectCard` consumes a single `CollectionEntry<'projects'>`.
 
-- [ ] **Step 1: Write failing sort/filter tests**
+- [x] **Step 1: Write failing sort/filter tests**
 
 Create `tests/unit/content.test.ts` with fixtures asserting ascending `order`, exclusion of `draft: true`, exactly three featured projects, and de-duplicated alphabetical categories.
 
@@ -710,22 +710,22 @@ expect(sortByOrder([{ data: { order: 2 } }, { data: { order: 1 } }])).toEqual([
 ]);
 ```
 
-- [ ] **Step 2: Run the tests and verify missing exports**
+- [x] **Step 2: Run the tests and verify missing exports**
 
 Run: `npm run test:unit -- tests/unit/content.test.ts`  
 Expected: FAIL because the query exports do not exist.
 
-- [ ] **Step 3: Implement the query layer**
+- [x] **Step 3: Implement the query layer**
 
 Use `getCollection('projects', ({ data }) => !data.draft)` and return new sorted arrays rather than mutating Astro collection results. `getFeaturedProjects()` must filter `featured` and slice to three; throw a build-time error unless the result length is exactly three.
 
-- [ ] **Step 4: Build the archive components**
+- [x] **Step 4: Build the archive components**
 
 `ProjectCard.astro` must render an Astro `<Image layout="constrained">`, project title, year, card summary, categories, and a descriptive link to `/work/{id}/`. `ProjectGrid.astro` must use a three-column grid at large sizes and one column below 42rem.
 
 `WorkFilters.astro` must render buttons with `aria-pressed`; its inline module toggles the `hidden` attribute on cards using `data-categories`. With JavaScript unavailable, all projects remain visible.
 
-- [ ] **Step 5: Build and verify `/work/`**
+- [x] **Step 5: Build and verify `/work/`**
 
 Create `src/pages/work/index.astro` using `BaseLayout`, `getPublishedProjects()`, `getProjectCategories()`, `WorkFilters`, and `ProjectGrid`.
 
@@ -738,7 +738,7 @@ npm run build
 
 Expected: PASS; `dist/work/index.html` contains all six project titles.
 
-- [ ] **Step 6: Commit the work archive**
+- [x] **Step 6: Commit the work archive**
 
 ```bash
 git add src/lib/content.ts src/components/projects src/pages/work/index.astro tests/unit/content.test.ts
@@ -762,15 +762,15 @@ git commit -m "feat: add filterable work archive"
 - `ProjectLayout` consumes `{ project, previous, next }` and renders the Markdown body slot.
 - `LiveExperimentSlot` consumes `{ enabled: boolean, title: string }` and renders nothing when disabled.
 
-- [ ] **Step 1: Write failing wraparound-navigation tests**
+- [x] **Step 1: Write failing wraparound-navigation tests**
 
 Test that the first ordered project points back to the last and forward to the second, and the last points forward to the first. Use fixture IDs rather than querying Astro in the pure function.
 
-- [ ] **Step 2: Implement adjacent-project selection**
+- [x] **Step 2: Implement adjacent-project selection**
 
 Add a pure `adjacentEntries(entries, currentId)` helper and use it inside `getAdjacentProject`. Throw a descriptive build-time error when the current project is absent.
 
-- [ ] **Step 3: Implement the two-depth project composition**
+- [x] **Step 3: Implement the two-depth project composition**
 
 `ProjectLayout.astro` must:
 
@@ -786,11 +786,11 @@ Add a pure `adjacentEntries(entries, currentId)` helper and use it inside `getAd
 {enabled && <section aria-labelledby="live-experiment-title"><h2 id="live-experiment-title">Live experiment</h2><slot /></section>}
 ```
 
-- [ ] **Step 4: Generate every project route**
+- [x] **Step 4: Generate every project route**
 
 `src/pages/work/[...slug].astro` must export `getStaticPaths()` from `getPublishedProjects()`, render the collection entry body, and pass adjacent projects to `ProjectLayout`.
 
-- [ ] **Step 5: Verify routes and commit**
+- [x] **Step 5: Verify routes and commit**
 
 Run:
 
@@ -823,7 +823,7 @@ git commit -m "feat: add flagship and short project pages"
 - Consumes: exactly three featured projects, exactly three featured music records, and featured experience records.
 - Produces: the approved five-section homepage order.
 
-- [ ] **Step 1: Add a failing homepage structure test**
+- [x] **Step 1: Add a failing homepage structure test**
 
 Create `tests/e2e/homepage.spec.ts`:
 
@@ -838,17 +838,17 @@ test('homepage presents the approved narrative order', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Implement the homepage components**
+- [x] **Step 2: Implement the homepage components**
 
 Use semantic sections and the approved copy. `SelectedWork` renders a three-card `ProjectGrid`. `SelectedMusic` renders three track cards plus a fourth `/music/` gateway card. `ExperiencePreview` renders no more than three entries. `ContactCallout` links to `/contact/` with employment, freelance, commission, exhibition, and residency language.
 
 `SignalField.astro` must be decorative (`aria-hidden="true"`), use CSS or a small canvas module, stop animation when offscreen, and render a static state under reduced motion.
 
-- [ ] **Step 3: Compose the page in the approved order**
+- [x] **Step 3: Compose the page in the approved order**
 
 `src/pages/index.astro` imports all five sections and queries content once in frontmatter. Do not duplicate project, music, or timeline copy in the page file.
 
-- [ ] **Step 4: Configure Playwright and verify the homepage**
+- [x] **Step 4: Configure Playwright and verify the homepage**
 
 Create `playwright.config.ts` with Chromium, `baseURL: 'http://127.0.0.1:4321'`, and a `webServer` running `npm run preview -- --host 127.0.0.1` after the production build.
 
@@ -861,7 +861,7 @@ npm run test:e2e -- tests/e2e/homepage.spec.ts
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit the homepage**
+- [x] **Step 5: Commit the homepage**
 
 ```bash
 git add playwright.config.ts src/components/home src/components/interactive/SignalField.astro src/pages/index.astro tests/e2e/homepage.spec.ts
@@ -880,7 +880,7 @@ git commit -m "feat: build narrative portfolio homepage"
 - Consumes: sorted, non-draft `music` collection records.
 - `MusicCard` consumes one music entry and never starts playback automatically.
 
-- [ ] **Step 1: Write the failing no-autoplay test**
+- [x] **Step 1: Write the failing no-autoplay test**
 
 ```ts
 test('music page has no autoplaying media', async ({ page }) => {
@@ -890,15 +890,15 @@ test('music page has no autoplaying media', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Implement custom listening cards**
+- [x] **Step 2: Implement custom listening cards**
 
 Each card renders title, description, platform, optional duration, an explicit outbound link, and an optional user-triggered embed. If an embed fails, the title and outbound link remain. Do not load Spotify/SoundCloud iframe scripts in the initial HTML unless the user activates a card.
 
-- [ ] **Step 3: Build the Music page**
+- [x] **Step 3: Build the Music page**
 
 Use the heading `Things I make with sound.` and a short statement connecting music to Amir's broader creative practice. Render featured tracks first and the remaining catalog after them. Show Spotify/SoundCloud platform buttons only when their `SITE` URLs are nonempty.
 
-- [ ] **Step 4: Verify and commit**
+- [x] **Step 4: Verify and commit**
 
 Run:
 
@@ -927,7 +927,7 @@ git commit -m "feat: add authored music listening room"
 - Consumes: ordered `experience` records and `src/assets/profile/amir-rostami.webp`.
 - Produces: public resume URL `/documents/Amir-Rostami-Resume.pdf` without exposing resume contact details in page text.
 
-- [ ] **Step 1: Write the failing timeline and download test**
+- [x] **Step 1: Write the failing timeline and download test**
 
 ```ts
 test('about page exposes a curated timeline and resume download', async ({ page }) => {
@@ -938,7 +938,7 @@ test('about page exposes a curated timeline and resume download', async ({ page 
 });
 ```
 
-- [ ] **Step 2: Copy the supplied resume and build timeline components**
+- [x] **Step 2: Copy the supplied resume and build timeline components**
 
 Run:
 
@@ -949,11 +949,11 @@ cp /Users/amirbahadorrostami/Desktop/Resume/Amir_Rostami_Resume.pdf public/docum
 
 Render timeline entries as an ordered list. Each entry displays period, role, organization, and concise summary; it must not reproduce every resume bullet.
 
-- [ ] **Step 3: Build the About page**
+- [x] **Step 3: Build the About page**
 
 Use the approved identity `Part engineer. Part artist. Entirely curious.` as a working section heading, the optimized portrait, a biography connecting technology and human connection, the timeline, education, contextual skills, and the resume download.
 
-- [ ] **Step 4: Verify the public page and PDF**
+- [x] **Step 4: Verify the public page and PDF**
 
 Run:
 
@@ -965,7 +965,7 @@ test -s dist/documents/Amir-Rostami-Resume.pdf
 
 Expected: PASS and a nonempty deployed PDF.
 
-- [ ] **Step 5: Commit the About experience**
+- [x] **Step 5: Commit the About experience**
 
 ```bash
 git add src/components/timeline src/pages/about.astro public/documents/Amir-Rostami-Resume.pdf tests/e2e/about.spec.ts
@@ -986,7 +986,7 @@ git commit -m "feat: add curated experience timeline and resume"
 - Produces: `ContactFields`, `ContactErrors`, `ContactState`, `validateContact(fields)`, and `toContactPayload(fields)`.
 - Consumes: `PUBLIC_CONTACT_FORM_ENDPOINT` at build time; an empty value renders a LinkedIn/configuration fallback rather than a broken submit action.
 
-- [ ] **Step 1: Write failing validation tests**
+- [x] **Step 1: Write failing validation tests**
 
 ```ts
 import { expect, test } from 'vitest';
@@ -1001,7 +1001,7 @@ test('requires a valid reply address and meaningful message', () => {
 });
 ```
 
-- [ ] **Step 2: Implement contact types and pure validation**
+- [x] **Step 2: Implement contact types and pure validation**
 
 Use:
 
@@ -1017,7 +1017,7 @@ export function toContactPayload(fields: ContactFields): Record<string, string>;
 
 Trim all values, require name, validate email with a conservative pattern, require a 20-character message, cap name at 100 and message at 4000 characters, and include a hidden honeypot value in the payload.
 
-- [ ] **Step 3: Build accessible form states**
+- [x] **Step 3: Build accessible form states**
 
 `ContactForm.astro` must include visible labels, an intent `<select>`, inline error IDs referenced with `aria-describedby`, a polite status region, disabled sending state, success reset, retry-preserving error state, and a LinkedIn fallback only when configured.
 
@@ -1029,11 +1029,11 @@ PUBLIC_CONTACT_FORM_ENDPOINT=
 
 When the endpoint is empty, set state to `unconfigured`, disable submission, and explain that the direct form is being connected; do not expose a recipient address.
 
-- [ ] **Step 4: Add browser tests for success and failure**
+- [x] **Step 4: Add browser tests for success and failure**
 
 Use Playwright route interception for the configured form URL. Assert that a 200 response produces the success message, a 500 response preserves field values and exposes retry, invalid local fields make no request, and generated HTML contains neither the private email nor phone number.
 
-- [ ] **Step 5: Verify and commit**
+- [x] **Step 5: Verify and commit**
 
 Run:
 
@@ -1064,19 +1064,19 @@ git commit -m "feat: add private resilient contact flow"
 - Consumes: `absoluteUrl()`, site metadata, and project-specific hero images.
 - Produces: canonical, Open Graph, and X metadata on every route; sitemap from `@astrojs/sitemap`.
 
-- [ ] **Step 1: Write failing metadata tests**
+- [x] **Step 1: Write failing metadata tests**
 
 Test `/`, `/work/encounters/`, `/music/`, and `/404.html`. Require one canonical URL, nonempty description, `og:title`, `og:description`, `og:image`, and matching X card fields. Require the Encounters page title/description/image to come from its record rather than the site default.
 
-- [ ] **Step 2: Generate one site-wide social preview**
+- [x] **Step 2: Generate one site-wide social preview**
 
 Create a 1200x630 Curious Signal card using the approved title, palette, and project imagery. Inspect the generated image for correct spelling and legible text before saving it to `public/og.png`. Project pages must use their own hero image for social metadata rather than `og.png`.
 
-- [ ] **Step 3: Complete metadata rendering and 404 recovery**
+- [x] **Step 3: Complete metadata rendering and 404 recovery**
 
 `BaseLayout` must render absolute canonical/image URLs. `ProjectLayout` passes project-specific title, summary, and hero. `404.astro` offers visible links to Work, Music, About, and Contact and returns no misleading project content.
 
-- [ ] **Step 4: Verify output and commit**
+- [x] **Step 4: Verify output and commit**
 
 Run:
 
@@ -1105,11 +1105,11 @@ git commit -m "feat: add portfolio metadata and discovery files"
 - Consumes: every launch route and shared component.
 - Produces: enforced WCAG smoke coverage, keyboard navigation checks, reduced-motion checks, and 320-pixel overflow protection.
 
-- [ ] **Step 1: Add automated accessibility checks**
+- [x] **Step 1: Add automated accessibility checks**
 
 Use `AxeBuilder` from `@axe-core/playwright` on `/`, `/work/`, all three flagship routes, `/work/biowords/`, `/music/`, `/about/`, and `/contact/`. Fail on any `critical` or `serious` violation.
 
-- [ ] **Step 2: Add responsive overflow checks**
+- [x] **Step 2: Add responsive overflow checks**
 
 At widths 320, 390, 768, and 1440, assert:
 
@@ -1120,11 +1120,11 @@ expect(overflow).toBeLessThanOrEqual(0);
 
 Also assert the flagship grid has three columns at 1440 and one column at 390 using computed styles.
 
-- [ ] **Step 3: Add keyboard and reduced-motion checks**
+- [x] **Step 3: Add keyboard and reduced-motion checks**
 
 Tab from the addressable document start, verify the skip link becomes visible, activate it, confirm focus reaches `#main-content`, open/close the mobile menu with keyboard, and confirm every filter button is reachable. Emulate `reducedMotion: 'reduce'` and assert the SignalField reports a static state through `data-motion="reduced"`.
 
-- [ ] **Step 4: Run the full quality suite and fix only observed failures**
+- [x] **Step 4: Run the full quality suite and fix only observed failures**
 
 Run:
 
@@ -1134,7 +1134,7 @@ npm run test
 
 Expected: unit, build, route, accessibility, responsive, navigation, metadata, and contact tests PASS.
 
-- [ ] **Step 5: Commit verified refinements**
+- [x] **Step 5: Commit verified refinements**
 
 ```bash
 git add src tests/e2e
@@ -1153,7 +1153,7 @@ git commit -m "test: verify portfolio accessibility and responsiveness"
 - Consumes: the successful `npm run build` output.
 - Produces: GitHub Pages deployment from `main` using the official Astro and GitHub Pages actions.
 
-- [ ] **Step 1: Add the official GitHub Pages workflow**
+- [x] **Step 1: Add the official GitHub Pages workflow**
 
 Create `.github/workflows/deploy.yml`:
 
@@ -1192,7 +1192,7 @@ jobs:
         uses: actions/deploy-pages@v5
 ```
 
-- [ ] **Step 2: Document setup and content editing**
+- [x] **Step 2: Document setup and content editing**
 
 `README.md` must contain:
 
@@ -1206,11 +1206,11 @@ jobs:
 - How to replace the contact provider or hosting later
 - Link to the design spec and this implementation plan
 
-- [ ] **Step 3: Update the living design document**
+- [x] **Step 3: Update the living design document**
 
 Set its status to `Core portfolio implemented; content completion and launch review in progress` when Tasks 1-12 pass. Check completed content/acceptance items only when verified. Add decision-log rows for the final contact provider, public project title, selected tracks, and domain when those decisions exist.
 
-- [ ] **Step 4: Verify the clean production build**
+- [x] **Step 4: Verify the clean production build**
 
 Run:
 
@@ -1222,7 +1222,7 @@ git status --short
 
 Expected: tests PASS; status lists only intentional documentation checkbox updates.
 
-- [ ] **Step 5: Commit deployment and documentation**
+- [x] **Step 5: Commit deployment and documentation**
 
 ```bash
 git add .github/workflows/deploy.yml README.md docs/superpowers
