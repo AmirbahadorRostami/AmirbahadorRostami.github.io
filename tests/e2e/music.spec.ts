@@ -49,9 +49,10 @@ test('loading a SoundCloud player activates only the selected card and keeps its
   await card.getByRole('button', { name: 'Load player for La Paloma' }).click();
 
   await expect(card.locator('iframe')).toHaveCount(1);
-  await expect(card.locator('iframe')).not.toHaveAttribute('autoplay', /.+/);
+  await expect(card.locator('iframe[autoplay]')).toHaveCount(0);
   await expect(card.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
   await expect(card.locator('iframe')).not.toHaveAttribute('src', /auto_play|autoplay/i);
+  await expect(card.locator('iframe')).toHaveAttribute('referrerpolicy', 'no-referrer');
   await expect(card.getByRole('link', { name: 'Listen to La Paloma on SoundCloud' })).toHaveAttribute(
     'href',
     'https://soundcloud.com/amir-bahador-rostami/lapaloma',
@@ -82,8 +83,9 @@ test('loading a Spotify player activates only the selected card and keeps its ou
   await card.getByRole('button', { name: 'Load player for Try' }).click();
 
   await expect(card.locator('iframe')).toHaveCount(1);
-  await expect(card.locator('iframe')).not.toHaveAttribute('autoplay', /.+/);
+  await expect(card.locator('iframe[autoplay]')).toHaveCount(0);
   await expect(card.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
+  await expect(card.locator('iframe')).toHaveAttribute('referrerpolicy', 'no-referrer');
   await expect(card.getByRole('link', { name: 'Listen to Try on Spotify' })).toHaveAttribute(
     'href',
     'https://open.spotify.com/track/05lEafQvKSkcxqADBNBWKj',

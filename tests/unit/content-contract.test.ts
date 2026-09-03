@@ -59,6 +59,28 @@ describe('launch inventory', () => {
     }
   });
 
+  it('keeps the approved project identity and launch-state contract per slug', () => {
+    const expected = {
+      encounters: { title: 'Encounters', depth: 'flagship', order: 1, featured: true },
+      'luminous-trails': { title: 'Luminous Trails', depth: 'flagship', order: 2, featured: true },
+      'remote-realities': { title: 'Remote Realities', depth: 'flagship', order: 3, featured: true },
+      biowords: { title: 'BioWords', depth: 'short', order: 4, featured: false },
+      'person-is-a-data-structure': { title: 'Person Is a Data Structure', depth: 'short', order: 5, featured: false },
+      'cellular-automata': { title: 'Cellular Automata', depth: 'short', order: 6, featured: false },
+    } as const;
+
+    for (const [slug, record] of Object.entries(expected)) {
+      const source = readFileSync(resolve(contentRoot, 'projects', slug, 'index.md'), 'utf8');
+      const [, frontmatter = ''] = source.split(/^---\s*$/m);
+
+      expect(frontmatter).toContain(`title: ${record.title}`);
+      expect(frontmatter).toContain(`depth: ${record.depth}`);
+      expect(frontmatter).toContain(`order: ${record.order}`);
+      expect(frontmatter).toContain(`featured: ${record.featured}`);
+      expect(frontmatter).toContain('liveExperiment: false');
+    }
+  });
+
   it('keeps the approved timeline at 13 reverse-chronological records without contact details', () => {
     const records = readJsonCollection('experience').sort(
       (left, right) => Number(left.order) - Number(right.order),

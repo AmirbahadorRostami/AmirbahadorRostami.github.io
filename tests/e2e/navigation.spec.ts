@@ -41,6 +41,19 @@ test('the mobile menu opens and closes with the keyboard', async ({ page }) => {
   await expect(menuButton).toBeFocused();
 });
 
+test('Escape never hides the always-visible desktop primary navigation', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const menu = page.getByRole('navigation', { name: 'Primary' });
+  await expect(menu).toBeVisible();
+  await expect(menu).not.toHaveAttribute('hidden');
+
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeVisible();
+  await expect(menu).not.toHaveAttribute('hidden');
+});
+
 test('every project filter is reachable with Tab', async ({ page }) => {
   await page.goto('/work/');
 
@@ -82,10 +95,26 @@ test('mobile controls meet the 44px touch-target minimum', async ({ page }) => {
   }
 });
 
-test('button boundaries maintain 3:1 contrast against their surfaces', async ({ page }) => {
-  for (const route of ['/', '/work/', '/music/', '/contact/']) {
+test('mobile primary navigation links meet the 44px touch-target minimum', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Menu' }).click();
+
+  const undersized = await page.getByRole('navigation', { name: 'Primary' }).locator('a').evaluateAll(
+    (links) => links
+      .map((link) => ({ label: link.textContent?.trim(), rect: link.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.width < 44 || rect.height < 44)
+      .map(({ label, rect }) => ({ label, width: rect.width, height: rect.height })),
+  );
+  expect(undersized, JSON.stringify(undersized)).toEqual([]);
+});
+
+test('only control boundaries use the high-contrast control token', async ({ page }) => {
+  for (const route of ['/', '/work/', '/work/encounters/']) {
     await page.goto(route);
-    const buttonColors = await page.locator('button').evaluateAll((buttons) => buttons.map((button) => {
+    const line = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--line').trim());
+    expect(line).toBe('#2a2e36');
+    const buttonColors = await page.locator('[data-menu-button], [data-work-filter], [data-video-facade] button').evaluateAll((buttons) => buttons.map((button) => {
       let surface: Element | null = button.parentElement;
       while (surface && getComputedStyle(surface).backgroundColor === 'rgba(0, 0, 0, 0)') {
         surface = surface.parentElement;

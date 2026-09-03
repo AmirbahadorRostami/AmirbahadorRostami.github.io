@@ -55,6 +55,18 @@ describe('media manifest', () => {
     }));
   });
 
+  it('keeps every static generated output readable as WebP within 1920px bounds', async () => {
+    const staticJobs = MEDIA_JOBS.filter((job) => job.destination.endsWith('.webp'));
+
+    await Promise.all(staticJobs.map(async (job) => {
+      const metadata = await sharp(resolve(repositoryRoot, job.destination)).metadata();
+
+      expect(metadata.format, job.destination).toBe('webp');
+      expect(metadata.width, job.destination).toBeLessThanOrEqual(1920);
+      expect(metadata.height, job.destination).toBeLessThanOrEqual(1920);
+    }));
+  });
+
   it('uses WebP for static masters and preserves the BioWords GIF', () => {
     const gifJobs = MEDIA_JOBS.filter((job) => job.destination.endsWith('.gif'));
     const staticJobs = MEDIA_JOBS.filter((job) => !job.destination.endsWith('.gif'));
