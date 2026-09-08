@@ -9,7 +9,13 @@ export interface Props {
 const { record } = Astro.props;
 const { description, duration, platform, title, url } = record.data;
 const embedUrl = deriveMusicEmbedUrl(platform, url);
-const platformLabel = platform === 'soundcloud' ? 'SoundCloud' : 'Spotify';
+const platformLabels = {
+  spotify: 'Spotify',
+  soundcloud: 'SoundCloud',
+  bandcamp: 'Bandcamp',
+  direct: 'Direct link',
+} satisfies Record<typeof platform, string>;
+const platformLabel = platformLabels[platform];
 const embedPermissions = embedPermissionsFor(platform);
 const playerId = `music-player-${record.id}`;
 ---
@@ -20,21 +26,25 @@ const playerId = `music-player-${record.id}`;
   {description && <p class="music-card__description">{description}</p>}
   {duration && <p class="music-card__duration">{duration}</p>}
   <a href={url} rel="noopener noreferrer" target="_blank">Listen to {title} on {platformLabel}</a>
-  <button
-    aria-expanded="false"
-    aria-controls={playerId}
-    aria-label={`Load player for ${title}`}
-    class="music-card__load-player"
-    data-embed-allow={embedPermissions}
-    data-embed-url={embedUrl}
-    data-music-player-button
-    data-platform-label={platformLabel}
-    data-track-title={title}
-    type="button"
-  >
-    Load private player
-  </button>
-  <div id={playerId} class="music-card__player" data-music-player></div>
+  {embedUrl && (
+    <>
+      <button
+        aria-expanded="false"
+        aria-controls={playerId}
+        aria-label={`Load player for ${title}`}
+        class="music-card__load-player"
+        data-embed-allow={embedPermissions}
+        data-embed-url={embedUrl}
+        data-music-player-button
+        data-platform-label={platformLabel}
+        data-track-title={title}
+        type="button"
+      >
+        Load private player
+      </button>
+      <div id={playerId} class="music-card__player" data-music-player></div>
+    </>
+  )}
 </article>
 
 <script>

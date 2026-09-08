@@ -1,13 +1,9 @@
 const SPOTIFY_TRACK_HOSTS = new Set(['open.spotify.com', 'www.open.spotify.com']);
 const SOUNDCLOUD_HOSTS = new Set(['soundcloud.com', 'www.soundcloud.com']);
 
-function invalidUrl(platform: string): never {
-  throw new Error(`Unsupported ${platform} track URL. Use a public HTTPS ${platform} track URL.`);
-}
-
-export function deriveMusicEmbedUrl(platform: string, rawUrl: string): string {
+export function deriveMusicEmbedUrl(platform: string, rawUrl: string): string | undefined {
   if (platform !== 'spotify' && platform !== 'soundcloud') {
-    throw new Error(`Unsupported music platform "${platform}". Music embeds support Spotify and SoundCloud only.`);
+    return undefined;
   }
 
   let url: URL;
@@ -15,18 +11,18 @@ export function deriveMusicEmbedUrl(platform: string, rawUrl: string): string {
   try {
     url = new URL(rawUrl);
   } catch {
-    return invalidUrl(platform === 'spotify' ? 'Spotify' : 'SoundCloud');
+    return undefined;
   }
 
   if (url.protocol !== 'https:') {
-    return invalidUrl(platform === 'spotify' ? 'Spotify' : 'SoundCloud');
+    return undefined;
   }
 
   if (platform === 'spotify') {
     const match = url.pathname.match(/^\/track\/([A-Za-z0-9]{22})\/?$/);
 
     if (!SPOTIFY_TRACK_HOSTS.has(url.hostname.toLowerCase()) || !match) {
-      return invalidUrl('Spotify');
+      return undefined;
     }
 
     return `https://open.spotify.com/embed/track/${match[1]}`;
@@ -35,7 +31,7 @@ export function deriveMusicEmbedUrl(platform: string, rawUrl: string): string {
   const pathSegments = url.pathname.split('/').filter(Boolean);
 
   if (!SOUNDCLOUD_HOSTS.has(url.hostname.toLowerCase()) || pathSegments.length < 2) {
-    return invalidUrl('SoundCloud');
+    return undefined;
   }
 
   return `https://w.soundcloud.com/player/?url=${encodeURIComponent(url.toString())}`;

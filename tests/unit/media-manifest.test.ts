@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { access, readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 import sharp from 'sharp';
-import { MEDIA_JOBS } from '../../scripts/prepare-media.mjs';
+import { MEDIA_JOBS, prepareMedia } from '../../scripts/prepare-media.mjs';
 
 const repositoryRoot = resolve(import.meta.dirname, '../..');
 
@@ -53,6 +53,22 @@ describe('media manifest', () => {
       await expect(access(source)).resolves.toBeUndefined();
       await expect(access(destination)).resolves.toBeUndefined();
     }));
+  });
+
+  it('rejects a lexically valid destination that resolves outside src/assets', async () => {
+    const originalJobs = [...MEDIA_JOBS];
+
+    try {
+      MEDIA_JOBS.splice(0, MEDIA_JOBS.length, {
+        project: 'escape-attempt',
+        source: 'Media/definitely-missing.png',
+        destination: 'src/assets/../../escaped.webp',
+      });
+
+      await expect(prepareMedia()).rejects.toThrow('Media destination must stay in src/assets');
+    } finally {
+      MEDIA_JOBS.splice(0, MEDIA_JOBS.length, ...originalJobs);
+    }
   });
 
   it('keeps every static generated output readable as WebP within 1920px bounds', async () => {

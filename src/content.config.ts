@@ -4,13 +4,16 @@ import { z } from 'astro/zod';
 
 const nonemptyString = z.string().trim().min(1);
 const positiveOrder = z.number().int().positive();
+const httpsUrl = z.url().refine((value) => new URL(value).protocol === 'https:', {
+  message: 'External URLs must use HTTPS.',
+});
 const externalLink = z.object({
   label: nonemptyString,
-  url: z.url(),
+  url: httpsUrl,
 });
 const video = z.object({
   title: nonemptyString,
-  url: z.url(),
+  url: httpsUrl,
 });
 
 const projects = defineCollection({
@@ -45,7 +48,7 @@ const music = defineCollection({
   schema: z.object({
     title: nonemptyString,
     platform: z.enum(['spotify', 'soundcloud', 'bandcamp', 'direct']),
-    url: z.url(),
+    url: httpsUrl,
     order: positiveOrder,
     featured: z.boolean().default(false),
     duration: nonemptyString.optional(),

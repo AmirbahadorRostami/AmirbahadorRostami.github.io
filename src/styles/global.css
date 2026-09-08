@@ -40,6 +40,7 @@ button { min-height: 44px; }
 .primary-menu a { color: var(--muted); text-decoration: none; }
 .primary-menu a:hover, .primary-menu a[aria-current='page'] { color: var(--signal); }
 main { padding-block: clamp(3rem, 10vw, 8rem); }
+main.main--flush { padding-block: 0; }
 h1 { font-size: clamp(2.75rem, 8vw, 7rem); letter-spacing: -0.07em; line-height: 0.95; margin: 0.75rem 0 0; max-width: 13ch; }
 .site-footer { border-top: 1px solid var(--line); color: var(--muted); padding-block: 1.5rem; }
 .site-footer__inner { align-items: center; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; }

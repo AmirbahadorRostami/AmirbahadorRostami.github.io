@@ -2,6 +2,7 @@
 import { SITE } from '../../config/site';
 
 const currentPath = Astro.url.pathname;
+const isCurrentRoute = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
 ---
 
 <header class="site-header">
@@ -13,7 +14,7 @@ const currentPath = Astro.url.pathname;
     <nav id="primary-menu" class="primary-menu" aria-label="Primary" data-primary-menu>
       <ul>
         {SITE.navigation.map(({ label, href }) => (
-          <li><a href={href} aria-current={currentPath === href ? 'page' : undefined}>{label}</a></li>
+          <li><a href={href} aria-current={isCurrentRoute(href) ? 'page' : undefined}>{label}</a></li>
         ))}
       </ul>
     </nav>

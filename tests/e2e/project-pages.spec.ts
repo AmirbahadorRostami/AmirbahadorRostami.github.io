@@ -132,3 +132,10 @@ test('wraps project navigation from the last project to the first', async ({ pag
   await expect(page.getByRole('link', { name: 'Next project: Encounters' }))
     .toHaveAttribute('href', '/work/encounters/');
 });
+
+test('marks Work as the current primary section on project detail pages', async ({ page }) => {
+  await page.goto('/work/encounters/');
+
+  await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Work' }))
+    .toHaveAttribute('aria-current', 'page');
+});

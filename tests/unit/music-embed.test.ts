@@ -14,17 +14,20 @@ describe('deriveMusicEmbedUrl', () => {
     );
   });
 
-  it('rejects music records that cannot safely produce an embed', () => {
-    expect(() => deriveMusicEmbedUrl('spotify', 'https://open.spotify.com/album/abc')).toThrow(
-      'Unsupported Spotify track URL',
-    );
-    expect(() => deriveMusicEmbedUrl('direct', 'https://example.com/track.mp3')).toThrow(
-      'Unsupported music platform "direct"',
-    );
+  it('returns no embed for every outbound-only platform allowed by the music schema', () => {
+    expect(deriveMusicEmbedUrl('bandcamp', 'https://artist.bandcamp.com/track/example')).toBeUndefined();
+    expect(deriveMusicEmbedUrl('direct', 'https://example.com/track.mp3')).toBeUndefined();
+  });
+
+  it('degrades invalid Spotify and SoundCloud embed URLs to outbound-only playback', () => {
+    expect(deriveMusicEmbedUrl('spotify', 'https://open.spotify.com/album/abc')).toBeUndefined();
+    expect(deriveMusicEmbedUrl('soundcloud', 'https://example.com/track')).toBeUndefined();
   });
 
   it('grants no autoplay capability to the deferred player facades', () => {
     expect(embedPermissionsFor('spotify')).toBe('encrypted-media');
     expect(embedPermissionsFor('soundcloud')).toBe('');
+    expect(embedPermissionsFor('bandcamp')).toBe('');
+    expect(embedPermissionsFor('direct')).toBe('');
   });
 });

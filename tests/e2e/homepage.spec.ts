@@ -21,11 +21,40 @@ test('homepage presents the approved narrative order and introduction', async ({
   await expect(page.locator('#hero')).toContainText(
     'I create immersive experiences, software, and sound that bring people together in unexpected ways.',
   );
+  await expect(page.locator('#hero')).toContainText('Toronto, Canada');
+  await expect(page.locator('#hero')).toContainText('Open to employment and freelance work.');
 
   const sections = await page
     .locator('main > section')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
   expect(sections).toEqual(sectionOrder);
+});
+
+test('homepage facts and both actions remain inside representative first viewports', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 1366, height: 768 },
+    { width: 1280, height: 720 },
+    { width: 320, height: 568 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+
+    const facts = await page.locator('#hero .hero__facts').boundingBox();
+    const actions = page.locator('#hero .hero__actions a');
+
+    await expect(actions).toHaveCount(2);
+    await expect(actions.first()).toHaveAttribute('href', '#selected-work');
+    await expect(actions.last()).toHaveAttribute('href', '/contact/');
+    expect(facts, JSON.stringify(viewport)).not.toBeNull();
+    expect(facts!.y + facts!.height, JSON.stringify(viewport)).toBeLessThanOrEqual(viewport.height);
+
+    for (const action of await actions.all()) {
+      const box = await action.boundingBox();
+      expect(box, JSON.stringify(viewport)).not.toBeNull();
+      expect(box!.y + box!.height, JSON.stringify(viewport)).toBeLessThanOrEqual(viewport.height);
+    }
+  }
 });
 
 test('homepage renders the exact selected work and music inventories', async ({ page }) => {

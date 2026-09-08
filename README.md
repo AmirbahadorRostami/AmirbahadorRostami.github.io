@@ -4,7 +4,7 @@ An Astro portfolio for Amir Rostami: creative technologist, software engineer, X
 
 ## Requirements and local development
 
-Use Node.js 24 locally. The deployment action defaults to Node 24, so matching it avoids runtime differences. The `package.json` engine floor remains `>=22.12.0` for package compatibility; Node 24 is the supported development and deployment prerequisite for this project.
+Use Node.js 24 locally. The `.nvmrc`, `package.json` engine, and deployment workflow all pin that major version so local development, clean installs, and GitHub Pages builds use the same runtime.
 
 ```bash
 npm install
@@ -47,7 +47,7 @@ For GitHub Pages, add an Actions repository variable named `PUBLIC_CONTACT_FORM_
 
 ## Deployment
 
-`.github/workflows/deploy.yml` runs on pushes to `main` and by manual dispatch. It checks out the repository with `actions/checkout@v7`, builds and uploads Astro’s static artifact through `withastro/action@v6`, then deploys the artifact with `actions/deploy-pages@v5`. The deploy job uses the GitHub Pages environment and publishes its URL in the workflow result.
+`.github/workflows/deploy.yml` runs on pushes to `main` and by manual dispatch. It checks out the repository with `actions/checkout@v7`, builds and uploads Astro’s static artifact on Node 24 through `withastro/action@v6`, then deploys the artifact with `actions/deploy-pages@v5`. The deploy job uses the GitHub Pages environment and publishes its URL in the workflow result.
 
 This is the username site `amirbahadorrostami.github.io`, so Astro has no `base` path configured. In GitHub repository settings, set Pages **Source** to **GitHub Actions** before the first deployment. That setting and any deployment are intentionally outside this repository change. If hosting moves later, retain the static build, update the deployment integration and canonical `site`/origin configuration as needed, and replace the contact endpoint without coupling pages to a provider.
 

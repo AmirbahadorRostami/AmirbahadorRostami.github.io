@@ -1,9 +1,10 @@
 import { access, copyFile, mkdir } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const assetRoot = resolve(repositoryRoot, 'src/assets');
 
 /**
  * Selected, canonical masters from the legacy portfolio. Paths are repository-relative
@@ -127,7 +128,13 @@ function assertManifest() {
     }
     destinations.add(job.destination);
 
-    if (!job.destination.startsWith('src/assets/')) {
+    const resolvedDestination = destinationPath(job);
+    const assetRelativeDestination = relative(assetRoot, resolvedDestination);
+    if (
+      isAbsolute(assetRelativeDestination)
+      || assetRelativeDestination === '..'
+      || assetRelativeDestination.startsWith(`..${sep}`)
+    ) {
       throw new Error(`Media destination must stay in src/assets: ${job.destination}`);
     }
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { EXPECTED_PROJECT_SLUGS } from '../../src/lib/content';
+import { collections } from '../../src/content.config';
 
 const contentRoot = resolve(import.meta.dirname, '../../src/content');
 
@@ -16,6 +17,29 @@ function readJsonCollection(collection: string): Record<string, unknown>[] {
 }
 
 describe('launch inventory', () => {
+  it('accepts only HTTPS URLs for externally rendered content links', () => {
+    const musicSchema = collections.music.schema;
+    if (!musicSchema || typeof musicSchema === 'function') {
+      throw new Error('Expected the music collection to expose a direct schema.');
+    }
+    const baseMusicRecord = {
+      title: 'Safe link contract',
+      platform: 'direct',
+      order: 1,
+      featured: false,
+      draft: false,
+    };
+
+    expect(musicSchema.safeParse({ ...baseMusicRecord, url: 'https://example.com/track.mp3' }).success)
+      .toBe(true);
+    expect(musicSchema.safeParse({ ...baseMusicRecord, url: 'javascript:alert(1)' }).success)
+      .toBe(false);
+    expect(musicSchema.safeParse({ ...baseMusicRecord, url: 'data:text/html,<h1>unsafe</h1>' }).success)
+      .toBe(false);
+    expect(musicSchema.safeParse({ ...baseMusicRecord, url: 'http://example.com/track.mp3' }).success)
+      .toBe(false);
+  });
+
   it('contains the six approved project slugs', () => {
     expect(EXPECTED_PROJECT_SLUGS).toEqual([
       'encounters',

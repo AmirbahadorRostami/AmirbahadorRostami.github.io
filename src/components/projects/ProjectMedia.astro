@@ -89,17 +89,11 @@ const { project } = Astro.props;
 const images = projectImages[project.id] ?? [];
 const hasMedia = images.length > 0 || project.data.videos.length > 0;
 
-function youtubeVideoId(url: string): string {
+function youtubeVideoId(url: string): string | undefined {
   const parsedUrl = new URL(url);
-  const videoId = parsedUrl.hostname === 'www.youtube.com'
+  return parsedUrl.hostname === 'www.youtube.com'
     ? parsedUrl.pathname.match(/^\/embed\/([A-Za-z0-9_-]+)$/)?.[1]
     : undefined;
-
-  if (!videoId) {
-    throw new Error(`Unsupported project video URL: ${url}`);
-  }
-
-  return videoId;
 }
 
 const videos = project.data.videos.map((video) => ({
@@ -125,27 +119,39 @@ const videos = project.data.videos.map((video) => ({
       <div class="project-media__videos">
         {videos.map((video) => (
           <figure>
-            <div
-              class="project-media__video-frame"
-              data-video-facade
-              data-video-id={video.videoId}
-              data-video-title={video.title}
-              data-state="idle"
-            >
-              <button type="button" aria-pressed="false">
-                <span class="project-media__play-icon" aria-hidden="true">▶</span>
-                <span>Play {video.title}</span>
-              </button>
-              <noscript>
-                <p>
-                  Embedded video requires JavaScript.
-                  <a
-                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
-                    aria-label={`Watch ${video.title} on YouTube`}
-                  >Watch on YouTube</a>.
-                </p>
-              </noscript>
-            </div>
+            {video.videoId ? (
+              <div
+                class="project-media__video-frame"
+                data-video-facade
+                data-video-id={video.videoId}
+                data-video-title={video.title}
+                data-state="idle"
+              >
+                <button type="button" aria-pressed="false">
+                  <span class="project-media__play-icon" aria-hidden="true">▶</span>
+                  <span>Play {video.title}</span>
+                </button>
+                <noscript>
+                  <p>
+                    Embedded video requires JavaScript.
+                    <a
+                      href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                      aria-label={`Watch ${video.title} on YouTube`}
+                    >Watch on YouTube</a>.
+                  </p>
+                </noscript>
+              </div>
+            ) : (
+              <div class="project-media__video-link">
+                <p>{video.title}</p>
+                <a
+                  href={video.url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  aria-label={`Watch ${video.title} on its original site`}
+                >Watch on its original site ↗</a>
+              </div>
+            )}
             <figcaption>{video.title}</figcaption>
           </figure>
         ))}
@@ -162,7 +168,7 @@ const videos = project.data.videos.map((video) => ({
   figure :global(img) { background: var(--surface-raised); height: auto; width: 100%; }
   figcaption { color: var(--muted); font-size: .85rem; margin-top: .65rem; }
   .project-media__videos { display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .project-media__video-frame { align-items: stretch; aspect-ratio: 16 / 9; background: var(--surface-raised); display: flex; }
+  .project-media__video-frame, .project-media__video-link { align-items: stretch; aspect-ratio: 16 / 9; background: var(--surface-raised); display: flex; }
   .project-media__video-frame button { align-items: center; background: var(--surface-raised); border: 1px solid var(--control-border); color: var(--paper); cursor: pointer; display: flex; flex: 1; flex-direction: column; font: inherit; gap: 1rem; justify-content: center; padding: 1.5rem; text-align: center; }
   .project-media__video-frame button:hover { border-color: var(--signal); color: var(--signal); }
   .project-media__play-icon { color: var(--signal); font-size: clamp(2rem, 8vw, 4rem); line-height: 1; }
@@ -170,6 +176,9 @@ const videos = project.data.videos.map((video) => ({
   .project-media__video-frame noscript p { margin: 0; }
   .project-media__video-frame noscript a { color: var(--signal); }
   .project-media__video-frame :global(iframe) { border: 0; height: 100%; width: 100%; }
+  .project-media__video-link { align-items: center; border: 1px solid var(--line); flex-direction: column; gap: 1rem; justify-content: center; padding: 1.5rem; text-align: center; }
+  .project-media__video-link p { font-weight: 700; margin: 0; }
+  .project-media__video-link a { color: var(--signal); text-underline-offset: .25em; }
 
   @media (max-width: 42rem) {
     .project-media__images, .project-media__videos { grid-template-columns: minmax(0, 1fr); }
