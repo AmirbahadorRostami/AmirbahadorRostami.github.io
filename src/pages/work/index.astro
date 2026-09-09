@@ -1,0 +1,26 @@
+---
+import WorkFilters from '../../components/projects/WorkFilters.astro';
+import ProjectGrid from '../../components/projects/ProjectGrid.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectCategories, getPublishedProjects } from '../../lib/content';
+
+const [projects, categories] = await Promise.all([
+  getPublishedProjects(),
+  getProjectCategories(),
+]);
+---
+
+<BaseLayout title="Work | Amir Bahador Rostami" canonicalPath="/work/">
+  <section class="container work-archive" aria-labelledby="work-title">
+    <p class="eyebrow">Selected projects</p>
+    <h1 id="work-title">Work that invites curiosity.</h1>
+    <p class="work-archive__intro">A collection of interactive experiences, installations, and creative-coding experiments.</p>
+    <WorkFilters categories={categories} />
+    <ProjectGrid projects={projects} />
+  </section>
+</BaseLayout>
+
+<style>
+  .work-archive > h1 { max-width: 10ch; }
+  .work-archive__intro { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.35rem); margin: 1.5rem 0 0; max-width: 52ch; }
+</style>

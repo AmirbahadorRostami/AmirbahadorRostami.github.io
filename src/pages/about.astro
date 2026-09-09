@@ -1,0 +1,137 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Timeline from '../components/timeline/Timeline.astro';
+import portrait from '../assets/profile/amir-rostami.webp';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortByOrder } from '../lib/content';
+
+const experience = sortByOrder(await getCollection('experience'));
+
+if (experience.length !== 13) {
+  throw new Error('Expected exactly thirteen experience records on the About page.');
+}
+---
+
+<BaseLayout
+  title="About | Amir Rostami"
+  description="About Amir Rostami: software engineer, artist, musician, and creative technologist in Toronto."
+  canonicalPath="/about/"
+>
+  <article class="about">
+    <section class="container about-hero" aria-labelledby="about-title">
+      <div class="about-hero__copy">
+        <p class="eyebrow">About Amir</p>
+        <h1 id="about-title">Part engineer. Part artist. Entirely curious.</h1>
+        <div class="about-hero__biography" data-about-biography>
+          <p>
+            I’m a software engineer, artist, and musician working where engineering meets creative technology. I like systems that do their job without making a fuss—and experiences that leave a little room for wonder.
+          </p>
+          <p>
+            Whether I’m shaping real-time infrastructure, an augmented-reality work, or a piece of sound, I’m interested in the same thing: human connection. Technology becomes most interesting to me when it supports social communication—how people gather, notice one another, and make meaning together.
+          </p>
+        </div>
+        <a
+          class="about-hero__resume"
+          href="/documents/Amir-Rostami-Resume.pdf"
+          download="Amir-Rostami-Resume.pdf"
+        >
+          Download my résumé (PDF) <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+      <figure class="about-hero__portrait">
+        <div class="about-hero__portrait-frame" data-portrait-frame>
+          <Image
+            src={portrait}
+            alt="Pixel-art portrait of Amir Rostami"
+            widths={[480, 720, 960]}
+            sizes="(max-width: 48rem) calc(100vw - 2rem), 38vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <figcaption>Engineer, artist, musician, and committed question-asker.</figcaption>
+      </figure>
+    </section>
+
+    <section class="about-section about-timeline" aria-labelledby="timeline-title">
+      <div class="container">
+        <div class="about-section__heading">
+          <div>
+            <p class="eyebrow">Experience</p>
+            <h2 id="timeline-title">A trail through systems, studios, labs, and classrooms.</h2>
+          </div>
+          <p>Thirteen stops, each one teaching me a different way to turn ambitious ideas into things people can actually use, inhabit, or hear.</p>
+        </div>
+        <Timeline entries={experience} />
+      </div>
+    </section>
+
+    <div class="about-section">
+      <div class="container about-foundations">
+        <section class="about-foundations__education" aria-label="Education">
+          <p class="eyebrow">Education</p>
+          <h2 id="education-title">Computational arts, with game logic in the margins.</h2>
+          <p class="about-foundations__credential">Bachelor of Science in Computational Arts, Minor in Game Development</p>
+          <p>York University · Toronto, Ontario</p>
+        </section>
+
+        <section class="about-foundations__skills" aria-labelledby="skills-title">
+          <p class="eyebrow">Working vocabulary</p>
+          <h2 id="skills-title">Skills in context</h2>
+          <div class="skills-grid">
+            <section>
+              <h3>Engineering systems</h3>
+              <p>Distributed and real-time systems, mobile and backend development, API design, cloud infrastructure, CI/CD, and testing.</p>
+            </section>
+            <section>
+              <h3>Creative technology</h3>
+              <p>Augmented and virtual reality, interactive installations, sensor integrations, generative algorithms, and real-time 3D experiences.</p>
+            </section>
+            <section>
+              <h3>Sound and music</h3>
+              <p>Reactive audio systems, sensor-driven sound, authored music, and listening as a design tool.</p>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about { margin-block: calc(clamp(3rem, 10vw, 8rem) * -1); }
+  .about-hero { align-items: center; display: grid; gap: clamp(2.5rem, 7vw, 6rem); grid-template-columns: minmax(0, 1.12fr) minmax(18rem, .7fr); min-height: min(48rem, calc(100svh - 4.5rem)); padding-block: clamp(4rem, 10vw, 8rem); }
+  .about-hero__copy, .about-hero__portrait { min-width: 0; }
+  .about-hero h1 { font-size: clamp(3rem, 7vw, 6.6rem); max-width: 10ch; }
+  .about-hero__biography { color: var(--muted); font-size: clamp(1.05rem, 1.8vw, 1.25rem); margin-top: 2rem; max-width: 58ch; }
+  .about-hero__biography p { margin: 0; }
+  .about-hero__biography p + p { margin-top: 1rem; }
+  .about-hero__resume { align-items: center; border: 1px solid var(--signal); color: var(--signal); display: inline-flex; font-family: var(--font-mono); gap: .65rem; margin-top: 2rem; padding: .8rem 1rem; text-underline-offset: .25em; }
+  .about-hero__portrait { margin: 0; }
+  .about-hero__portrait-frame { aspect-ratio: 4 / 5; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; width: 100%; }
+  .about-hero__portrait-frame :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }
+  .about-hero__portrait figcaption { color: var(--muted); font-family: var(--font-mono); font-size: .72rem; margin-top: .75rem; }
+  .about-section { border-top: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
+  .about-section__heading { align-items: end; display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.25fr) minmax(16rem, .75fr); }
+  .about-section h2 { font-size: clamp(2.15rem, 5vw, 4.5rem); letter-spacing: -.06em; line-height: 1; margin: .75rem 0 0; max-width: 15ch; }
+  .about-section__heading > p { color: var(--muted); margin: 0; max-width: 34rem; }
+  .about-foundations { display: grid; gap: clamp(3rem, 8vw, 7rem); grid-template-columns: minmax(16rem, .7fr) minmax(0, 1.3fr); }
+  .about-foundations__credential { color: var(--paper); font-size: 1.2rem; margin: 1.75rem 0 .4rem; max-width: 36rem; }
+  .about-foundations__education > p:last-child { color: var(--muted); margin: 0; }
+  .about-foundations__skills h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
+  .skills-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+  .skills-grid section { border-top: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: minmax(10rem, .65fr) minmax(0, 1fr); padding-top: 1rem; }
+  .skills-grid h3 { font-size: 1.05rem; margin: 0; }
+  .skills-grid p { color: var(--muted); margin: 0; }
+
+  @media (max-width: 48rem) {
+    .about-hero, .about-section__heading, .about-foundations { grid-template-columns: minmax(0, 1fr); }
+    .about-hero { min-height: auto; }
+    .about-hero__portrait { max-width: 34rem; }
+  }
+
+  @media (max-width: 34rem) {
+    .skills-grid section { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

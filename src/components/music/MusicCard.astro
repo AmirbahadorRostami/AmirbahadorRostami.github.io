@@ -1,0 +1,91 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { deriveMusicEmbedUrl, embedPermissionsFor } from '../../lib/music-embed';
+
+export interface Props {
+  record: CollectionEntry<'music'>;
+}
+
+const { record } = Astro.props;
+const { description, duration, platform, title, url } = record.data;
+const embedUrl = deriveMusicEmbedUrl(platform, url);
+const platformLabels = {
+  spotify: 'Spotify',
+  soundcloud: 'SoundCloud',
+  bandcamp: 'Bandcamp',
+  direct: 'Direct link',
+} satisfies Record<typeof platform, string>;
+const platformLabel = platformLabels[platform];
+const embedPermissions = embedPermissionsFor(platform);
+const playerId = `music-player-${record.id}`;
+---
+
+<article class="music-card" data-music-card>
+  <p class="music-card__platform">{platformLabel}</p>
+  <h3>{title}</h3>
+  {description && <p class="music-card__description">{description}</p>}
+  {duration && <p class="music-card__duration">{duration}</p>}
+  <a href={url} rel="noopener noreferrer" target="_blank">Listen to {title} on {platformLabel}</a>
+  {embedUrl && (
+    <>
+      <button
+        aria-expanded="false"
+        aria-controls={playerId}
+        aria-label={`Load player for ${title}`}
+        class="music-card__load-player"
+        data-embed-allow={embedPermissions}
+        data-embed-url={embedUrl}
+        data-music-player-button
+        data-platform-label={platformLabel}
+        data-track-title={title}
+        type="button"
+      >
+        Load private player
+      </button>
+      <div id={playerId} class="music-card__player" data-music-player></div>
+    </>
+  )}
+</article>
+
+<script>
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+
+    if (!(target instanceof HTMLElement)) return;
+
+    const button = target.closest<HTMLButtonElement>('[data-music-player-button]');
+    if (!button || button.dataset.playerLoaded === 'true') return;
+
+    const card = button.closest<HTMLElement>('[data-music-card]');
+    const player = card?.querySelector<HTMLElement>('[data-music-player]');
+    const embedUrl = button.dataset.embedUrl;
+
+    if (!card || !player || !embedUrl) return;
+
+    const iframe = document.createElement('iframe');
+    iframe.allow = button.dataset.embedAllow ?? '';
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer';
+    iframe.src = embedUrl;
+    iframe.title = `Listen to ${button.dataset.trackTitle} on ${button.dataset.platformLabel}`;
+
+    player.append(iframe);
+    card.dataset.playerLoaded = 'true';
+    button.dataset.playerLoaded = 'true';
+    button.setAttribute('aria-expanded', 'true');
+    button.textContent = 'Player loaded';
+  });
+</script>
+
+<style>
+  .music-card { background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 1rem; min-width: 0; padding: clamp(1.25rem, 3vw, 2rem); }
+  .music-card__platform, .music-card__duration { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; margin: 0; text-transform: uppercase; }
+  .music-card h3 { font-size: clamp(1.6rem, 3vw, 2.5rem); letter-spacing: -.05em; line-height: 1; margin: .25rem 0 0; }
+  .music-card__description { color: var(--muted); margin: 0; }
+  .music-card a { color: var(--signal); font-weight: 700; margin-top: auto; text-decoration: underline; text-underline-offset: .25em; }
+  .music-card__load-player { align-self: start; background: transparent; border: 1px solid var(--signal); color: var(--paper); cursor: pointer; font: inherit; padding: .6rem .8rem; }
+  .music-card__load-player:hover { background: color-mix(in srgb, var(--signal) 14%, transparent); }
+  .music-card__player { min-width: 0; }
+  .music-card__player:empty { display: none; }
+  .music-card__player iframe { border: 0; height: 10rem; width: 100%; }
+</style>

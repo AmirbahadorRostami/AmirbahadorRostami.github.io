@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectGrid from '../projects/ProjectGrid.astro';
+
+export interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section id="selected-work" class="home-section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Selected work</p>
+        <h2>Experiments in shared reality.</h2>
+      </div>
+      <p>Public-space encounters, luminous traces, and installations that make the invisible feel a little more social.</p>
+    </div>
+    <ProjectGrid projects={projects} />
+    <a class="section-link" href="/work/">Explore all projects <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<style>
+  .home-section { border-bottom: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
+  .section-heading { align-items: end; display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .7fr); }
+  h2 { font-size: clamp(2.2rem, 6vw, 4.75rem); letter-spacing: -.06em; line-height: 1; margin: .75rem 0 0; max-width: 13ch; }
+  .section-heading > p { color: var(--muted); margin: 0; max-width: 33rem; }
+  .section-link { color: var(--signal); display: inline-flex; font-weight: 700; gap: .5rem; margin-top: 2rem; text-underline-offset: .25em; }
+
+  @media (max-width: 42rem) {
+    .section-heading { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

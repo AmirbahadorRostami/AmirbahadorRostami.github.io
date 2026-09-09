@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  previous: CollectionEntry<'projects'>;
+  next: CollectionEntry<'projects'>;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="project-navigation" aria-label="Project navigation">
+  <a href={`/work/${previous.id}/`} aria-label={`Previous project: ${previous.data.title}`}>
+    <span>Previous</span>
+    {previous.data.title}
+  </a>
+  <a class="project-navigation__next" href={`/work/${next.id}/`} aria-label={`Next project: ${next.data.title}`}>
+    <span>Next</span>
+    {next.data.title}
+  </a>
+</nav>
+
+<style>
+  .project-navigation { border-top: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 2rem; }
+  a { background: var(--surface-raised); border: 1px solid var(--line); display: grid; font-size: clamp(1.1rem, 2vw, 1.4rem); gap: .5rem; padding: 1.25rem; text-decoration: none; }
+  a:hover { border-color: var(--signal); color: var(--signal); }
+  span { color: var(--muted); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
+  .project-navigation__next { text-align: right; }
+
+  @media (max-width: 36rem) {
+    .project-navigation { grid-template-columns: minmax(0, 1fr); }
+    .project-navigation__next { text-align: left; }
+  }
+</style>

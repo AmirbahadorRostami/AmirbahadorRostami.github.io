@@ -1,0 +1,220 @@
+---
+import { SITE } from '../../config/site';
+
+const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
+const linkedInUrl = SITE.linkedInUrl.trim();
+const configured = endpoint.length > 0;
+---
+
+<section class="contact-form" aria-labelledby="contact-form-title">
+  <div class="container contact-form__inner">
+    <p class="eyebrow">Start a conversation</p>
+    <h1 id="contact-form-title">Let’s make something curious.</h1>
+    <p class="contact-form__intro">
+      Tell me a little about what you are building, imagining, or bringing into the world.
+    </p>
+
+    <form
+      action={configured ? endpoint : undefined}
+      method="post"
+      novalidate
+      data-contact-form
+      data-contact-endpoint={configured ? endpoint : undefined}
+      data-contact-state={configured ? 'ready' : 'unconfigured'}
+    >
+      <div class="contact-form__fields">
+        <div class="contact-form__field">
+          <label for="contact-name">Name</label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            aria-describedby="contact-name-error"
+            data-contact-control
+            disabled={!configured}
+            required
+          />
+          <p id="contact-name-error" class="contact-form__error" data-contact-error="name"></p>
+        </div>
+
+        <div class="contact-form__field">
+          <label for="contact-email">Reply email</label>
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            aria-describedby="contact-email-error"
+            data-contact-control
+            disabled={!configured}
+            required
+          />
+          <p id="contact-email-error" class="contact-form__error" data-contact-error="email"></p>
+        </div>
+
+        <div class="contact-form__field">
+          <label for="contact-intent">What brings you here?</label>
+          <select
+            id="contact-intent"
+            name="intent"
+            data-contact-control
+            disabled={!configured}
+          >
+            <option value="employment">Employment</option>
+            <option value="commission">Commission</option>
+            <option value="residency">Residency</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+
+        <div class="contact-form__field">
+          <label for="contact-message">Message</label>
+          <textarea
+            id="contact-message"
+            name="message"
+            rows="7"
+            maxlength="4000"
+            aria-describedby="contact-message-error"
+            data-contact-control
+            disabled={!configured}
+            required
+          ></textarea>
+          <p id="contact-message-error" class="contact-form__error" data-contact-error="message"></p>
+        </div>
+
+        <div class="contact-form__honeypot" aria-hidden="true">
+          <label for="contact-company">Company</label>
+          <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+      </div>
+
+      <button type="submit" data-contact-control data-contact-submit disabled={!configured}>
+        {configured ? 'Send message' : 'Form unavailable'}
+      </button>
+      <p class="contact-form__status" role="status" aria-live="polite" data-contact-status>
+        {!configured && 'The direct form is being connected. Please check back soon.'}
+      </p>
+    </form>
+
+    {!configured && (
+      <aside class="contact-form__fallback" data-contact-fallback>
+        <p>The direct form is being connected.</p>
+        {linkedInUrl && <a href={linkedInUrl}>Continue the conversation on LinkedIn</a>}
+      </aside>
+    )}
+  </div>
+</section>
+
+<script>
+  import { toContactPayload, validateContact, type ContactIntent, type ContactState } from '../../lib/contact';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  if (form) {
+    const endpoint = form.dataset.contactEndpoint;
+    const controls = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement>('[data-contact-control]'));
+    const submitButton = form.querySelector<HTMLButtonElement>('[data-contact-submit]');
+    const status = form.querySelector<HTMLElement>('[data-contact-status]');
+    const company = form.querySelector<HTMLInputElement>('[name="company"]');
+
+    const clearErrors = () => {
+      for (const field of ['name', 'email', 'message']) {
+        const error = form.querySelector<HTMLElement>(`[data-contact-error="${field}"]`);
+        const control = form.elements.namedItem(field);
+        error?.replaceChildren();
+        if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+          control.removeAttribute('aria-invalid');
+        }
+      }
+    };
+
+    const setState = (state: ContactState, message: string) => {
+      form.dataset.contactState = state;
+      if (status) status.textContent = message;
+
+      const disabled = state === 'sending' || state === 'unconfigured';
+      for (const control of controls) control.disabled = disabled;
+
+      if (submitButton) {
+        submitButton.textContent = state === 'sending'
+          ? 'Sending…'
+          : state === 'error'
+            ? 'Retry message'
+            : state === 'unconfigured'
+              ? 'Form unavailable'
+              : 'Send message';
+      }
+    };
+
+    if (!endpoint) setState('unconfigured', 'The direct form is being connected. Please check back soon.');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!endpoint) return;
+
+      const fields = {
+        name: (form.elements.namedItem('name') as HTMLInputElement).value,
+        email: (form.elements.namedItem('email') as HTMLInputElement).value,
+        intent: (form.elements.namedItem('intent') as HTMLSelectElement).value as ContactIntent,
+        message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+      };
+      const errors = validateContact(fields);
+
+      clearErrors();
+      for (const [field, message] of Object.entries(errors)) {
+        const error = form.querySelector<HTMLElement>(`[data-contact-error="${field}"]`);
+        const control = form.elements.namedItem(field);
+        if (error) error.textContent = message;
+        if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+          control.setAttribute('aria-invalid', 'true');
+        }
+      }
+
+      if (Object.keys(errors).length > 0) {
+        setState('ready', 'Please review the highlighted fields.');
+        return;
+      }
+
+      const payload = toContactPayload(fields);
+      payload.company = company?.value.trim() ?? '';
+      setState('sending', 'Sending your message…');
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error('Contact delivery failed.');
+
+        form.reset();
+        clearErrors();
+        setState('success', 'Thanks—your message is on its way.');
+      } catch {
+        setState('error', 'That message could not be sent. Please try again.');
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact-form { --contact-control-border: #5a6371; }
+  .contact-form__inner { max-width: 48rem; }
+  .contact-form__intro { color: var(--muted); font-size: 1.1rem; margin: 1.75rem 0 0; max-width: 42rem; }
+  form { margin-top: 2.5rem; }
+  .contact-form__fields { display: grid; gap: 1.25rem; }
+  .contact-form__field { display: grid; gap: .45rem; }
+  label { font-weight: 700; }
+  input, select, textarea { background: var(--surface-raised); border: 1px solid var(--contact-control-border); border-radius: var(--radius-sm); color: var(--paper); font: inherit; padding: .75rem; width: 100%; }
+  textarea { resize: vertical; }
+  input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: var(--coral); }
+  .contact-form__error { color: var(--coral); margin: 0; min-height: 1.5rem; }
+  .contact-form__honeypot { height: 0; overflow: hidden; position: absolute; width: 0; }
+  button, .contact-form__fallback a { background: var(--signal); border: 1px solid var(--signal); color: var(--ink); cursor: pointer; display: inline-block; font: inherit; font-weight: 800; margin-top: 1.5rem; padding: .85rem 1.15rem; text-decoration: none; }
+  button:disabled { cursor: not-allowed; opacity: .65; }
+  .contact-form__status { min-height: 1.5rem; margin: 1rem 0 0; }
+  .contact-form__fallback { border-left: 2px solid var(--signal); color: var(--muted); margin-top: 1.5rem; padding-left: 1rem; }
+  .contact-form__fallback p { margin: 0; }
+</style>

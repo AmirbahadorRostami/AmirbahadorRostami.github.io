@@ -1,8 +1,8 @@
 # Personal Portfolio Redesign: Design and Build Plan
 
 **Owner:** Amir Rostami  
-**Status:** Design approved in conversation; written specification awaiting final review  
-**Last updated:** 2026-08-31
+**Status:** Core portfolio implemented; content completion and launch review in progress
+**Last updated:** 2026-09-03
 
 ## Purpose
 
@@ -554,15 +554,15 @@ Test representative mobile, tablet, and desktop sizes. Confirm no horizontal ove
 - [ ] The three flagship case studies contain complete role, context, process, outcome, and credit information
 - [ ] Selected music is confirmed and playable or linked
 - [ ] The curated timeline is accurate
-- [ ] The full resume downloads correctly
+- [x] The full resume downloads correctly
 - [ ] LinkedIn URL is correct
-- [ ] Amir's email and phone number are not public
+- [x] Amir's email and phone number are not public
 - [ ] Contact messages deliver successfully
-- [ ] Mobile navigation and grids work correctly
-- [ ] Keyboard navigation and focus states work correctly
-- [ ] Reduced-motion behavior works correctly
-- [ ] Every route has valid metadata and a social preview
-- [ ] Images are optimized and responsive
+- [x] Mobile navigation and grids work correctly
+- [x] Keyboard navigation and focus states work correctly
+- [x] Reduced-motion behavior works correctly
+- [x] Every route has valid metadata and a social preview
+- [x] Images are optimized and responsive
 - [ ] Production deployment passes smoke testing
 
 ## Content required from Amir
@@ -583,6 +583,10 @@ These are explicit inputs, not implementation placeholders:
 - [ ] Custom domain, if one will be configured for launch
 
 Content gaps should not block building the system. Use clearly labeled draft copy during development and replace it before launch acceptance.
+
+## Launch blockers and owner inputs
+
+The core static portfolio is implemented, but launch acceptance remains blocked on Amir’s confirmation or supply of the unchecked inputs above. In particular, provide the exact LinkedIn URL, choose and configure a real private contact-form endpoint, confirm the public Remote Realities title and final project content, approve the selected music ordering, confirm timeline wording, and decide whether to configure a custom domain. Production deployment also requires the repository’s Pages source to be set to GitHub Actions, a workflow run from `main`, and the production smoke test described in the implementation plan. No final contact provider, LinkedIn URL, custom domain, Remote Realities public title, or music selection has been recorded as a decision yet.
 
 ## Decision log
 

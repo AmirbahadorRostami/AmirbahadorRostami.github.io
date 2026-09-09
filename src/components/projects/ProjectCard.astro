@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data, id } = project;
+const projectUrl = `/work/${id}/`;
+---
+
+<article class="project-card" data-project-card data-categories={JSON.stringify(data.categories)}>
+  <a class="project-card__image-link" href={projectUrl} aria-label={`View ${data.title} project`}>
+    <Image src={data.hero} alt={data.heroAlt} layout="constrained" />
+  </a>
+  <div class="project-card__body">
+    <p class="project-card__meta">{data.year ?? 'Selected work'}</p>
+    <h2><a href={projectUrl}>{data.title}</a></h2>
+    <p>{data.cardSummary}</p>
+    <ul class="project-card__categories" aria-label={`${data.title} categories`}>
+      {data.categories.map((category) => <li>{category.replaceAll('-', ' ')}</li>)}
+    </ul>
+    <a class="project-card__link" href={projectUrl}>Explore {data.title}</a>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .project-card__image-link { aspect-ratio: 4 / 3; background: var(--ink); display: block; overflow: hidden; }
+  .project-card__image-link :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }
+  .project-card__body { display: grid; gap: 1rem; padding: 1.25rem; }
+  .project-card__meta { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+  h2 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -.04em; line-height: 1.05; margin: 0; }
+  h2 a { text-decoration: none; }
+  h2 a:hover { color: var(--signal); }
+  .project-card__body > p:not(.project-card__meta) { color: var(--muted); margin: 0; }
+  .project-card__categories { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin: 0; padding: 0; }
+  .project-card__categories li { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-family: var(--font-mono); font-size: .7rem; padding: .2rem .45rem; }
+  .project-card__link { color: var(--signal); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+</style>

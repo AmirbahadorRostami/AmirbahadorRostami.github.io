@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import ContactCallout from '../components/home/ContactCallout.astro';
+import ExperiencePreview from '../components/home/ExperiencePreview.astro';
+import Hero from '../components/home/Hero.astro';
+import SelectedMusic from '../components/home/SelectedMusic.astro';
+import SelectedWork from '../components/home/SelectedWork.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortByOrder } from '../lib/content';
+
+const projects = await getCollection('projects');
+const music = await getCollection('music');
+const experience = await getCollection('experience');
+
+const featuredProjects = sortByOrder(
+  projects.filter(({ data }) => data.featured && !data.draft),
+);
+const featuredMusic = sortByOrder(
+  music.filter(({ data }) => data.featured && !data.draft),
+);
+const featuredExperience = sortByOrder(
+  experience.filter(({ data }) => data.featured),
+).slice(0, 3);
+
+if (featuredProjects.length !== 3) {
+  throw new Error('Expected exactly three featured projects on the homepage.');
+}
+
+if (featuredMusic.length !== 3) {
+  throw new Error('Expected exactly three featured music records on the homepage.');
+}
+---
+
+<BaseLayout flushMain>
+  <Hero />
+  <SelectedWork projects={featuredProjects} />
+  <SelectedMusic records={featuredMusic} />
+  <ExperiencePreview entries={featuredExperience} />
+  <ContactCallout />
+</BaseLayout>

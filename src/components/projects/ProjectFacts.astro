@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { data } = project;
+---
+
+<section class="project-facts" aria-labelledby="project-facts-title">
+  <h2 id="project-facts-title">Project facts</h2>
+  <dl>
+    {data.year && <div><dt>Year</dt><dd>{data.year}</dd></div>}
+    {data.context && <div><dt>Context</dt><dd>{data.context}</dd></div>}
+    <div><dt>Role</dt><dd>{data.roles.join(', ')}</dd></div>
+    <div><dt>Tools</dt><dd>{data.tools.join(', ')}</dd></div>
+    <div><dt>Areas</dt><dd>{data.categories.map((category) => category.replaceAll('-', ' ')).join(', ')}</dd></div>
+  </dl>
+</section>
+
+<style>
+  .project-facts { border-block: 1px solid var(--line); padding-block: 1.5rem; }
+  h2 { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .12em; margin: 0 0 1rem; text-transform: uppercase; }
+  dl { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin: 0; }
+  dl > div { min-width: 0; }
+  dt { color: var(--muted); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+  dd { margin: .25rem 0 0; }
+</style>

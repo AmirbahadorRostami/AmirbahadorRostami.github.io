@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'experience'>;
+}
+
+const { entry } = Astro.props;
+const { category, organization, period, role, summary } = entry.data;
+---
+
+<li class="timeline-entry" data-category={category} data-timeline-entry>
+  <p class="timeline-entry__period" data-timeline-period>{period}</p>
+  <div class="timeline-entry__identity">
+    <h3>{role}</h3>
+    <p data-timeline-organization>{organization}</p>
+  </div>
+  <p class="timeline-entry__summary" data-timeline-summary>{summary}</p>
+</li>
+
+<style>
+  .timeline-entry {
+    align-items: start;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: clamp(1rem, 3vw, 2rem);
+    grid-template-columns: minmax(8.5rem, .42fr) minmax(13rem, .72fr) minmax(18rem, 1fr);
+    min-width: 0;
+    padding-block: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .timeline-entry:last-child { border-bottom: 1px solid var(--line); }
+  .timeline-entry > * { min-width: 0; }
+  .timeline-entry__period { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; margin: .2rem 0 0; }
+  .timeline-entry h3 { font-size: clamp(1.2rem, 2.2vw, 1.55rem); letter-spacing: -.025em; line-height: 1.15; margin: 0; }
+  .timeline-entry__identity p { color: var(--paper); margin: .45rem 0 0; overflow-wrap: anywhere; }
+  .timeline-entry__summary { color: var(--muted); margin: 0; }
+
+  @media (max-width: 48rem) {
+    .timeline-entry { gap: .9rem; grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import { SITE } from '../config/site';
+import { absoluteUrl } from '../lib/urls';
+import '../styles/global.css';
+import SkipLink from '../components/layout/SkipLink.astro';
+import SiteHeader from '../components/layout/SiteHeader.astro';
+import SiteFooter from '../components/layout/SiteFooter.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  image?: string;
+  flushMain?: boolean;
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  canonicalPath = Astro.url.pathname,
+  image = '/og.png',
+  flushMain = false,
+} = Astro.props;
+const canonicalUrl = absoluteUrl(canonicalPath);
+const imageUrl = new URL(image, SITE.origin).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <SkipLink />
+    <SiteHeader />
+    <main id="main-content" class:list={{ 'main--flush': flushMain }} tabindex="-1"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>

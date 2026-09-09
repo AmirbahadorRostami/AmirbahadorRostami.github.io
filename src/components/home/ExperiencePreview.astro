@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entries: CollectionEntry<'experience'>[];
+}
+
+const { entries } = Astro.props;
+---
+
+<section id="experience" class="experience">
+  <div class="container">
+    <div class="experience__heading">
+      <div>
+        <p class="eyebrow">Experience</p>
+        <h2>Building across code, culture, and strange new terrain.</h2>
+      </div>
+      <p>A small cross-section of the teams and studios where I have turned ambitious ideas into working systems.</p>
+    </div>
+    <ol class="experience__list">
+      {entries.slice(0, 3).map(({ data }) => (
+        <li data-experience-entry>
+          <p class="experience__period">{data.period}</p>
+          <div>
+            <h3>{data.role}</h3>
+            <p class="experience__organization" data-experience-organization>{data.organization}</p>
+          </div>
+          <p class="experience__summary">{data.summary}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .experience { border-bottom: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
+  .experience__heading { align-items: end; display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .7fr); }
+  h2 { font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: -.06em; line-height: 1; margin: .75rem 0 0; max-width: 15ch; }
+  .experience__heading > p { color: var(--muted); margin: 0; max-width: 31rem; }
+  .experience__list { list-style: none; margin: 3rem 0 0; padding: 0; }
+  .experience__list li { align-items: start; border-top: 1px solid var(--line); display: grid; gap: 1.5rem; grid-template-columns: minmax(9rem, .45fr) minmax(14rem, .7fr) minmax(18rem, 1fr); padding-block: 1.75rem; }
+  .experience__list li:last-child { border-bottom: 1px solid var(--line); }
+  .experience__period { color: var(--signal); font-family: var(--font-mono); font-size: .74rem; margin: .25rem 0 0; }
+  h3 { font-size: 1.35rem; line-height: 1.15; margin: 0; }
+  .experience__organization { color: var(--paper); margin: .4rem 0 0; }
+  .experience__summary { color: var(--muted); margin: 0; }
+
+  @media (max-width: 48rem) {
+    .experience__heading, .experience__list li { grid-template-columns: minmax(0, 1fr); }
+    .experience__list li { gap: 1rem; }
+  }
+</style>

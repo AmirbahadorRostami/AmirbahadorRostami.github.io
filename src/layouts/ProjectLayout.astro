@@ -1,0 +1,112 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import LiveExperimentSlot from '../components/interactive/LiveExperimentSlot.astro';
+import NextProject from '../components/projects/NextProject.astro';
+import ProjectFacts from '../components/projects/ProjectFacts.astro';
+import ProjectMedia from '../components/projects/ProjectMedia.astro';
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  project: CollectionEntry<'projects'>;
+  previous: CollectionEntry<'projects'>;
+  next: CollectionEntry<'projects'>;
+}
+
+const { project, previous, next } = Astro.props;
+const { data } = project;
+---
+
+<BaseLayout
+  title={`${data.title} | Amir Bahador Rostami`}
+  description={data.summary}
+  canonicalPath={`/work/${project.id}/`}
+  image={data.hero.src}
+>
+  <article class="project-detail container" data-project-detail data-depth={data.depth}>
+    <header class="project-hero">
+      <p class="eyebrow">{data.year ?? (data.depth === 'flagship' ? 'Selected project' : 'Project study')}</p>
+      <h1>{data.title}</h1>
+      {data.alternateTitle && <p class="project-hero__alternate">Also presented as <em>{data.alternateTitle}</em></p>}
+      <p class="project-hero__premise">{data.summary}</p>
+      <figure class="project-hero__image">
+        <Image
+          src={data.hero}
+          alt={data.heroAlt}
+          layout="constrained"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    </header>
+
+    <ProjectFacts project={project} />
+
+    <section class="project-story" aria-labelledby="project-story-title">
+      <h2 id="project-story-title">Story</h2>
+      <div class="project-story__body"><slot /></div>
+    </section>
+
+    {data.collaborators.length > 0 && (
+      <section class="project-section" aria-labelledby="collaborators-title">
+        <h2 id="collaborators-title">Collaborators</h2>
+        <ul>{data.collaborators.map((collaborator) => <li>{collaborator}</li>)}</ul>
+      </section>
+    )}
+
+    {data.credits.length > 0 && (
+      <section class="project-section" aria-labelledby="credits-title">
+        <h2 id="credits-title">Credits</h2>
+        <ul>{data.credits.map((credit) => <li>{credit}</li>)}</ul>
+      </section>
+    )}
+
+    {data.outcomes.length > 0 && (
+      <section class="project-section" aria-labelledby="outcomes-title">
+        <h2 id="outcomes-title">Outcomes</h2>
+        <ul>{data.outcomes.map((outcome) => <li>{outcome}</li>)}</ul>
+      </section>
+    )}
+
+    {data.externalLinks.length > 0 && (
+      <section class="project-section" aria-labelledby="project-links-title">
+        <h2 id="project-links-title">Project links</h2>
+        <ul>{data.externalLinks.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul>
+      </section>
+    )}
+
+    <ProjectMedia project={project} />
+
+    <LiveExperimentSlot enabled={data.liveExperiment} title={data.title}>
+      <slot name="live-experiment" />
+    </LiveExperimentSlot>
+
+    <NextProject previous={previous} next={next} />
+  </article>
+</BaseLayout>
+
+<style>
+  .project-detail { display: grid; gap: 3rem; }
+  .project-detail[data-depth='flagship'] { gap: clamp(4rem, 8vw, 7rem); }
+  .project-detail[data-depth='short'] { max-width: 64rem; }
+  .project-hero { display: grid; gap: 1.25rem; }
+  .project-hero .eyebrow { margin: 0; }
+  .project-hero h1 { max-width: 12ch; }
+  .project-hero__alternate { color: var(--muted); margin: -.5rem 0 0; }
+  .project-hero__premise { font-size: clamp(1.25rem, 3vw, 2rem); line-height: 1.35; margin: .5rem 0 0; max-width: 40ch; }
+  .project-hero__image { background: var(--surface-raised); margin: 1rem 0 0; overflow: hidden; }
+  .project-hero__image :global(img) { height: auto; max-height: 48rem; object-fit: cover; width: 100%; }
+  .project-detail[data-depth='short'] .project-hero__image :global(img) { max-height: 34rem; }
+  .project-story { display: grid; gap: 1.5rem; grid-template-columns: minmax(9rem, .4fr) minmax(0, 1fr); }
+  .project-story h2, .project-section h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); letter-spacing: -.04em; margin: 0; }
+  .project-story__body { color: #d6d2ca; font-size: clamp(1.05rem, 2vw, 1.2rem); max-width: 48rem; }
+  .project-story__body :global(p) { margin: 0 0 1.25rem; }
+  .project-story__body :global(p:last-child) { margin-bottom: 0; }
+  .project-section { display: grid; gap: 1.25rem; }
+  .project-section ul { display: grid; gap: .65rem; margin: 0; padding-left: 1.25rem; }
+  .project-section a { color: var(--signal); text-underline-offset: .2em; }
+
+  @media (max-width: 42rem) {
+    .project-story { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
