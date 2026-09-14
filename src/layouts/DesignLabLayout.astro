@@ -1,0 +1,45 @@
+---
+import { absoluteUrl } from '../lib/urls';
+import { designConceptBySlug } from '../design-lab/manifest';
+import '../design-lab/styles/base.css';
+import outfitUrl from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import spaceGroteskUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+import archivoUrl from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+
+export interface Props {
+  title: string;
+  description: string;
+  conceptSlug?: string;
+  bodyClass?: string;
+}
+
+const { title, description, conceptSlug, bodyClass } = Astro.props;
+const canonicalUrl = absoluteUrl(Astro.url.pathname);
+const fonts = {
+  'Space Grotesk Variable': { url: spaceGroteskUrl, weight: '300 700' },
+  'Archivo Variable': { url: archivoUrl, weight: '100 900' },
+  'Outfit Variable': { url: outfitUrl, weight: '100 900' },
+  'Geist Variable': { url: geistUrl, weight: '100 900' },
+};
+const fontFamily = conceptSlug ? designConceptBySlug(conceptSlug)?.font : 'Outfit Variable';
+if (!fontFamily || !(fontFamily in fonts)) throw new Error(`Unknown design lab font: ${fontFamily}`);
+const font = fonts[fontFamily as keyof typeof fonts];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonicalUrl} />
+    <title>{title}</title>
+    <style is:inline set:html={`@font-face { font-family: '${fontFamily}'; font-style: normal; font-display: swap; font-weight: ${font.weight}; src: url('${font.url}') format('woff2'); }`} />
+  </head>
+  <body class:list={['design-lab', bodyClass]} data-concept={conceptSlug} style={`--lab-font: '${fontFamily}', sans-serif`}>
+    <a class="lab-skip-link" href="#main-content">Skip to main content</a>
+    <main id="main-content" class="lab-page" tabindex="-1"><slot /></main>
+  </body>
+</html>

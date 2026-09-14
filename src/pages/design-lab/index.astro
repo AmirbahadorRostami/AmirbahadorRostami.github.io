@@ -1,0 +1,45 @@
+---
+import DesignLabLayout from '../../layouts/DesignLabLayout.astro';
+import { DESIGN_CONCEPTS } from '../../design-lab/manifest';
+---
+
+<DesignLabLayout title="Design lab — Amir Rostami" description="Compare six portfolio design directions for Amir Rostami.">
+  <div class="lab-hub">
+    <header>
+      <p class="lab-label">Amir Rostami / Design lab</p>
+      <h1>Six ways this portfolio could feel.</h1>
+      <p>Explore six directions for the same portfolio.</p>
+    </header>
+    <ol class="concept-list">
+      {DESIGN_CONCEPTS.map((concept, index) => (
+        <li>
+          <a href={`/design-lab/${concept.slug}/`} data-concept-link>
+            <span class="concept-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h2>{concept.name}</h2>
+              <p>{concept.description}</p>
+              <span class="concept-font">{concept.font}</span>
+            </div>
+            <span class="concept-arrow" aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</DesignLabLayout>
+
+<style>
+  .lab-hub { max-width: 76rem; margin-inline: auto; padding: clamp(1.5rem, 5vw, 5rem); }
+  header { max-width: 52rem; margin-bottom: 4rem; }
+  .lab-label, .concept-number, .concept-font { font-family: var(--lab-font-mono); font-size: 0.75rem; }
+  h1 { font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 500; line-height: 1.04; letter-spacing: -0.045em; }
+  .concept-list { list-style: none; padding: 0; margin: 0; }
+  li { border-top: 1px solid #a7a7a2; }
+  li:last-child { border-bottom: 1px solid #a7a7a2; }
+  li a { display: grid; grid-template-columns: 2rem minmax(0, 1fr) 1.5rem; gap: 1rem; padding: 1.75rem 0.25rem; text-decoration: none; }
+  li a:hover h2 { text-decoration: underline; text-underline-offset: 0.15em; }
+  h2 { margin: 0; font-weight: 500; font-size: clamp(1.35rem, 3vw, 2rem); }
+  li p { margin: 0.5rem 0 1rem; max-width: 44rem; }
+  .concept-number { padding-top: 0.5rem; }
+  .concept-arrow { font-size: 1.5rem; }
+</style>

@@ -1,0 +1,20 @@
+---
+import type { DesignConcept } from '../manifest';
+
+interface Props { concept: DesignConcept; }
+const { concept } = Astro.props;
+---
+
+<section class="concept-shell" aria-labelledby="concept-title">
+  <p class="shell-label">Design lab / Neutral concept shell</p>
+  <h1 id="concept-title">{concept.name}</h1>
+  <p>{concept.description}</p>
+  <p>This route is ready for its concept design. The full portfolio composition is not yet shown.</p>
+</section>
+
+<style>
+  .concept-shell { max-width: 54rem; margin-inline: auto; padding: clamp(2rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem); }
+  .shell-label { font: 0.75rem var(--lab-font-mono); }
+  h1 { font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1.05; letter-spacing: -0.04em; font-weight: 500; }
+  p { max-width: 40rem; }
+</style>

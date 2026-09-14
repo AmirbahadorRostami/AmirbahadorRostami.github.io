@@ -1,0 +1,35 @@
+---
+import type { GetStaticPaths } from 'astro';
+import DesignLabLayout from '../../layouts/DesignLabLayout.astro';
+import { DESIGN_CONCEPTS, designConceptBySlug } from '../../design-lab/manifest';
+import ConceptShell from '../../design-lab/components/ConceptShell.astro';
+
+export const getStaticPaths = (() => DESIGN_CONCEPTS.map(({ slug }) => ({
+  params: { concept: slug },
+}))) satisfies GetStaticPaths;
+
+const concept = designConceptBySlug(Astro.params.concept!);
+if (!concept) throw new Error(`Unknown design concept: ${Astro.params.concept}`);
+
+// Each neutral shell is replaced by its independent concept component in Tasks 4–6.
+const conceptComponents = {
+  'poster-index': ConceptShell,
+  'type-image-collision': ConceptShell,
+  'darkroom-cinema': ConceptShell,
+  'printed-signal-lab': ConceptShell,
+  'coral-broadcast': ConceptShell,
+  'clau-poster-wall': ConceptShell,
+} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell>;
+const Concept = conceptComponents[concept.slug as keyof typeof conceptComponents];
+---
+
+<DesignLabLayout title={`${concept.name} — Design lab`} description={concept.description} conceptSlug={concept.slug}>
+  <nav class="concept-navigation" aria-label="Design lab">
+    <a href="/design-lab/">Back to all concepts</a>
+  </nav>
+  <Concept concept={concept} />
+</DesignLabLayout>
+
+<style>
+  .concept-navigation { padding: 1.5rem clamp(1.5rem, 5vw, 4rem); }
+</style>
