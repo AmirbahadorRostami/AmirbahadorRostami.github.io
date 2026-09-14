@@ -15,6 +15,16 @@ test('design lab exposes a six-concept comparison hub', async ({ page }) => {
   await expect(page.locator('[data-concept-link]')).toHaveCount(6);
 });
 
+test('utility labels use the active bundled page family', async ({ page }) => {
+  await page.goto('/design-lab/');
+  for (const selector of ['.lab-label', '.concept-number', '.concept-font']) {
+    await expect(page.locator(selector).first()).toHaveCSS('font-family', '"Outfit Variable", sans-serif');
+  }
+
+  await page.goto('/design-lab/poster-index/');
+  await expect(page.locator('.shell-label')).toHaveCSS('font-family', '"Space Grotesk Variable", sans-serif');
+});
+
 for (const slug of slugs) {
   test(`${slug} is statically reachable and noindexed`, async ({ page }) => {
     await page.goto(`/design-lab/${slug}/`);
