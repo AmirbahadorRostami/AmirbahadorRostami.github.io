@@ -25,6 +25,12 @@ const requiredContent = [
   'R&D Software Engineer',
 ];
 
+const requiredProjectImageAlts = [
+  'A luminous letter E floating above layered blue lines in the Encounters artwork',
+  'A person holding a phone at night among luminous trails near the CN Tower',
+  'A visitor beside a suspended translucent installation in a blue-lit gallery',
+];
+
 const conceptNavigationLabels = ['Back to all concepts', 'Work', 'Music', 'Experience', 'Contact'];
 
 test('design lab exposes a six-concept comparison hub', async ({ page }) => {
@@ -70,13 +76,12 @@ for (const slug of slugs) {
     const headingLevels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll((headings) => headings.map(
       (heading) => Number.parseInt(heading.tagName.slice(1), 10),
     ));
+    expect(headingLevels[0]).toBe(1);
     expect(headingLevels.every((level, index) => index === 0 || level <= headingLevels[index - 1] + 1)).toBe(true);
 
-    const localImageAlts = await page.locator('img').evaluateAll((images) => images.map((image) => ({
-      src: image.getAttribute('src'),
-      alt: image.getAttribute('alt'),
-    })).filter(({ src }) => src?.startsWith('/')));
-    expect(localImageAlts.every(({ alt }) => Boolean(alt?.trim()))).toBe(true);
+    await expect(page.locator('[data-lab-project] img').evaluateAll((images) => images.map(
+      (image) => image.getAttribute('alt'),
+    ))).resolves.toEqual(requiredProjectImageAlts);
 
     await page.keyboard.press('Tab');
     const skipLink = page.getByRole('link', { name: 'Skip to main content' });
@@ -132,18 +137,53 @@ for (const slug of slugs) {
     ));
     expect(marqueeTransforms).toEqual(Array.from({ length: marqueeTransforms.length }, () => 'none'));
     await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(0);
+
+    const nonStaticMotionLayout = await page.locator('[data-lab-pin], [data-lab-stack]').evaluateAll((elements) => elements.flatMap((element) => {
+      const style = getComputedStyle(element);
+      return style.position !== 'static' || style.opacity !== '1' || style.transform !== 'none'
+        ? [{ position: style.position, opacity: style.opacity, transform: style.transform }]
+        : [];
+    }));
+    expect(nonStaticMotionLayout, JSON.stringify(nonStaticMotionLayout)).toEqual([]);
   });
 }
 
-test('all concepts retain the approved portfolio content', async ({ page }) => {
-  const routeText: string[] = [];
-
-  for (const slug of slugs) {
+for (const slug of slugs) {
+  test(`${slug} retains the complete approved portfolio content`, async ({ page }) => {
     await page.goto(`/design-lab/${slug}/`);
-    routeText.push(await page.locator('body').innerText());
-  }
+    const routeText = (await page.locator('body').textContent() ?? '').replace(/\s+/g, ' ');
 
-  for (const content of requiredContent) expect(routeText.join('\n')).toContain(content);
+    for (const content of requiredContent) expect(routeText).toContain(content);
+  });
+}
+
+for (const slug of ['coral-broadcast', 'clau-poster-wall'] as const) {
+  test(`${slug} exposes its focus-to-pause marquee as a named region`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/design-lab/${slug}/`);
+
+    const marquee = page.getByRole('region', { name: 'Moving featured music titles' });
+    await expect(marquee).toBeVisible();
+    const rect = await marquee.evaluate((element) => element.getBoundingClientRect());
+    expect(rect.width).toBeGreaterThanOrEqual(44);
+    expect(rect.height).toBeGreaterThanOrEqual(44);
+  });
+}
+
+test('non-Type/Image scrub reveals still begin with an opacity reveal', async ({ page }) => {
+  await page.goto('/design-lab/printed-signal-lab/');
+  const opacity = await page.locator('[data-lab-scrub-reveal]').first().evaluate(
+    (element) => Number.parseFloat(getComputedStyle(element).opacity),
+  );
+  expect(opacity).toBeLessThan(1);
+});
+
+test('Type/Image Collision marks its headline reveals as contrast-safe', async ({ page }) => {
+  await page.goto('/design-lab/type-image-collision/');
+  await expect(page.locator('[data-lab-contrast-safe-reveal]')).toHaveCount(3);
+  await expect(page.locator('[data-lab-contrast-safe-reveal]').evaluateAll((targets) => targets.map(
+    (target) => getComputedStyle(target).opacity,
+  ))).resolves.toEqual(['1', '1', '1']);
 });
 
 test('Type/Image Collision accordion controls describe and control their panels', async ({ page }) => {
@@ -256,7 +296,7 @@ test('Type/Image Collision restores the complete shared identity and scrub targe
   await page.goto('/design-lab/type-image-collision/');
 
   await expect(page.getByText('Creative technologist. Musician. Professional maker of curious things.', { exact: true })).toBeVisible();
-  await expect(page.locator('[data-lab-scrub-reveal]')).toHaveCount(3);
+  await expect(page.locator('[data-lab-contrast-safe-reveal]')).toHaveCount(3);
 });
 
 test('Darkroom Cinema presents three cinematic project chapters', async ({ page }) => {

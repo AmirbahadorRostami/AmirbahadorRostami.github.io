@@ -63,7 +63,7 @@ const [heroProject] = projects;
   <section id="music" class="broadcast-music" aria-labelledby="broadcast-music-title">
     <p>02 / Music transmission</p>
     <h2 id="broadcast-music-title">Sound, passed along.</h2>
-    <div class="broadcast-marquee" data-broadcast-marquee tabindex="0" aria-label="Moving featured music titles">
+    <div class="broadcast-marquee" data-broadcast-marquee tabindex="0" role="region" aria-label="Moving featured music titles">
       <div class="broadcast-marquee__track" data-lab-marquee>
         {[...music, ...music].map((track) => <span>{track.data.title} <i aria-hidden="true">///</i></span>)}
       </div>

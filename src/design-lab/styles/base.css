@@ -33,4 +33,14 @@ body.design-lab {
 
 @media (prefers-reduced-motion: reduce) {
   .design-lab { scroll-behavior: auto; }
+  .design-lab [data-lab-pin],
+  .design-lab [data-lab-stack] {
+    opacity: 1 !important;
+    position: static !important;
+    transform: none !important;
+  }
+  .design-lab [data-lab-marquee] {
+    animation: none !important;
+    transform: none !important;
+  }
 }

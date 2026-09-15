@@ -74,24 +74,45 @@ export function initializeDesignLabMotion(root?: ParentNode): () => void {
 
   scope.querySelectorAll<HTMLElement>('[data-lab-scrub-reveal-group]').forEach((element) => {
     const targets = Array.from(element.querySelectorAll<HTMLElement>('[data-lab-scrub-reveal]'));
-    if (!targets.length) return;
+    const contrastSafeTargets = Array.from(element.querySelectorAll<HTMLElement>('[data-lab-contrast-safe-reveal]'));
 
-    ownAnimation(gsap.fromTo(
-      targets,
-      { opacity: 1, yPercent: 20 },
-      {
-        opacity: 1,
-        yPercent: 0,
-        ease: 'none',
-        stagger: 0.16,
-        scrollTrigger: {
-          trigger: element,
-          start: 'top 85%',
-          end: 'bottom 35%',
-          scrub: true,
+    if (targets.length) {
+      ownAnimation(gsap.fromTo(
+        targets,
+        { opacity: 0, yPercent: 20 },
+        {
+          opacity: 1,
+          yPercent: 0,
+          ease: 'none',
+          stagger: 0.16,
+          scrollTrigger: {
+            trigger: element,
+            start: 'top 85%',
+            end: 'bottom 35%',
+            scrub: true,
+          },
         },
-      },
-    ));
+      ));
+    }
+
+    if (contrastSafeTargets.length) {
+      ownAnimation(gsap.fromTo(
+        contrastSafeTargets,
+        { opacity: 1, yPercent: 20 },
+        {
+          opacity: 1,
+          yPercent: 0,
+          ease: 'none',
+          stagger: 0.16,
+          scrollTrigger: {
+            trigger: element,
+            start: 'top 85%',
+            end: 'bottom 35%',
+            scrub: true,
+          },
+        },
+      ));
+    }
   });
 
   scope.querySelectorAll<HTMLElement>('[data-lab-stack]').forEach((element, index) => {
