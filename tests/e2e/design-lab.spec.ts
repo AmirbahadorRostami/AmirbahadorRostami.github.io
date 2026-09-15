@@ -101,3 +101,40 @@ test('Type/Image Collision restores the complete shared identity and scrub targe
   await expect(page.getByText('Creative technologist. Musician. Professional maker of curious things.', { exact: true })).toBeVisible();
   await expect(page.locator('[data-lab-scrub-reveal]')).toHaveCount(3);
 });
+
+test('Darkroom Cinema presents three cinematic project chapters', async ({ page }) => {
+  await page.goto('/design-lab/darkroom-cinema/');
+
+  await expect(page.locator('[data-cinema-chapter]')).toHaveCount(3);
+});
+
+test('Printed Signal Lab packs its technical sheet into complete twelve-column rows', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/design-lab/printed-signal-lab/');
+
+  await expect(page.locator('[data-grid-span]')).toHaveCount(6);
+  await expect(page.locator('[data-grid-span]').evaluateAll((elements) => elements.map(
+    (element) => getComputedStyle(element).gridColumnEnd,
+  ))).resolves.toEqual(['span 7', 'span 5', 'span 4', 'span 8', 'span 6', 'span 6']);
+});
+
+for (const [slug, title] of [
+  ['darkroom-cinema', 'Darkroom Cinema'],
+  ['printed-signal-lab', 'Printed Signal Lab'],
+] as const) {
+  test(`${title} keeps the approved portfolio content visible without horizontal overflow`, async ({ page }) => {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/design-lab/${slug}/`);
+
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+      await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+      await expect(page.locator('[data-lab-track]')).toHaveCount(3);
+      await expect(page.locator('#experience li')).toHaveCount(3);
+      await expect(page.locator('a[href="/contact/"]')).toBeVisible();
+      await expect.poll(() => page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      )).toBe(true);
+    }
+  });
+}

@@ -1,0 +1,265 @@
+---
+import { Image } from 'astro:assets';
+import { loadDesignLabContent } from '../content';
+
+const { projects, music, experience } = await loadDesignLabContent();
+const signalLines = Array.from({ length: 15 }, (_, index) => index);
+const waveformBars = Array.from({ length: 24 }, (_, index) => index);
+---
+
+<div class="signal-lab" data-printed-signal-lab>
+  <section class="signal-hero" aria-labelledby="signal-title">
+    <div class="signal-sheet">
+      <header class="signal-cell signal-cell--title" data-grid-span>
+        <p>Amir Rostami / Toronto, Canada</p>
+        <h1 id="signal-title">
+          <span>Creative systems</span>
+          <span>with a signal</span>
+          <span>people can follow.</span>
+        </h1>
+      </header>
+
+      <div class="signal-cell signal-cell--instrument" data-grid-span aria-hidden="true">
+        <svg viewBox="0 0 520 360" role="presentation">
+          <rect x="1" y="1" width="518" height="358" fill="#e9dfca" stroke="#191816" stroke-width="2" />
+          {signalLines.map((line) => (
+            <ellipse
+              cx={220 + line * 4}
+              cy={180}
+              rx={34 + line * 14}
+              ry={18 + line * 9}
+              fill="none"
+              stroke={line % 4 === 0 ? '#ad382b' : '#191816'}
+              stroke-width={line % 4 === 0 ? '3' : '1.5'}
+            />
+          ))}
+          <path d="M32 62H488M32 298H488M72 32V328M448 32V328" fill="none" stroke="#191816" stroke-width="1" />
+          <circle cx="292" cy="180" r="7" fill="#ad382b" />
+        </svg>
+      </div>
+
+      <div class="signal-cell signal-cell--identity" data-grid-span>
+        <p>Creative technologist. Musician. Professional maker of curious things.</p>
+      </div>
+      <div class="signal-cell signal-cell--statement" data-grid-span>
+        <p>I create immersive experiences, software, and sound that bring people together in unexpected ways.</p>
+      </div>
+      <div class="signal-cell signal-cell--availability" data-grid-span>
+        <p>Open to employment and freelance work.</p>
+      </div>
+      <div class="signal-cell signal-cell--location" data-grid-span>
+        <p>Working from Toronto across engineering, art, research, and sound.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="signal-work" aria-labelledby="signal-work-title">
+    <div class="signal-section-heading" data-lab-scrub-reveal-group>
+      <p>01 / Work</p>
+      <h2 id="signal-work-title"><span data-lab-scrub-reveal>Selected work,</span> <span data-lab-scrub-reveal>stacked as working plates.</span></h2>
+    </div>
+    <div class="signal-plates">
+      {projects.map((project, index) => (
+        <article class:list={['signal-plate', `signal-plate--${index + 1}`]} data-lab-project data-lab-stack>
+          <div class="signal-plate__heading">
+            <p>Plate 0{index + 1}</p>
+            <h3><a href={`/work/${project.id}/`}>{project.data.title}</a></h3>
+            <p>{project.data.year ?? 'Selected work'}</p>
+          </div>
+          <a class="signal-plate__image" href={`/work/${project.id}/`} aria-label={`View ${project.data.title}`}>
+            <Image
+              src={project.data.hero}
+              alt={project.data.heroAlt}
+              widths={[720, 1080, 1440]}
+              sizes="(max-width: 56.25rem) calc(100vw - 3rem), 58vw"
+            />
+          </a>
+          <div class="signal-plate__copy">
+            <p>{project.data.cardSummary}</p>
+            <a href={`/work/${project.id}/`}>Open project <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="music" class="signal-music" aria-labelledby="signal-music-title">
+    <div class="signal-section-heading">
+      <p>02 / Music</p>
+      <h2 id="signal-music-title">Recorded signals.</h2>
+    </div>
+    <div class="signal-tracks" aria-label="Featured music">
+      {music.map((track, index) => (
+        <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer">
+          <span>0{index + 1}</span>
+          <strong>{track.data.title}</strong>
+          <span class="signal-wave" aria-hidden="true">
+            {waveformBars.map((bar) => <i class={`signal-wave__bar signal-wave__bar--${(bar + index * 3) % 8}`}></i>)}
+          </span>
+          <span>Listen ↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="experience" class="signal-experience" aria-labelledby="signal-experience-title">
+    <div class="signal-section-heading">
+      <p>03 / Experience</p>
+      <h2 id="signal-experience-title">A record of making and engineering.</h2>
+    </div>
+    <ol>
+      {experience.map((entry, index) => (
+        <li data-lab-stack>
+          <span>0{index + 1}</span>
+          <h3>{entry.data.role}</h3>
+          <p>{entry.data.organization}</p>
+          <p>{entry.data.period}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="contact" class="signal-contact" aria-labelledby="signal-contact-title">
+    <p>04 / Contact</p>
+    <h2 id="signal-contact-title">Send the next signal.</h2>
+    <a href="/contact/">Contact Amir <span aria-hidden="true">↗</span></a>
+  </section>
+</div>
+
+<script>
+  import { initializeDesignLabMotion } from '../motion';
+
+  const root = document.querySelector<HTMLElement>('[data-printed-signal-lab]');
+  if (root) initializeDesignLabMotion(root);
+</script>
+
+<style>
+  .signal-lab {
+    --carbon: #191816;
+    --oxide: #ad382b;
+    --paper: #e9dfca;
+    background: var(--paper);
+    color: var(--carbon);
+    overflow: clip;
+  }
+  .signal-lab :is(h1, h2, h3, p) { margin: 0; }
+  .signal-lab a { text-decoration-thickness: 1px; text-underline-offset: .22em; }
+  :global(body[data-concept="printed-signal-lab"] .concept-navigation) {
+    background: #e9dfca;
+    border-bottom: 1px solid #191816;
+    color: #191816;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .055em;
+    padding-block: 1rem;
+    text-transform: uppercase;
+  }
+  .signal-hero { padding: clamp(1.5rem, 4vw, 4rem); }
+  .signal-sheet {
+    border-left: 1px solid var(--carbon);
+    border-top: 1px solid var(--carbon);
+    display: grid;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .signal-cell { border-bottom: 1px solid var(--carbon); border-right: 1px solid var(--carbon); min-width: 0; padding: clamp(1.25rem, 2.5vw, 2.5rem); }
+  .signal-cell:nth-child(1) { grid-column-end: span 7; }
+  .signal-cell:nth-child(2) { grid-column-end: span 5; }
+  .signal-cell:nth-child(3) { grid-column-end: span 4; }
+  .signal-cell:nth-child(4) { grid-column-end: span 8; }
+  .signal-cell:nth-child(5) { grid-column-end: span 6; }
+  .signal-cell:nth-child(6) { grid-column-end: span 6; }
+  .signal-cell--title { min-height: clamp(28rem, 56vw, 51rem); }
+  .signal-cell--title > p, .signal-section-heading > p, .signal-plate__heading > p, .signal-contact > p {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .signal-cell--title h1 {
+    font-size: clamp(3.5rem, 7vw, 8rem);
+    font-weight: 650;
+    letter-spacing: -.08em;
+    line-height: .82;
+    margin-top: clamp(5rem, 12vw, 11rem);
+    max-width: 92rem;
+    width: 100%;
+  }
+  .signal-cell--title h1 span { display: block; }
+  .signal-cell--instrument { align-items: center; background: var(--oxide); display: flex; justify-content: center; padding: clamp(1rem, 2vw, 2rem); }
+  .signal-cell--instrument svg { height: auto; max-width: 34rem; width: 100%; }
+  .signal-cell--identity, .signal-cell--statement, .signal-cell--availability, .signal-cell--location { align-items: end; display: flex; min-height: clamp(11rem, 17vw, 18rem); }
+  .signal-cell--identity p, .signal-cell--availability p, .signal-cell--location p { font-size: clamp(1.2rem, 2.2vw, 2.3rem); font-weight: 600; letter-spacing: -.045em; line-height: 1; max-width: 18ch; }
+  .signal-cell--statement { background: var(--carbon); color: var(--paper); }
+  .signal-cell--statement p { font-size: clamp(1.7rem, 3.7vw, 4.2rem); font-weight: 550; letter-spacing: -.06em; line-height: .95; max-width: 24ch; }
+  .signal-cell--availability { background: var(--oxide); }
+  .signal-cell--location { justify-content: flex-end; }
+  .signal-work, .signal-music, .signal-experience { border-top: 1px solid var(--carbon); padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 4vw, 4rem); }
+  .signal-section-heading { display: grid; gap: 1.2rem; grid-template-columns: minmax(8rem, 3fr) minmax(0, 9fr); }
+  .signal-section-heading h2 { font-size: clamp(2.8rem, 6.5vw, 7rem); font-weight: 650; grid-column: 2; letter-spacing: -.075em; line-height: .84; max-width: 13ch; }
+  .signal-section-heading h2 span { display: block; }
+  .signal-plates { margin-top: clamp(4rem, 9vw, 9rem); }
+  .signal-plate {
+    background: var(--paper);
+    border: 1px solid var(--carbon);
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 3rem);
+    grid-template-columns: minmax(9rem, 3fr) minmax(0, 6fr) minmax(10rem, 3fr);
+    min-height: min(48rem, 76svh);
+    padding: clamp(1.25rem, 3vw, 3rem);
+    position: sticky;
+  }
+  .signal-plate--1 { top: 1rem; }
+  .signal-plate--2 { background: var(--oxide); margin-top: 16vh; top: 2rem; }
+  .signal-plate--3 { background: var(--carbon); color: var(--paper); margin-top: 16vh; top: 3rem; }
+  .signal-plate__heading { align-content: space-between; display: grid; }
+  .signal-plate__heading h3 { font-size: clamp(2rem, 4vw, 4.8rem); font-weight: 650; letter-spacing: -.07em; line-height: .86; }
+  .signal-plate__heading h3 a { text-decoration: none; }
+  .signal-plate__image { display: block; min-height: 24rem; overflow: hidden; }
+  .signal-plate__image :global(img) { height: 100%; object-fit: cover; transition: transform .55s cubic-bezier(.2,.7,.2,1); width: 100%; }
+  .signal-plate__image:hover :global(img), .signal-plate__image:focus-visible :global(img) { transform: scale(1.035); }
+  .signal-plate__copy { align-content: end; display: grid; gap: 1.25rem; }
+  .signal-plate__copy p { font-size: clamp(1rem, 1.4vw, 1.25rem); line-height: 1.35; }
+  .signal-plate__copy a { justify-self: start; }
+  .signal-tracks { border-top: 1px solid var(--carbon); margin-top: clamp(3rem, 7vw, 7rem); }
+  .signal-tracks > a { align-items: center; border-bottom: 1px solid var(--carbon); display: grid; gap: clamp(.75rem, 2vw, 2rem); grid-template-columns: 2rem minmax(7rem, 2fr) minmax(12rem, 7fr) auto; min-height: 6.5rem; text-decoration: none; }
+  .signal-tracks > a > span:first-child, .signal-tracks > a > span:last-child { font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+  .signal-tracks strong { font-size: clamp(1.5rem, 3vw, 3.4rem); font-weight: 650; letter-spacing: -.055em; }
+  .signal-wave { align-items: center; display: flex; gap: .2rem; height: 2.75rem; overflow: hidden; }
+  .signal-wave__bar { background: var(--oxide); display: block; flex: 1 1 0; height: 14%; min-width: 1px; }
+  .signal-wave__bar--1, .signal-wave__bar--7 { height: 36%; }
+  .signal-wave__bar--2, .signal-wave__bar--6 { height: 64%; }
+  .signal-wave__bar--3, .signal-wave__bar--5 { height: 92%; }
+  .signal-wave__bar--4 { height: 48%; }
+  .signal-experience ol { list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }
+  .signal-experience li { align-items: start; border-top: 1px solid var(--carbon); display: grid; gap: 1rem; grid-template-columns: 2rem minmax(12rem, 4fr) minmax(10rem, 5fr) minmax(9rem, 3fr); padding: 1.1rem 0; }
+  .signal-experience li > span, .signal-experience li > p:last-child { font-size: .72rem; font-weight: 700; }
+  .signal-experience h3 { font-size: clamp(1.25rem, 2vw, 2rem); font-weight: 650; letter-spacing: -.045em; line-height: 1; }
+  .signal-experience li > p:last-child { text-align: right; }
+  .signal-contact { background: var(--oxide); border-top: 1px solid var(--carbon); min-height: 70svh; padding: clamp(2rem, 4vw, 4rem); }
+  .signal-contact h2 { font-size: clamp(4rem, 10vw, 11rem); font-weight: 650; letter-spacing: -.085em; line-height: .8; margin-top: clamp(7rem, 16vw, 14rem); max-width: 10ch; }
+  .signal-contact > a { display: inline-block; font-size: clamp(1.2rem, 2.4vw, 2.2rem); margin-top: 2rem; }
+  @media (max-width: 56.25rem) {
+    .signal-sheet { display: grid; grid-auto-flow: dense; grid-template-columns: minmax(0, 1fr); }
+    .signal-cell { grid-column: 1 / -1 !important; }
+    .signal-cell--title { min-height: 34rem; }
+    .signal-cell--title h1 { font-size: clamp(3.2rem, 14vw, 6rem); margin-top: 6rem; }
+    .signal-cell--instrument { min-height: 24rem; }
+    .signal-cell--identity, .signal-cell--statement, .signal-cell--availability, .signal-cell--location { min-height: 11rem; }
+    .signal-section-heading { grid-template-columns: minmax(0, 1fr); }
+    .signal-section-heading h2 { grid-column: 1; }
+    .signal-plate { display: grid; grid-template-columns: minmax(0, 1fr); min-height: auto; position: relative; top: auto; }
+    .signal-plate--2, .signal-plate--3 { margin-top: 2rem; }
+    .signal-plate__heading { gap: 1.25rem; }
+    .signal-plate__image { min-height: 21rem; }
+    .signal-tracks > a { grid-template-columns: 1.5rem minmax(6rem, 1fr) auto; padding-block: .9rem; }
+    .signal-wave { grid-column: 2 / -1; grid-row: 2; }
+    .signal-experience li { grid-template-columns: 1.75rem minmax(0, 1fr); }
+    .signal-experience li > p { grid-column: 2; }
+    .signal-experience li > p:last-child { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .signal-lab [data-lab-scrub-reveal], .signal-lab [data-lab-stack] { opacity: 1 !important; transform: none !important; }
+    .signal-plate__image :global(img) { transition: none; }
+  }
+</style>

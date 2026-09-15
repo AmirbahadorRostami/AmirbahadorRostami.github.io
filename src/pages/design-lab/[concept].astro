@@ -5,6 +5,8 @@ import { DESIGN_CONCEPTS, designConceptBySlug } from '../../design-lab/manifest'
 import ConceptShell from '../../design-lab/components/ConceptShell.astro';
 import PosterIndex from '../../design-lab/concepts/PosterIndex.astro';
 import TypeImageCollision from '../../design-lab/concepts/TypeImageCollision.astro';
+import DarkroomCinema from '../../design-lab/concepts/DarkroomCinema.astro';
+import PrintedSignalLab from '../../design-lab/concepts/PrintedSignalLab.astro';
 
 export const getStaticPaths = (() => DESIGN_CONCEPTS.map(({ slug }) => ({
   params: { concept: slug },
@@ -16,11 +18,11 @@ if (!concept) throw new Error(`Unknown design concept: ${Astro.params.concept}`)
 const conceptComponents = {
   'poster-index': PosterIndex,
   'type-image-collision': TypeImageCollision,
-  'darkroom-cinema': ConceptShell,
-  'printed-signal-lab': ConceptShell,
+  'darkroom-cinema': DarkroomCinema,
+  'printed-signal-lab': PrintedSignalLab,
   'coral-broadcast': ConceptShell,
   'clau-poster-wall': ConceptShell,
-} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell | typeof PosterIndex | typeof TypeImageCollision>;
+} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell | typeof PosterIndex | typeof TypeImageCollision | typeof DarkroomCinema | typeof PrintedSignalLab>;
 const Concept = conceptComponents[concept.slug as keyof typeof conceptComponents];
 ---
 

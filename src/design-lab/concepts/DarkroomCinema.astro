@@ -1,0 +1,260 @@
+---
+import { Image } from 'astro:assets';
+import { loadDesignLabContent } from '../content';
+
+const { projects, music, experience } = await loadDesignLabContent();
+const luminousTrails = projects.find(({ id }) => id === 'luminous-trails');
+if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.');
+---
+
+<div class="darkroom" data-darkroom-cinema>
+  <section class="darkroom-hero" aria-labelledby="darkroom-title">
+    <a class="darkroom-hero__media" href={`/work/${luminousTrails.id}/`} aria-label={`View ${luminousTrails.data.title}`}>
+      <Image
+        src={luminousTrails.data.hero}
+        alt={luminousTrails.data.heroAlt}
+        widths={[960, 1440, 1920]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span class="darkroom-hero__wash" aria-hidden="true"></span>
+    </a>
+    <div class="darkroom-hero__content">
+      <p class="darkroom-hero__eyebrow">Amir Rostami — Toronto, Canada</p>
+      <h1 id="darkroom-title">
+        <span>Creative technologist.</span>
+        <span>Musician. Maker of</span>
+        <span>curious things.</span>
+      </h1>
+      <p class="darkroom-hero__statement">I create immersive experiences, software, and sound that bring people together in unexpected ways.</p>
+      <p class="darkroom-hero__availability">Open to employment and freelance work.</p>
+    </div>
+    <a class="darkroom-hero__cue" href="#work">Enter the work <span aria-hidden="true">↓</span></a>
+  </section>
+
+  <section id="work" class="darkroom-work" aria-labelledby="darkroom-work-title">
+    <aside class="darkroom-work__index" data-cinema-project-index>
+      <p>Selected work</p>
+      <h2 id="darkroom-work-title">Three chapters in public space.</h2>
+      <ol>
+        {projects.map((project, index) => <li><a href={`#darkroom-chapter-${index + 1}`}><span>0{index + 1}</span>{project.data.title}</a></li>)}
+      </ol>
+    </aside>
+
+    <div class="darkroom-chapters">
+      {projects.map((project, index) => (
+        <article id={`darkroom-chapter-${index + 1}`} class="darkroom-chapter" data-cinema-chapter data-lab-project>
+          <a class="darkroom-chapter__media" href={`/work/${project.id}/`} aria-label={`View ${project.data.title}`}>
+            <span data-lab-scale>
+              <Image
+                src={project.data.hero}
+                alt={project.data.heroAlt}
+                widths={[800, 1200, 1600]}
+                sizes="(max-width: 56.25rem) 100vw, 76vw"
+              />
+            </span>
+          </a>
+          <div class="darkroom-chapter__wash" aria-hidden="true"></div>
+          <div class="darkroom-chapter__copy" data-lab-reveal>
+            <p>Chapter 0{index + 1}</p>
+            <h3><a href={`/work/${project.id}/`}>{project.data.title}</a></h3>
+            <p>{project.data.cardSummary}</p>
+            <a href={`/work/${project.id}/`}>View project <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="music" class="darkroom-music" aria-labelledby="darkroom-music-title">
+    <div class="darkroom-section-heading">
+      <p>Listening</p>
+      <h2 id="darkroom-music-title">Three recordings, played after dark.</h2>
+    </div>
+    <div class="darkroom-listening" aria-label="Featured music">
+      {music.map((track, index) => (
+        <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer">
+          <span>0{index + 1}</span>
+          <strong>{track.data.title}</strong>
+          <span>Listen ↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="experience" class="darkroom-experience" aria-labelledby="darkroom-experience-title">
+    <div class="darkroom-section-heading">
+      <p>Experience</p>
+      <h2 id="darkroom-experience-title">Engineering, art, and research in one practice.</h2>
+    </div>
+    <ol>
+      {experience.map((entry, index) => (
+        <li data-lab-stack>
+          <span>0{index + 1}</span>
+          <div><h3>{entry.data.role}</h3><p>{entry.data.organization}</p></div>
+          <p>{entry.data.period}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="contact" class="darkroom-contact" aria-labelledby="darkroom-contact-title">
+    <p>Contact</p>
+    <h2 id="darkroom-contact-title">Have a place for something curious?</h2>
+    <a href="/contact/">Contact Amir <span aria-hidden="true">↗</span></a>
+  </section>
+</div>
+
+<script>
+  import { initializeDesignLabMotion } from '../motion';
+
+  const root = document.querySelector<HTMLElement>('[data-darkroom-cinema]');
+  if (root) {
+    const projectIndex = root.querySelector<HTMLElement>('[data-cinema-project-index]');
+    if (projectIndex && window.matchMedia('(min-width: 56.3125rem)').matches) {
+      projectIndex.setAttribute('data-lab-pin', '');
+    }
+    initializeDesignLabMotion(root);
+  }
+</script>
+
+<style>
+  .darkroom {
+    --black: #090a0a;
+    --graphite: #252728;
+    --white: #f3efe7;
+    background: var(--black);
+    color: var(--white);
+    overflow: clip;
+  }
+  .darkroom :is(h1, h2, h3, p) { margin: 0; }
+  .darkroom a { text-decoration-thickness: 1px; text-underline-offset: .25em; }
+  :global(body[data-concept="darkroom-cinema"] .concept-navigation) {
+    background: #090a0a;
+    color: #f3efe7;
+    font-size: .75rem;
+    letter-spacing: .06em;
+    padding-block: 1rem;
+    text-transform: uppercase;
+  }
+  .darkroom-hero {
+    align-items: center;
+    display: grid;
+    min-height: calc(100svh - 3.5rem);
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 4.5rem);
+    position: relative;
+  }
+  .darkroom-hero__media, .darkroom-hero__wash { inset: 0; position: absolute; }
+  .darkroom-hero__media { display: block; overflow: hidden; }
+  .darkroom-hero__media :global(img) {
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(.2,.7,.2,1);
+    width: 100%;
+  }
+  .darkroom-hero__media:hover :global(img), .darkroom-hero__media:focus-visible :global(img) { transform: scale(1.025); }
+  .darkroom-hero__wash { background: rgba(9, 10, 10, .68); pointer-events: none; }
+  .darkroom-hero__content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-inline: auto;
+    max-width: 92rem;
+    pointer-events: none;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+  }
+  .darkroom-hero__eyebrow, .darkroom-hero__availability, .darkroom-section-heading > p,
+  .darkroom-work__index > p, .darkroom-chapter__copy > p:first-child, .darkroom-contact > p {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+  .darkroom-hero h1 {
+    font-size: clamp(3.6rem, 8.3vw, 8.8rem);
+    font-weight: 430;
+    letter-spacing: -.075em;
+    line-height: .82;
+    margin-top: clamp(2rem, 5vw, 4.5rem);
+    max-width: 92rem;
+    width: 100%;
+  }
+  .darkroom-hero h1 span { display: block; white-space: nowrap; }
+  .darkroom-hero__statement { font-size: clamp(1rem, 1.45vw, 1.3rem); line-height: 1.35; margin-top: 2rem; max-width: 43rem; }
+  .darkroom-hero__availability { margin-top: 1.5rem; }
+  .darkroom-hero__cue { bottom: 1.6rem; font-size: .78rem; position: absolute; right: clamp(1.5rem, 4vw, 4.5rem); z-index: 2; }
+  .darkroom-work { display: grid; grid-template-columns: minmax(15rem, 24vw) minmax(0, 1fr); }
+  .darkroom-work__index { align-self: start; background: var(--black); min-height: 100svh; padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 3vw, 3rem); z-index: 3; }
+  .darkroom-work__index h2, .darkroom-section-heading h2 {
+    font-size: clamp(2rem, 3.5vw, 4rem);
+    font-weight: 430;
+    letter-spacing: -.06em;
+    line-height: .95;
+    margin-top: 1.5rem;
+  }
+  .darkroom-work__index ol { list-style: none; margin: clamp(3rem, 9vh, 7rem) 0 0; padding: 0; }
+  .darkroom-work__index li { border-top: 1px solid var(--graphite); }
+  .darkroom-work__index a { display: grid; gap: 1rem; grid-template-columns: 2rem minmax(0, 1fr); padding: 1rem 0; text-decoration: none; }
+  .darkroom-work__index a span { color: #9a9892; font-size: .7rem; }
+  .darkroom-chapter { min-height: 92svh; overflow: hidden; position: relative; }
+  .darkroom-chapter__media, .darkroom-chapter__wash { inset: 0; position: absolute; }
+  .darkroom-chapter__media { display: block; overflow: hidden; }
+  .darkroom-chapter__media > span { display: block; height: 100%; width: 100%; }
+  .darkroom-chapter__media :global(img) {
+    height: 100%;
+    object-fit: cover;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+    width: 100%;
+  }
+  .darkroom-chapter__media:hover :global(img), .darkroom-chapter__media:focus-visible :global(img) { transform: scale(1.03); }
+  .darkroom-chapter__wash { background: rgba(9, 10, 10, .46); pointer-events: none; }
+  .darkroom-chapter__copy { align-content: end; display: grid; inset: 0; padding: clamp(1.5rem, 5vw, 5rem); pointer-events: none; position: absolute; }
+  .darkroom-chapter__copy h3 { font-size: clamp(3rem, 7vw, 7.4rem); font-weight: 430; letter-spacing: -.075em; line-height: .86; margin-top: .8rem; max-width: 10ch; }
+  .darkroom-chapter__copy h3 a, .darkroom-chapter__copy > a { pointer-events: auto; }
+  .darkroom-chapter__copy > p:nth-of-type(2) { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.4; margin-top: 1.5rem; max-width: 31rem; }
+  .darkroom-chapter__copy > a { justify-self: start; margin-top: 1rem; }
+  .darkroom-music, .darkroom-experience { padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 5vw, 5rem); }
+  .darkroom-section-heading { display: grid; gap: 1rem; grid-template-columns: minmax(8rem, .38fr) minmax(0, 1fr); }
+  .darkroom-section-heading h2 { margin-top: 0; max-width: 16ch; }
+  .darkroom-listening { border-block: 1px solid var(--graphite); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(3rem, 7vw, 7rem); }
+  .darkroom-listening a { align-items: baseline; display: grid; gap: .75rem; grid-template-columns: 1.5rem minmax(0, 1fr) auto; padding: 1rem 1.25rem; text-decoration: none; }
+  .darkroom-listening a + a { border-left: 1px solid var(--graphite); }
+  .darkroom-listening span { color: #9a9892; font-size: .7rem; }
+  .darkroom-listening strong { font-size: clamp(1.25rem, 2vw, 2rem); font-weight: 430; letter-spacing: -.04em; }
+  .darkroom-experience { background: var(--graphite); }
+  .darkroom-experience ol { list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }
+  .darkroom-experience li { align-items: start; border-top: 1px solid #555657; display: grid; gap: 1rem; grid-template-columns: 2rem minmax(14rem, .7fr) minmax(10rem, 1fr); padding: 1.25rem 0; }
+  .darkroom-experience li > span, .darkroom-experience li > p { color: #b7b4ac; font-size: .74rem; }
+  .darkroom-experience h3 { font-size: clamp(1.2rem, 2vw, 2rem); font-weight: 430; letter-spacing: -.04em; line-height: 1; }
+  .darkroom-experience li div p { color: #b7b4ac; margin-top: .4rem; }
+  .darkroom-experience li > p { justify-self: end; }
+  .darkroom-contact { min-height: 68svh; padding: clamp(3rem, 6vw, 6rem); }
+  .darkroom-contact h2 { font-size: clamp(3.4rem, 8vw, 8rem); font-weight: 430; letter-spacing: -.075em; line-height: .86; margin-top: clamp(5rem, 13vw, 11rem); max-width: 11ch; }
+  .darkroom-contact > a { display: inline-block; font-size: clamp(1.2rem, 2.4vw, 2rem); margin-top: 2rem; }
+  @media (max-width: 56.25rem) {
+    .darkroom-hero { min-height: min(52rem, calc(100svh - 3.5rem)); }
+    .darkroom-hero h1 { font-size: clamp(2.2rem, 11vw, 5.7rem); }
+    .darkroom-work { grid-template-columns: minmax(0, 1fr); }
+    .darkroom-work__index { min-height: auto; }
+    .darkroom-work__index ol { margin-top: 2.5rem; }
+    .darkroom-chapter { min-height: 78svh; }
+    .darkroom-section-heading { grid-template-columns: minmax(0, 1fr); }
+    .darkroom-listening { grid-template-columns: minmax(0, 1fr); }
+    .darkroom-listening a + a { border-left: 0; border-top: 1px solid var(--graphite); }
+    .darkroom-experience li { grid-template-columns: 1.75rem minmax(0, 1fr); }
+    .darkroom-experience li > p { grid-column: 2; justify-self: start; }
+  }
+  @media (max-width: 31rem) {
+    .darkroom-hero__cue { left: 1.5rem; right: auto; }
+    .darkroom-chapter__copy h3 { font-size: clamp(2.8rem, 15vw, 4.7rem); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .darkroom [data-lab-reveal], .darkroom [data-lab-scale], .darkroom [data-lab-stack] { opacity: 1 !important; transform: none !important; }
+    .darkroom-hero__media :global(img), .darkroom-chapter__media :global(img) { transition: none; }
+  }
+</style>
