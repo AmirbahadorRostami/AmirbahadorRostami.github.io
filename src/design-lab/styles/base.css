@@ -17,7 +17,7 @@ body.design-lab {
   overflow-x: clip;
 }
 .design-lab a { color: inherit; text-underline-offset: 0.2em; }
-.design-lab :focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
+.design-lab :focus-visible { outline: 3px solid currentColor; outline-offset: -3px; }
 .design-lab img, .design-lab video { display: block; max-width: 100%; }
 .lab-skip-link {
   position: fixed;

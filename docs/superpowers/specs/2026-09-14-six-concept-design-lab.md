@@ -1,6 +1,6 @@
 # Six-Concept Portfolio Design Lab Specification
 
-**Status:** Approved for implementation on 2026-09-14
+**Status:** Implemented and verified on 2026-09-15
 
 ## Objective
 
@@ -94,7 +94,7 @@ Desktop dense grids use twelve columns and fill complete rows with `7+5`, `4+8`,
 Reference: Doug Alves.
 
 - Palette: warm espresso, bone, graphite, one muted mint signal.
-- Typography: Satoshi Variable with a restrained monospace utility face.
+- Typography: Space Grotesk Variable with restrained utility copy.
 - Hero: artistic asymmetry with monumental type and one project image entering from the lower-right edge.
 - Work: dense editorial plates separated by hairlines, with project facts arranged as an index rather than chips.
 - Music: an infinite typographic track marquee followed by three playable destinations.
@@ -106,7 +106,7 @@ Reference: Doug Alves.
 Reference: Elvina Prasad.
 
 - Palette: black, white, smoke gray; no chromatic accent.
-- Typography: Cabinet Grotesk Variable with narrow utility copy.
+- Typography: Archivo Variable with narrow utility copy.
 - Hero: editorial split whose project imagery passes between layers of oversized type.
 - Work: horizontal accordion panels that expand to reveal project copy.
 - Music: black-and-white title carousel with overlapping square thumbnails derived from project media.
@@ -142,7 +142,7 @@ Reference: OFF+BRAND.
 Reference: Channel Studio.
 
 - Palette: black, soft bone, concentrated coral.
-- Typography: Cabinet Grotesk Variable with a compressed headline treatment.
+- Typography: Archivo Variable with a compressed headline treatment.
 - Hero: artistic asymmetry with a narrow vertical project frame and oversized broadcast-style statement.
 - Work: sharp full-bleed media sequence with coral active-state typography.
 - Music: continuously moving title transmission that pauses on focus and hover.
@@ -154,7 +154,7 @@ Reference: Channel Studio.
 Reference: clau.as.kee.
 
 - Palette: flat periwinkle, black, and one signal green. The periwinkle is a solid field, never a gradient.
-- Typography: Satoshi Variable with intentionally oversized black letterforms.
+- Typography: Space Grotesk Variable with intentionally oversized black letterforms.
 - Hero: cinematic center presented as a single poster-like typographic composition.
 - Work: monumental project names with inline image apertures and an anti-card poster wall.
 - Music: large-scale horizontal marquee acting as the transition into listening links.
@@ -175,7 +175,9 @@ Use GSAP and ScrollTrigger through one shared initializer. Astro pages remain st
 
 ## Typography and asset delivery
 
-Self-host variable font packages through the build rather than loading external font CSS at runtime. Required families are Satoshi, Cabinet Grotesk, Outfit, and Geist. Each page loads only its selected family plus the shared utility mono family already available locally.
+The approved licensing ruling replaces Satoshi with Space Grotesk and Cabinet Grotesk with Archivo; Outfit and Geist remain. All four families are locally bundled Fontsource variable packages licensed under OFL-1.1. No Fontshare binaries, remote font CSS, or runtime font-service requests are part of the lab.
+
+Self-host the variable packages through the build rather than loading external font CSS at runtime. Each page loads only its selected family, and lab utility text inherits that active family.
 
 Astro's image pipeline serves the existing WebP project assets with descriptive alt text. Decorative crops use empty alt text; linked project images retain meaningful project-specific descriptions.
 
@@ -199,3 +201,15 @@ Astro's image pipeline serves the existing WebP project assets with descriptive 
 - The production homepage and production navigation receive no visual or behavioral changes.
 - The lab index provides a concise comparison note and direct links to all six concepts.
 
+## Final verification record
+
+Verification on 2026-09-15 used Node 24 and the merge base `434459b1d950aa5a0faf77c5e9f8e2a22df38cc0`.
+
+- The full repository command passed 58 unit tests, an Astro check with 0 errors, 0 warnings, and 0 hints, a 19-page static build, 172 standard browser tests, and 1 contact-fallback browser test before the final focus regression was added.
+- A production-preview geometry pass checked the hub and six concepts at 390×844, 768×1024, 1024×768, and 1440×900: 28 route/viewport combinations and 476 focusable targets. It found no document overflow after the verified focus-ring fix.
+- Desktop hero line counts for Poster Index, Type/Image Collision, Darkroom Cinema, Printed Signal Lab, Coral Broadcast, and Clau Poster Wall were respectively 2, 1, 3, 3, 2, and 3.
+- Printed Signal Lab uses six complete single-column rows at 390 and 768 pixels, then fills all twelve columns as `7+5`, `4+8`, and `6+6` at 1024 and 1440 pixels.
+- Full-page production-preview screenshots showed readable media overlays and no empty reserved dense-grid cells at all four review widths.
+- The merge-base diff contains only lab routes, lab-only shared files, the new lab test files, lab dependencies, and this documentation. Production pages, the production header/footer, existing production components, and pre-existing tests are unchanged.
+- `npm audit --omit=dev` reports three pre-existing findings in Astro/esbuild/sharp (1 low, 1 high, 1 critical). `npm audit` adds the pre-existing Vitest/@vitest/mocker chain for five total findings (1 low, 2 moderate, 1 high, 1 critical). GSAP and the four Fontsource packages introduce no reported production vulnerability. The available blanket remediation requires forced breaking upgrades and is intentionally deferred.
+- The successful test commands still emit pre-existing Astro Markdown deprecation notices in two unit tests and Playwright's `NO_COLOR`/`FORCE_COLOR` environment notice; Astro's own diagnostic result remains clean.

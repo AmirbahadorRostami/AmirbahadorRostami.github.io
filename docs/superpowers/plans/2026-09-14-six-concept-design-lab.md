@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-14-six-concept-design-lab.md`
 
+**Approved font licensing ruling:** Replace Satoshi with Space Grotesk and Cabinet Grotesk with Archivo; retain Outfit and Geist. Bundle all four as local Fontsource variable packages under OFL-1.1. Do not add Fontshare binaries, remote font CSS, or runtime font-service requests.
+
 ## Global Constraints
 
 - Production routes and the production header/footer must remain unchanged.
@@ -134,7 +136,7 @@ Expected: FAIL with a 404 for `/design-lab/`.
 
 - [ ] **Step 3: Install motion and font dependencies**
 
-Run: `npm install gsap @fontsource-variable/satoshi @fontsource-variable/cabinet-grotesk @fontsource-variable/outfit @fontsource-variable/geist`
+Run: `npm install gsap @fontsource-variable/space-grotesk @fontsource-variable/archivo @fontsource-variable/outfit @fontsource-variable/geist`
 
 Expected: `package.json` and `package-lock.json` contain the five new runtime dependencies.
 
@@ -227,11 +229,11 @@ Expected: FAIL because both concept components are absent.
 
 - [ ] **Step 3: Implement Poster Index**
 
-Use Satoshi, espresso/bone/mint, an asymmetric two-line hero, one inline image mask, three interlocking project plates, an infinite music marquee, pinned work heading, and scale/fade media. Keep all non-image surfaces square.
+Use Space Grotesk, espresso/bone/mint, an asymmetric two-line hero, one inline image mask, three interlocking project plates, an infinite music marquee, pinned work heading, and scale/fade media. Keep all non-image surfaces square.
 
 - [ ] **Step 4: Implement Type/Image Collision**
 
-Use Cabinet Grotesk, black/white, a layered editorial hero, three keyboard-operable horizontal accordion panels, a restrained music carousel, scrubbed word reveal, and scale/fade media.
+Use Archivo, black/white, a layered editorial hero, three keyboard-operable horizontal accordion panels, a restrained music carousel, scrubbed word reveal, and scale/fade media.
 
 - [ ] **Step 5: Run responsive tests and verify GREEN**
 
@@ -313,11 +315,11 @@ Expected: FAIL because the concept components are absent.
 
 - [ ] **Step 3: Implement Coral Broadcast**
 
-Use Cabinet Grotesk, black/bone/coral, a two-line asymmetric hero, vertically cropped work transmissions, a focus-pausing title marquee, pinned active-state changes, and stacked project layers.
+Use Archivo, black/bone/coral, a two-line asymmetric hero, vertically cropped work transmissions, a focus-pausing title marquee, pinned active-state changes, and stacked project layers.
 
 - [ ] **Step 4: Implement Clau Poster Wall**
 
-Use Satoshi, solid periwinkle/black/signal green, a centered poster hero, monumental project names with inline image apertures, an anti-card poster wall, large music marquee, scrubbed text, and image scale/fade. Do not add gradients, shadows, or rounded containers.
+Use Space Grotesk, solid periwinkle/black/signal green, a centered poster hero, monumental project names with inline image apertures, an anti-card poster wall, large music marquee, scrubbed text, and image scale/fade. Do not add gradients, shadows, or rounded containers.
 
 - [ ] **Step 5: Run responsive tests and verify GREEN**
 
@@ -374,7 +376,8 @@ git commit -m "test: harden design lab accessibility"
 ### Task 8: Complete regression, visual review, and documentation
 
 **Files:**
-- Modify: `docs/superpowers/specs/2026-08-31-personal-portfolio-design.md`
+- Modify: `docs/superpowers/specs/2026-09-14-six-concept-design-lab.md`
+- Modify: `docs/superpowers/plans/2026-09-14-six-concept-design-lab.md`
 - Modify: `README.md`
 - Modify: lab files only when verification demonstrates a defect.
 
@@ -413,9 +416,19 @@ git add README.md docs src tests package.json package-lock.json
 git commit -m "docs: finalize six-concept design lab"
 ```
 
+#### Task 8 verification evidence (2026-09-15)
+
+- Node/runtime: Node 24; merge base `434459b1d950aa5a0faf77c5e9f8e2a22df38cc0`.
+- Initial complete regression: 58 unit tests, Astro diagnostics `0 errors / 0 warnings / 0 hints`, 19 generated pages, 172 standard browser tests, and 1 contact-fallback test passed. The command also emitted pre-existing Markdown deprecation and `NO_COLOR`/`FORCE_COLOR` notices.
+- Visual/geometry review: 28 hub/concept viewport combinations, 28 full-page screenshots, and 476 focusable targets checked at 390×844, 768×1024, 1024×768, and 1440×900.
+- TDD defect repair: the new focus-clipping regression failed on the Poster Index marquee link with a 3px outline and 5px outward offset inside a clipping container; drawing the same 3px outline inward fixed the defect, and the focused test then passed across all routes and widths.
+- Desktop hero lines: Poster Index 2; Type/Image Collision 1; Darkroom Cinema 3; Printed Signal Lab 3; Coral Broadcast 2; Clau Poster Wall 3.
+- Dense-grid evidence: one complete column at 390/768; desktop rows total `7+5=12`, `4+8=12`, and `6+6=12` at 1024/1440.
+- Audit attribution: the production audit reports Astro/esbuild/sharp only (3 findings: 1 low, 1 high, 1 critical); the full audit adds Vitest/@vitest/mocker (5 findings: 1 low, 2 moderate, 1 high, 1 critical). No advisory is attributed to GSAP or any Fontsource package. Forced breaking upgrades were not applied.
+- Isolation: production pages, header/footer, existing production components, and pre-existing tests have a zero-byte diff from the merge base. Only lab pages/files/tests, lab dependencies, and Task 8 documentation differ.
+
 ## Self-review
 
 - Spec coverage: all six concepts, shared content, motion, typography, accessibility, responsive behavior, GitHub Pages generation, production isolation, and comparison workflow map to Tasks 1–8.
 - Placeholder scan: the plan contains no deferred implementation markers or unspecified test requests.
 - Type consistency: the manifest, content adapter, layout, dynamic route, motion initializer, and test selectors use one naming contract throughout.
-

@@ -22,6 +22,21 @@ npm run test           # unit, build, and browser coverage
 
 Use `npm ci` for a clean, lockfile-based install in CI or when reproducing a build.
 
+## Design lab
+
+The portfolio includes an isolated comparison lab for choosing a future visual direction. Start the local server with `npm run dev`, then open `http://localhost:4321/design-lab/`. The six concept URLs are:
+
+- `http://localhost:4321/design-lab/poster-index/`
+- `http://localhost:4321/design-lab/type-image-collision/`
+- `http://localhost:4321/design-lab/darkroom-cinema/`
+- `http://localhost:4321/design-lab/printed-signal-lab/`
+- `http://localhost:4321/design-lab/coral-broadcast/`
+- `http://localhost:4321/design-lab/clau-poster-wall/`
+
+The same paths are statically generated on GitHub Pages under `https://amirbahadorrostami.github.io`. They are intentionally absent from production navigation and marked `noindex, nofollow`, but those measures are not access control: anyone with an exact deployed URL can view a concept.
+
+The lab is a comparison workspace, not a production redesign. Do not replace the production homepage, header, footer, or shared production components until one concept—or an explicitly defined hybrid—has been selected.
+
 ## Editing content and media
 
 - Projects live in `src/content/projects/<slug>/index.md`.
@@ -55,3 +70,5 @@ This is the username site `amirbahadorrostami.github.io`, so Astro has no `base`
 
 - [Living design specification](docs/superpowers/specs/2026-08-31-personal-portfolio-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-08-31-core-portfolio-implementation.md)
+- [Design lab specification](docs/superpowers/specs/2026-09-14-six-concept-design-lab.md)
+- [Design lab implementation plan](docs/superpowers/plans/2026-09-14-six-concept-design-lab.md)
