@@ -32,3 +32,23 @@ for (const slug of slugs) {
     await expect(page.getByRole('link', { name: 'Back to all concepts' })).toBeVisible();
   });
 }
+
+for (const [slug, title] of [
+  ['poster-index', 'Poster Index'],
+  ['type-image-collision', 'Type/Image Collision'],
+] as const) {
+  test(`${title} keeps its portfolio content visible without horizontal overflow`, async ({ page }) => {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/design-lab/${slug}/`);
+
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+      await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+      await expect(page.locator('[data-lab-track]')).toHaveCount(3);
+      await expect(page.locator('a[href="/contact/"]')).toBeVisible();
+      await expect.poll(() => page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      )).toBe(true);
+    }
+  });
+}

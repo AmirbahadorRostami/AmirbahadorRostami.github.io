@@ -3,6 +3,8 @@ import type { GetStaticPaths } from 'astro';
 import DesignLabLayout from '../../layouts/DesignLabLayout.astro';
 import { DESIGN_CONCEPTS, designConceptBySlug } from '../../design-lab/manifest';
 import ConceptShell from '../../design-lab/components/ConceptShell.astro';
+import PosterIndex from '../../design-lab/concepts/PosterIndex.astro';
+import TypeImageCollision from '../../design-lab/concepts/TypeImageCollision.astro';
 
 export const getStaticPaths = (() => DESIGN_CONCEPTS.map(({ slug }) => ({
   params: { concept: slug },
@@ -11,25 +13,29 @@ export const getStaticPaths = (() => DESIGN_CONCEPTS.map(({ slug }) => ({
 const concept = designConceptBySlug(Astro.params.concept!);
 if (!concept) throw new Error(`Unknown design concept: ${Astro.params.concept}`);
 
-// Each neutral shell is replaced by its independent concept component in Tasks 4–6.
 const conceptComponents = {
-  'poster-index': ConceptShell,
-  'type-image-collision': ConceptShell,
+  'poster-index': PosterIndex,
+  'type-image-collision': TypeImageCollision,
   'darkroom-cinema': ConceptShell,
   'printed-signal-lab': ConceptShell,
   'coral-broadcast': ConceptShell,
   'clau-poster-wall': ConceptShell,
-} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell>;
+} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell | typeof PosterIndex | typeof TypeImageCollision>;
 const Concept = conceptComponents[concept.slug as keyof typeof conceptComponents];
 ---
 
 <DesignLabLayout title={`${concept.name} — Design lab`} description={concept.description} conceptSlug={concept.slug}>
   <nav class="concept-navigation" aria-label="Design lab">
     <a href="/design-lab/">Back to all concepts</a>
+    <span aria-hidden="true">/</span>
+    <a href="#work">Work</a>
+    <a href="#music">Music</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
   </nav>
   <Concept concept={concept} />
 </DesignLabLayout>
 
 <style>
-  .concept-navigation { padding: 1.5rem clamp(1.5rem, 5vw, 4rem); }
+  .concept-navigation { align-items: center; display: flex; flex-wrap: wrap; gap: .4rem 1rem; padding: 1.5rem clamp(1.5rem, 5vw, 4rem); }
 </style>
