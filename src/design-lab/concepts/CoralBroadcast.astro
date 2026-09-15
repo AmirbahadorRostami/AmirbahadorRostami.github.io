@@ -37,7 +37,7 @@ const [heroProject] = projects;
         ))}
       </ol>
     </div>
-    <div class="broadcast-projects">
+    <div class="broadcast-projects" data-broadcast-projects>
       {projects.map((project, index) => (
         <article id={`broadcast-project-${index + 1}`} class:list={['broadcast-project', `broadcast-project--${index + 1}`]} data-lab-project data-broadcast-project>
           <a class="broadcast-project__media" href={`/work/${project.id}/`} aria-label={`View ${project.data.title}`}>
@@ -52,9 +52,8 @@ const [heroProject] = projects;
           </a>
           <div class="broadcast-project__copy" data-lab-reveal>
             <p>Broadcast 0{index + 1}</p>
-            <h3><a href={`/work/${project.id}/`}>{project.data.title}</a></h3>
+            <h3>{project.data.title}</h3>
             <p>{project.data.cardSummary}</p>
-            <a href={`/work/${project.id}/`}>Receive project <span aria-hidden="true">↗</span></a>
           </div>
         </article>
       ))}
@@ -115,13 +114,27 @@ const [heroProject] = projects;
     marquee?.addEventListener('focusout', updateMarquee);
 
     const links = Array.from(root.querySelectorAll<HTMLElement>('[data-broadcast-index-link]'));
-    const observer = new IntersectionObserver((entries) => {
-      entries.filter(({ isIntersecting }) => isIntersecting).forEach((entry) => {
-        const position = Array.from(root.querySelectorAll('[data-broadcast-project]')).indexOf(entry.target);
-        links.forEach((link, index) => link.toggleAttribute('data-active', index === position));
-      });
-    }, { threshold: .55 });
-    root.querySelectorAll('[data-broadcast-project]').forEach((project) => observer.observe(project));
+    const projects = Array.from(root.querySelectorAll<HTMLElement>('[data-broadcast-project]'));
+    const updateActiveProject = () => {
+      const activeProject = projects.reduce((mostVisible, project) => {
+        const visibleHeight = (element: HTMLElement) => {
+          const bounds = element.getBoundingClientRect();
+          return Math.max(0, Math.min(bounds.bottom, window.innerHeight) - Math.max(bounds.top, 0));
+        };
+        const projectVisibility = visibleHeight(project);
+        const currentVisibility = visibleHeight(mostVisible);
+        if (projectVisibility !== currentVisibility) return projectVisibility > currentVisibility ? project : mostVisible;
+
+        return Number.parseInt(getComputedStyle(project).zIndex, 10) > Number.parseInt(getComputedStyle(mostVisible).zIndex, 10)
+          ? project
+          : mostVisible;
+      }, projects[0]);
+      const activeIndex = projects.indexOf(activeProject);
+      links.forEach((link, index) => link.toggleAttribute('data-active', index === activeIndex));
+    };
+    updateActiveProject();
+    window.addEventListener('scroll', updateActiveProject, { passive: true });
+    window.addEventListener('resize', updateActiveProject);
   }
 </script>
 

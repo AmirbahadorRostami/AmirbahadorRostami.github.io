@@ -210,6 +210,59 @@ test('Clau Poster Wall keeps its field solid and card-free', async ({ page }) =>
   await expect(page.locator('.card')).toHaveCount(0);
 });
 
+test('Clau Poster Wall pauses its marquee only inside its own hover or focus region', async ({ page }) => {
+  await page.goto('/design-lab/clau-poster-wall/');
+  const marquee = page.getByLabel('Moving featured music titles');
+  const track = marquee.locator('[data-lab-marquee]');
+
+  await page.mouse.move(16, 16);
+  const before = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(160);
+  await expect(track.evaluate((element) => getComputedStyle(element).transform)).resolves.not.toBe(before);
+
+  await marquee.hover();
+  const hoverPaused = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(160);
+  await expect(track.evaluate((element) => getComputedStyle(element).transform)).resolves.toBe(hoverPaused);
+
+  await page.mouse.move(16, 16);
+  await marquee.evaluate((element) => (element as HTMLElement).focus());
+  const focusPaused = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(160);
+  await expect(track.evaluate((element) => getComputedStyle(element).transform)).resolves.toBe(focusPaused);
+});
+
+test('Clau Poster Wall scrubs individual project words around their image apertures', async ({ page }) => {
+  await page.goto('/design-lab/clau-poster-wall/');
+
+  await expect(page.locator('.clau-project h3[data-lab-scrub-reveal]')).toHaveCount(0);
+  await expect(page.locator('.clau-project h3 [data-lab-scrub-reveal]')).toHaveCount(5);
+  await expect(page.locator('.clau-project__aperture')).toHaveCount(3);
+});
+
+test('Coral Broadcast recomputes its active project when scrolling backward', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/design-lab/coral-broadcast/');
+  const projectTops = await page.locator('[data-broadcast-project]').evaluateAll((elements) => elements.map(
+    (element) => element.getBoundingClientRect().top + window.scrollY,
+  ));
+
+  await page.evaluate((top) => window.scrollTo({ top }), projectTops[2]);
+  await expect(page.locator('[data-broadcast-index-link]').nth(2)).toHaveAttribute('data-active', '');
+
+  await page.evaluate((top) => window.scrollTo({ top }), projectTops[0]);
+  await expect(page.locator('[data-broadcast-index-link]').nth(0)).toHaveAttribute('data-active', '');
+  await expect(page.locator('[data-broadcast-index-link]').nth(2)).not.toHaveAttribute('data-active', '');
+});
+
+test('Coral Broadcast and Clau Poster Wall expose exactly three project anchors', async ({ page }) => {
+  await page.goto('/design-lab/coral-broadcast/');
+  await expect(page.locator('[data-broadcast-projects] a[href^="/work/"]')).toHaveCount(3);
+
+  await page.goto('/design-lab/clau-poster-wall/');
+  await expect(page.locator('[data-clau-project-wall] a[href^="/work/"]')).toHaveCount(3);
+});
+
 for (const [slug, title] of [
   ['coral-broadcast', 'Coral Broadcast'],
   ['clau-poster-wall', 'Clau Poster Wall'],
@@ -220,7 +273,10 @@ for (const [slug, title] of [
       await page.goto(`/design-lab/${slug}/`);
 
       await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-      await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+      const projectCollection = slug === 'coral-broadcast'
+        ? page.locator('[data-broadcast-projects]')
+        : page.locator('[data-clau-project-wall]');
+      await expect(projectCollection.locator('a[href^="/work/"]')).toHaveCount(3);
       await expect(page.locator('[data-lab-track]')).toHaveCount(3);
       await expect(page.locator('#experience li')).toHaveCount(3);
       await expect(page.locator('a[href="/contact/"]')).toBeVisible();

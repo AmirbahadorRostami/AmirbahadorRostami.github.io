@@ -18,13 +18,13 @@ const { projects, music, experience } = await loadDesignLabContent();
   <section id="work" class="clau-work" aria-labelledby="clau-work-title">
     <p>01 / The poster wall</p>
     <h2 id="clau-work-title">Projects, enlarged until they become places.</h2>
-    <div class="clau-project-wall" data-lab-scrub-reveal-group>
+    <div class="clau-project-wall" data-clau-project-wall data-lab-scrub-reveal-group>
       {projects.map((project, index) => (
         <article class:list={['clau-project', `clau-project--${index + 1}`]} data-lab-project>
           <p>0{index + 1} / {project.data.year ?? 'Selected work'}</p>
-          <h3 data-lab-scrub-reveal>
+          <h3>
             <a href={`/work/${project.id}/`}>
-              <span>{project.data.title.split(' ').slice(0, -1).join(' ') || project.data.title}</span>
+              {project.data.title.split(' ').map((word) => <span class="clau-project__word" data-lab-scrub-reveal>{word}</span>)}
               <span class="clau-project__aperture" data-lab-scale>
                 <Image
                   src={project.data.hero}
@@ -33,7 +33,6 @@ const { projects, music, experience } = await loadDesignLabContent();
                   sizes="(max-width: 48rem) 42vw, 20vw"
                 />
               </span>
-              {project.data.title.includes(' ') && <span>{project.data.title.split(' ').at(-1)}</span>}
             </a>
           </h3>
           <p>{project.data.cardSummary}</p>
@@ -45,7 +44,7 @@ const { projects, music, experience } = await loadDesignLabContent();
   <section id="music" class="clau-music" aria-labelledby="clau-music-title">
     <p>02 / Music</p>
     <h2 id="clau-music-title">Recordings on repeat.</h2>
-    <div class="clau-marquee" aria-hidden="true"><div data-lab-marquee>{[...music, ...music].map((track) => <span>{track.data.title} ✳</span>)}</div></div>
+    <div class="clau-marquee" data-clau-marquee tabindex="0" aria-label="Moving featured music titles"><div data-lab-marquee>{[...music, ...music].map((track) => <span>{track.data.title} ✳</span>)}</div></div>
     <div class="clau-listening" aria-label="Featured music">
       {music.map((track, index) => (
         <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer"><span>0{index + 1}</span><strong>{track.data.title}</strong><span>Listen ↗</span></a>
@@ -71,10 +70,24 @@ const { projects, music, experience } = await loadDesignLabContent();
 </div>
 
 <script>
+  import { gsap } from 'gsap';
   import { initializeDesignLabMotion } from '../motion';
 
   const root = document.querySelector<HTMLElement>('[data-clau-poster-wall]');
-  if (root) initializeDesignLabMotion(root);
+  if (root) {
+    initializeDesignLabMotion(root);
+
+    const marquee = root.querySelector<HTMLElement>('[data-clau-marquee]');
+    const updateMarquee = () => {
+      const track = marquee?.querySelector<HTMLElement>('[data-lab-marquee]');
+      if (!marquee || !track) return;
+      gsap.getTweensOf(track).forEach((tween) => marquee.matches(':hover, :focus-within') ? tween.pause() : tween.play());
+    };
+    marquee?.addEventListener('mouseenter', updateMarquee);
+    marquee?.addEventListener('mouseleave', updateMarquee);
+    marquee?.addEventListener('focusin', updateMarquee);
+    marquee?.addEventListener('focusout', updateMarquee);
+  }
 </script>
 
 <style>
