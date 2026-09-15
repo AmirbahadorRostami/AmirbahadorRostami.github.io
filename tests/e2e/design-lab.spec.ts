@@ -22,7 +22,7 @@ test('utility labels use the active bundled page family', async ({ page }) => {
   }
 
   await page.goto('/design-lab/poster-index/');
-  await expect(page.locator('.shell-label')).toHaveCSS('font-family', '"Space Grotesk Variable", sans-serif');
+  await expect(page.locator('.poster-kicker')).toHaveCSS('font-family', '"Space Grotesk Variable", sans-serif');
 });
 
 for (const slug of slugs) {
@@ -106,6 +106,38 @@ test('Darkroom Cinema presents three cinematic project chapters', async ({ page 
   await page.goto('/design-lab/darkroom-cinema/');
 
   await expect(page.locator('[data-cinema-chapter]')).toHaveCount(3);
+});
+
+test('Darkroom Cinema preserves the exact approved identity', async ({ page }) => {
+  await page.goto('/design-lab/darkroom-cinema/');
+
+  await expect(page.locator('#darkroom-title')).toHaveText(
+    'Creative technologist. Musician. Professional maker of curious things.',
+  );
+});
+
+test('Darkroom Cinema uses spacing and tone without borders', async ({ page }) => {
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/design-lab/darkroom-cinema/');
+
+    await expect(page.locator('.darkroom, .darkroom *').evaluateAll((elements) => elements.flatMap((element) => {
+      const style = getComputedStyle(element);
+      const borders = [
+        ['top', style.borderTopWidth, style.borderTopStyle],
+        ['right', style.borderRightWidth, style.borderRightStyle],
+        ['bottom', style.borderBottomWidth, style.borderBottomStyle],
+        ['left', style.borderLeftWidth, style.borderLeftStyle],
+      ];
+      const borderedSides = borders.filter(([, borderWidth, borderStyle]) => (
+        Number.parseFloat(borderWidth) > 0 && borderStyle !== 'none'
+      )).map(([side]) => side);
+
+      return borderedSides.length
+        ? [`${element.tagName.toLowerCase()}.${element.className}:${borderedSides.join(',')}`]
+        : [];
+    }))).resolves.toEqual([]);
+  }
 });
 
 test('Printed Signal Lab packs its technical sheet into complete twelve-column rows', async ({ page }) => {
