@@ -199,7 +199,7 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
   }
   .darkroom-work__index ol { list-style: none; margin: clamp(3rem, 9vh, 7rem) 0 0; padding: 0; }
   .darkroom-work__index li + li { margin-top: .35rem; }
-  .darkroom-work__index a { background: #141515; display: grid; gap: 1rem; grid-template-columns: 2rem minmax(0, 1fr); padding: .85rem 1rem; text-decoration: none; }
+  .darkroom-work__index a { display: grid; gap: 1rem; grid-template-columns: 2rem minmax(0, 1fr); padding: .65rem 0; text-decoration: none; }
   .darkroom-work__index a span { color: #9a9892; font-size: .7rem; }
   .darkroom-chapter { min-height: 92svh; overflow: hidden; position: relative; }
   .darkroom-chapter__media, .darkroom-chapter__wash { inset: 0; position: absolute; }
@@ -221,13 +221,13 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
   .darkroom-music, .darkroom-experience { padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 5vw, 5rem); }
   .darkroom-section-heading { display: grid; gap: 1rem; grid-template-columns: minmax(8rem, .38fr) minmax(0, 1fr); }
   .darkroom-section-heading h2 { margin-top: 0; max-width: 16ch; }
-  .darkroom-listening { background: #141515; display: grid; gap: .35rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(3rem, 7vw, 7rem); padding: .35rem; }
-  .darkroom-listening a { align-items: baseline; background: #1b1c1d; display: grid; gap: .75rem; grid-template-columns: 1.5rem minmax(0, 1fr) auto; padding: 1rem 1.25rem; text-decoration: none; }
+  .darkroom-listening { display: grid; gap: clamp(1.5rem, 4vw, 5rem); grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(3rem, 7vw, 7rem); }
+  .darkroom-listening a { align-items: baseline; display: grid; gap: .75rem; grid-template-columns: 1.5rem minmax(0, 1fr) auto; padding: .65rem 0; text-decoration: none; }
   .darkroom-listening span { color: #9a9892; font-size: .7rem; }
   .darkroom-listening strong { font-size: clamp(1.25rem, 2vw, 2rem); font-weight: 430; letter-spacing: -.04em; }
   .darkroom-experience { background: var(--graphite); }
-  .darkroom-experience ol { display: grid; gap: .35rem; list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }
-  .darkroom-experience li { align-items: start; background: #2c2e2f; display: grid; gap: 1rem; grid-template-columns: 2rem minmax(14rem, .7fr) minmax(10rem, 1fr); padding: 1.25rem; }
+  .darkroom-experience ol { display: grid; gap: 2rem; list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }
+  .darkroom-experience li { align-items: start; display: grid; gap: 1rem; grid-template-columns: 2rem minmax(14rem, .7fr) minmax(10rem, 1fr); padding: .35rem 0; }
   .darkroom-experience li > span, .darkroom-experience li > p { color: #b7b4ac; font-size: .74rem; }
   .darkroom-experience h3 { font-size: clamp(1.2rem, 2vw, 2rem); font-weight: 430; letter-spacing: -.04em; line-height: 1; }
   .darkroom-experience li div p { color: #b7b4ac; margin-top: .4rem; }

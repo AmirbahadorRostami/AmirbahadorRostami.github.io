@@ -116,7 +116,7 @@ test('Darkroom Cinema preserves the exact approved identity', async ({ page }) =
   );
 });
 
-test('Darkroom Cinema uses spacing and tone without borders', async ({ page }) => {
+test('Darkroom Cinema uses spacing and typography without borders or item panels', async ({ page }) => {
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/design-lab/darkroom-cinema/');
@@ -137,6 +137,22 @@ test('Darkroom Cinema uses spacing and tone without borders', async ({ page }) =
         ? [`${element.tagName.toLowerCase()}.${element.className}:${borderedSides.join(',')}`]
         : [];
     }))).resolves.toEqual([]);
+
+    await expect(page.locator(
+      '.darkroom-work__index a, .darkroom-listening a, .darkroom-experience li',
+    ).evaluateAll((elements) => elements.map(
+      (element) => getComputedStyle(element).backgroundColor,
+    ))).resolves.toEqual([
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+      'rgba(0, 0, 0, 0)',
+    ]);
   }
 });
 
