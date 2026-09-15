@@ -18,6 +18,10 @@ body.design-lab {
 }
 .design-lab a { color: inherit; text-underline-offset: 0.2em; }
 .design-lab :focus-visible { outline: 3px solid currentColor; outline-offset: -3px; }
+.design-lab [data-lab-stack]:focus-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
 .design-lab img, .design-lab video { display: block; max-width: 100%; }
 .lab-skip-link {
   position: fixed;

@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { findFocusClippingViolations } from './helpers/focus-clipping';
 
 const slugs = [
   'poster-index',
@@ -239,75 +240,21 @@ test('design-lab focus rings stay inside clipping boundaries at every review vie
     { width: 1024, height: 768 },
     { width: 1440, height: 900 },
   ];
+  const failures = [];
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
 
     for (const route of routes) {
       await page.goto(route);
-      const clippedFocusRings = await page.locator('body').evaluate(async () => {
-        const focusables = Array.from(document.querySelectorAll<HTMLElement>(
-          'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])',
-        ));
-        const clipped = [];
-
-        for (const element of focusables) {
-          if (!element.checkVisibility()) continue;
-          element.scrollIntoView({ block: 'center', inline: 'center' });
-          element.focus();
-          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-
-          const style = getComputedStyle(element);
-          const outlineWidth = Number.parseFloat(style.outlineWidth) || 0;
-          const outlineOffset = Number.parseFloat(style.outlineOffset) || 0;
-          const label = element.getAttribute('aria-label')
-            ?? element.textContent?.trim().replace(/\s+/g, ' ').slice(0, 80)
-            ?? element.tagName;
-          if (style.outlineStyle === 'none' || outlineWidth < 2) {
-            clipped.push({ label, outlineWidth, outlineOffset, clippingAncestor: 'missing visible outline' });
-            continue;
-          }
-
-          const extent = Math.max(0, outlineWidth + outlineOffset);
-          if (extent === 0) continue;
-          const ring = element.getBoundingClientRect();
-
-          const viewportClipsHorizontally = ring.width <= window.innerWidth
-            && (ring.left - extent < 0 || ring.right + extent > window.innerWidth);
-          const viewportClipsVertically = ring.height <= window.innerHeight
-            && (ring.top - extent < 0 || ring.bottom + extent > window.innerHeight);
-
-          let ancestor = element.parentElement;
-          let ancestorClips = false;
-          let clippingAncestor = '';
-          while (ancestor && ancestor !== document.body) {
-            const ancestorStyle = getComputedStyle(ancestor);
-            const clipsX = ['hidden', 'clip', 'scroll', 'auto'].includes(ancestorStyle.overflowX);
-            const clipsY = ['hidden', 'clip', 'scroll', 'auto'].includes(ancestorStyle.overflowY);
-            if (clipsX || clipsY) {
-              const boundary = ancestor.getBoundingClientRect();
-              if ((clipsX && (ring.left - extent < boundary.left || ring.right + extent > boundary.right))
-                || (clipsY && ring.height <= boundary.height
-                  && (ring.top - extent < boundary.top || ring.bottom + extent > boundary.bottom))) {
-                ancestorClips = true;
-                clippingAncestor = `${ancestor.tagName.toLowerCase()}${ancestor.id ? `#${ancestor.id}` : ''}`;
-                break;
-              }
-            }
-            ancestor = ancestor.parentElement;
-          }
-
-          if (viewportClipsHorizontally || viewportClipsVertically || ancestorClips) {
-            clipped.push({ label, outlineWidth, outlineOffset, clippingAncestor });
-          }
-        }
-
-        return clipped;
-      });
-
-      expect(clippedFocusRings, `${route} at ${viewport.width}x${viewport.height}`).toEqual([]);
+      const clippedFocusRings = await findFocusClippingViolations(page);
+      if (clippedFocusRings.length > 0) {
+        failures.push({ route, viewport, clippedFocusRings });
+      }
     }
   }
+
+  expect(failures, JSON.stringify(failures, null, 2)).toEqual([]);
 });
 
 for (const [slug, title] of [

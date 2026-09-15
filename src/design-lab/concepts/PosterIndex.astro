@@ -91,7 +91,8 @@ const [heroProject] = projects;
       const track = marquee.querySelector<HTMLElement>('[data-lab-marquee]');
       if (!track) return;
       gsap.getTweensOf(track).forEach((tween) => {
-        if (marquee.matches(':hover, :focus-within')) tween.pause();
+        if (marquee.matches(':focus-within')) tween.pause(0);
+        else if (marquee.matches(':hover')) tween.pause();
         else tween.play();
       });
     };
