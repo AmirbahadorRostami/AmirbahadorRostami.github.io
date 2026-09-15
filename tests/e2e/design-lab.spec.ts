@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const slugs = [
@@ -8,6 +9,23 @@ const slugs = [
   'coral-broadcast',
   'clau-poster-wall',
 ];
+
+const requiredContent = [
+  'Professional maker of curious things',
+  'Toronto',
+  'Open to employment and freelance work.',
+  'Encounters',
+  'Luminous Trails',
+  'Remote Realities',
+  'Float',
+  'Flow',
+  'La Paloma',
+  'Mobile Software Engineer',
+  'Co-Founder and Lead Engineer',
+  'R&D Software Engineer',
+];
+
+const conceptNavigationLabels = ['Back to all concepts', 'Work', 'Music', 'Experience', 'Contact'];
 
 test('design lab exposes a six-concept comparison hub', async ({ page }) => {
   await page.goto('/design-lab/');
@@ -32,6 +50,145 @@ for (const slug of slugs) {
     await expect(page.getByRole('link', { name: 'Back to all concepts' })).toBeVisible();
   });
 }
+
+for (const slug of slugs) {
+  test(`${slug} accessibility has no serious or critical Axe violations`, async ({ page }) => {
+    await page.goto(`/design-lab/${slug}/`);
+
+    const results = await new AxeBuilder({ page }).analyze();
+    const blockingViolations = results.violations.filter(
+      ({ impact }) => impact === 'critical' || impact === 'serious',
+    );
+
+    expect(blockingViolations, JSON.stringify(blockingViolations, null, 2)).toEqual([]);
+  });
+
+  test(`${slug} accessibility keeps the skip link, semantic headings, and descriptive local images`, async ({ page }) => {
+    await page.goto(`/design-lab/${slug}/`);
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    const headingLevels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll((headings) => headings.map(
+      (heading) => Number.parseInt(heading.tagName.slice(1), 10),
+    ));
+    expect(headingLevels.every((level, index) => index === 0 || level <= headingLevels[index - 1] + 1)).toBe(true);
+
+    const localImageAlts = await page.locator('img').evaluateAll((images) => images.map((image) => ({
+      src: image.getAttribute('src'),
+      alt: image.getAttribute('alt'),
+    })).filter(({ src }) => src?.startsWith('/')));
+    expect(localImageAlts.every(({ alt }) => Boolean(alt?.trim()))).toBe(true);
+
+    await page.keyboard.press('Tab');
+    const skipLink = page.getByRole('link', { name: 'Skip to main content' });
+    await expect(skipLink).toBeFocused();
+    await expect(skipLink).toBeVisible();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#main-content')).toBeFocused();
+  });
+
+  test(`${slug} navigation exposes every section and a visible focus indicator`, async ({ page }) => {
+    await page.goto(`/design-lab/${slug}/`);
+    const navigation = page.getByRole('navigation', { name: 'Design lab' });
+
+    for (const label of conceptNavigationLabels) {
+      await expect(navigation.getByRole('link', { name: label, exact: true })).toBeVisible();
+    }
+
+    const firstNavigationLink = navigation.getByRole('link').first();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(firstNavigationLink).toBeFocused();
+    const focusStyle = await firstNavigationLink.evaluate((link) => {
+      const style = getComputedStyle(link);
+      return { outlineStyle: style.outlineStyle, outlineWidth: Number.parseFloat(style.outlineWidth) };
+    });
+    expect(focusStyle.outlineStyle).not.toBe('none');
+    expect(focusStyle.outlineWidth).toBeGreaterThanOrEqual(2);
+  });
+
+  test(`${slug} navigation returns to the concept hub`, async ({ page }) => {
+    await page.goto(`/design-lab/${slug}/`);
+    await page.getByRole('link', { name: 'Back to all concepts', exact: true }).click();
+    await expect(page).toHaveURL(/\/design-lab\/$/);
+  });
+
+  test(`${slug} reduced motion keeps projects readable and continuous marquees static`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`/design-lab/${slug}/`);
+
+    const hiddenProjects = await page.locator('[data-lab-project]').evaluateAll((projects) => projects.flatMap((project) => (
+      Array.from(project.querySelectorAll<HTMLElement>('h3, button, a')).flatMap((target) => {
+        const style = getComputedStyle(target);
+        return style.opacity !== '1' || style.transform !== 'none' || !target.checkVisibility()
+          ? [{ text: target.textContent?.trim(), opacity: style.opacity, transform: style.transform }]
+          : [];
+      })
+    )));
+    expect(hiddenProjects, JSON.stringify(hiddenProjects)).toEqual([]);
+
+    const marqueeTransforms = await page.locator('[data-lab-marquee]').evaluateAll((marquees) => marquees.map(
+      (marquee) => getComputedStyle(marquee).transform,
+    ));
+    expect(marqueeTransforms).toEqual(Array.from({ length: marqueeTransforms.length }, () => 'none'));
+    await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(0);
+  });
+}
+
+test('all concepts retain the approved portfolio content', async ({ page }) => {
+  const routeText: string[] = [];
+
+  for (const slug of slugs) {
+    await page.goto(`/design-lab/${slug}/`);
+    routeText.push(await page.locator('body').innerText());
+  }
+
+  for (const content of requiredContent) expect(routeText.join('\n')).toContain(content);
+});
+
+test('Type/Image Collision accordion controls describe and control their panels', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/design-lab/type-image-collision/');
+
+  const controls = page.locator('[data-collision-accordion] button');
+  await expect(controls).toHaveCount(3);
+  const malformedControls = await controls.evaluateAll((buttons) => buttons.flatMap((button) => {
+    const panel = document.getElementById(button.getAttribute('aria-controls') ?? '');
+    const rect = button.getBoundingClientRect();
+    return button.getAttribute('aria-expanded') === null || !panel || panel.getAttribute('aria-labelledby') !== button.id
+      || rect.width < 44 || rect.height < 44
+      ? [{ label: button.textContent?.trim(), width: rect.width, height: rect.height }]
+      : [];
+  }));
+  expect(malformedControls, JSON.stringify(malformedControls)).toEqual([]);
+});
+
+for (const slug of ['coral-broadcast', 'clau-poster-wall'] as const) {
+  test(`${slug} mobile marquee control meets the 44px target minimum`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/design-lab/${slug}/`);
+
+    const undersizedControls = await page.locator('[data-lab-marquee]').evaluateAll((marquees) => marquees.map((marquee) => {
+      const control = marquee.parentElement as HTMLElement;
+      const rect = control.getBoundingClientRect();
+      return { label: control.getAttribute('aria-label'), width: rect.width, height: rect.height };
+    }).filter(({ width, height }) => width < 44 || height < 44));
+    expect(undersizedControls, JSON.stringify(undersizedControls)).toEqual([]);
+  });
+}
+
+test('concept navigation links meet the 44px mobile target minimum', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  for (const slug of slugs) {
+    await page.goto(`/design-lab/${slug}/`);
+    const undersizedLinks = await page.getByRole('navigation', { name: 'Design lab' }).locator('a').evaluateAll((links) => links.map((link) => {
+      const rect = link.getBoundingClientRect();
+      return { label: link.textContent?.trim(), width: rect.width, height: rect.height };
+    }).filter(({ width, height }) => width < 44 || height < 44));
+    expect(undersizedLinks, `${slug}: ${JSON.stringify(undersizedLinks)}`).toEqual([]);
+  }
+});
 
 for (const [slug, title] of [
   ['poster-index', 'Poster Index'],

@@ -42,4 +42,7 @@ const Concept = conceptComponents[concept.slug as keyof typeof conceptComponents
 
 <style>
   .concept-navigation { align-items: center; display: flex; flex-wrap: wrap; gap: .4rem 1rem; padding: 1.5rem clamp(1.5rem, 5vw, 4rem); }
+  @media (max-width: 48rem) {
+    .concept-navigation a { align-items: center; display: inline-flex; min-height: 44px; min-width: 44px; }
+  }
 </style>

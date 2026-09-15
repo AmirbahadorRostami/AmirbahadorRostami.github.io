@@ -192,7 +192,7 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
   .signal-cell--identity p, .signal-cell--availability p, .signal-cell--location p { font-size: clamp(1.2rem, 2.2vw, 2.3rem); font-weight: 600; letter-spacing: -.045em; line-height: 1; max-width: 18ch; }
   .signal-cell--statement { background: var(--carbon); color: var(--paper); }
   .signal-cell--statement p { font-size: clamp(1.7rem, 3.7vw, 4.2rem); font-weight: 550; letter-spacing: -.06em; line-height: .95; max-width: 24ch; }
-  .signal-cell--availability { background: var(--oxide); }
+  .signal-cell--availability { background: var(--oxide); color: var(--paper); }
   .signal-cell--location { justify-content: flex-end; }
   .signal-work, .signal-music, .signal-experience { border-top: 1px solid var(--carbon); padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 4vw, 4rem); }
   .signal-section-heading { display: grid; gap: 1.2rem; grid-template-columns: minmax(8rem, 3fr) minmax(0, 9fr); }
@@ -236,7 +236,7 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
   .signal-experience li > span, .signal-experience li > p:last-child { font-size: .72rem; font-weight: 700; }
   .signal-experience h3 { font-size: clamp(1.25rem, 2vw, 2rem); font-weight: 650; letter-spacing: -.045em; line-height: 1; }
   .signal-experience li > p:last-child { text-align: right; }
-  .signal-contact { background: var(--oxide); border-top: 1px solid var(--carbon); min-height: 70svh; padding: clamp(2rem, 4vw, 4rem); }
+  .signal-contact { background: var(--oxide); border-top: 1px solid var(--carbon); color: var(--paper); min-height: 70svh; padding: clamp(2rem, 4vw, 4rem); }
   .signal-contact h2 { font-size: clamp(4rem, 10vw, 11rem); font-weight: 650; letter-spacing: -.085em; line-height: .8; margin-top: clamp(7rem, 16vw, 14rem); max-width: 10ch; }
   .signal-contact > a { display: inline-block; font-size: clamp(1.2rem, 2.4vw, 2.2rem); margin-top: 2rem; }
   @media (max-width: 56.25rem) {

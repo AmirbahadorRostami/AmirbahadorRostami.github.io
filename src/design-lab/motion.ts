@@ -78,7 +78,7 @@ export function initializeDesignLabMotion(root?: ParentNode): () => void {
 
     ownAnimation(gsap.fromTo(
       targets,
-      { opacity: 0, yPercent: 20 },
+      { opacity: 1, yPercent: 20 },
       {
         opacity: 1,
         yPercent: 0,
