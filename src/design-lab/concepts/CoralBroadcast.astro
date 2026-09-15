@@ -1,0 +1,172 @@
+---
+import { Image } from 'astro:assets';
+import { loadDesignLabContent } from '../content';
+
+const { projects, music, experience } = await loadDesignLabContent();
+const [heroProject] = projects;
+---
+
+<div class="coral-broadcast" data-coral-broadcast>
+  <section class="broadcast-hero" aria-labelledby="broadcast-title">
+    <div class="broadcast-hero__copy">
+      <p class="broadcast-utility">Amir Rostami / Toronto, Canada</p>
+      <h1 id="broadcast-title"><span>SIGNALS</span><span>HUMAN.</span></h1>
+      <p class="broadcast-identity">Creative technologist. Musician. Professional maker of curious things.</p>
+      <p class="broadcast-availability">Open to employment and freelance work.</p>
+    </div>
+    <a class="broadcast-hero__frame" href={`/work/${heroProject.id}/`} aria-label={`View ${heroProject.data.title}`}>
+      <Image
+        src={heroProject.data.hero}
+        alt={heroProject.data.heroAlt}
+        widths={[640, 960, 1280]}
+        sizes="(max-width: 56.25rem) min(76vw, 25rem), 26vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span>{heroProject.data.title} / transmit</span>
+    </a>
+  </section>
+
+  <section id="work" class="broadcast-work" aria-labelledby="broadcast-work-title">
+    <div class="broadcast-work__index" data-broadcast-index>
+      <p>01 / Work transmission</p>
+      <h2 id="broadcast-work-title">Three places where people meet the signal.</h2>
+      <ol>
+        {projects.map((project, index) => (
+          <li><a href={`#broadcast-project-${index + 1}`} data-broadcast-index-link><span>0{index + 1}</span>{project.data.title}</a></li>
+        ))}
+      </ol>
+    </div>
+    <div class="broadcast-projects">
+      {projects.map((project, index) => (
+        <article id={`broadcast-project-${index + 1}`} class:list={['broadcast-project', `broadcast-project--${index + 1}`]} data-lab-project data-broadcast-project>
+          <a class="broadcast-project__media" href={`/work/${project.id}/`} aria-label={`View ${project.data.title}`}>
+            <span data-lab-scale>
+              <Image
+                src={project.data.hero}
+                alt={project.data.heroAlt}
+                widths={[960, 1440, 1920]}
+                sizes="(max-width: 56.25rem) 100vw, 74vw"
+              />
+            </span>
+          </a>
+          <div class="broadcast-project__copy" data-lab-reveal>
+            <p>Broadcast 0{index + 1}</p>
+            <h3><a href={`/work/${project.id}/`}>{project.data.title}</a></h3>
+            <p>{project.data.cardSummary}</p>
+            <a href={`/work/${project.id}/`}>Receive project <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="music" class="broadcast-music" aria-labelledby="broadcast-music-title">
+    <p>02 / Music transmission</p>
+    <h2 id="broadcast-music-title">Sound, passed along.</h2>
+    <div class="broadcast-marquee" data-broadcast-marquee tabindex="0" aria-label="Moving featured music titles">
+      <div class="broadcast-marquee__track" data-lab-marquee>
+        {[...music, ...music].map((track) => <span>{track.data.title} <i aria-hidden="true">///</i></span>)}
+      </div>
+    </div>
+    <div class="broadcast-tracks" aria-label="Featured music">
+      {music.map((track, index) => (
+        <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer"><span>0{index + 1}</span><strong>{track.data.title}</strong><span>Listen ↗</span></a>
+      ))}
+    </div>
+  </section>
+
+  <section id="experience" class="broadcast-experience" aria-labelledby="broadcast-experience-title">
+    <p>03 / On air</p>
+    <h2 id="broadcast-experience-title">A practice across engineering, art, and research.</h2>
+    <ol>
+      {experience.map((entry, index) => (
+        <li data-lab-stack><span>0{index + 1}</span><h3>{entry.data.role}</h3><p>{entry.data.organization}</p><p>{entry.data.period}</p></li>
+      ))}
+    </ol>
+  </section>
+
+  <section id="contact" class="broadcast-contact" aria-labelledby="broadcast-contact-title">
+    <p>04 / Contact</p>
+    <h2 id="broadcast-contact-title">Put something new on the air.</h2>
+    <a href="/contact/">Contact Amir <span aria-hidden="true">↗</span></a>
+  </section>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initializeDesignLabMotion } from '../motion';
+
+  const root = document.querySelector<HTMLElement>('[data-coral-broadcast]');
+  if (root) {
+    const index = root.querySelector<HTMLElement>('[data-broadcast-index]');
+    if (index && window.matchMedia('(min-width: 56.3125rem)').matches) index.setAttribute('data-lab-pin', '');
+    initializeDesignLabMotion(root);
+
+    const marquee = root.querySelector<HTMLElement>('[data-broadcast-marquee]');
+    const updateMarquee = () => {
+      const track = marquee?.querySelector<HTMLElement>('[data-lab-marquee]');
+      if (!marquee || !track) return;
+      gsap.getTweensOf(track).forEach((tween) => marquee.matches(':hover, :focus-within') ? tween.pause() : tween.play());
+    };
+    marquee?.addEventListener('mouseenter', updateMarquee);
+    marquee?.addEventListener('mouseleave', updateMarquee);
+    marquee?.addEventListener('focusin', updateMarquee);
+    marquee?.addEventListener('focusout', updateMarquee);
+
+    const links = Array.from(root.querySelectorAll<HTMLElement>('[data-broadcast-index-link]'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.filter(({ isIntersecting }) => isIntersecting).forEach((entry) => {
+        const position = Array.from(root.querySelectorAll('[data-broadcast-project]')).indexOf(entry.target);
+        links.forEach((link, index) => link.toggleAttribute('data-active', index === position));
+      });
+    }, { threshold: .55 });
+    root.querySelectorAll('[data-broadcast-project]').forEach((project) => observer.observe(project));
+  }
+</script>
+
+<style>
+  .coral-broadcast { --broadcast-black: #121212; --broadcast-bone: #f4efe6; --broadcast-accent: #ff7777; background: var(--broadcast-bone); color: var(--broadcast-black); overflow: clip; }
+  .coral-broadcast :is(h1, h2, h3, p) { margin: 0; }
+  .coral-broadcast a { text-underline-offset: .2em; text-decoration-thickness: 1px; }
+  :global(body[data-concept="coral-broadcast"] .concept-navigation) { background: var(--broadcast-bone); color: var(--broadcast-black); font-size: .73rem; font-weight: 700; letter-spacing: .09em; padding-block: 1rem; text-transform: uppercase; }
+  .broadcast-hero { display: grid; gap: clamp(2rem, 8vw, 9rem); grid-template-columns: minmax(0, 1fr) minmax(12rem, 26vw); min-height: min(52rem, calc(100svh - 3.5rem)); padding: clamp(1.5rem, 5vw, 5rem); }
+  .broadcast-hero__copy { align-content: start; display: grid; padding-top: clamp(1rem, 8vw, 7rem); }
+  .broadcast-utility, .broadcast-availability, .broadcast-work__index > p, .broadcast-music > p, .broadcast-experience > p, .broadcast-contact > p, .broadcast-project__copy > p:first-child { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .broadcast-hero h1 { font-size: clamp(3.7rem, 10.3vw, 11rem); font-weight: 650; letter-spacing: -.1em; line-height: .75; margin-top: clamp(3rem, 9vw, 8rem); max-width: 92rem; width: 100%; }
+  .broadcast-hero h1 span { display: block; }
+  .broadcast-identity { font-size: clamp(1.1rem, 1.8vw, 1.5rem); line-height: 1.25; margin-top: clamp(2rem, 4vw, 4rem); max-width: 35rem; }
+  .broadcast-availability { color: var(--broadcast-accent); margin-top: 1.1rem; }
+  .broadcast-hero__frame { align-self: end; display: grid; gap: .75rem; justify-self: end; max-width: 24rem; overflow: hidden; text-decoration: none; width: 100%; }
+  .broadcast-hero__frame :global(img) { aspect-ratio: 3 / 4; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); width: 100%; }
+  .broadcast-hero__frame:hover :global(img), .broadcast-hero__frame:focus-visible :global(img), .broadcast-project__media:hover :global(img), .broadcast-project__media:focus-visible :global(img) { transform: scale(1.035); }
+  .broadcast-hero__frame > span { color: var(--broadcast-accent); font-size: .7rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .broadcast-work { display: grid; grid-template-columns: minmax(15rem, 26vw) minmax(0, 1fr); }
+  .broadcast-work__index { align-self: start; background: var(--broadcast-bone); min-height: 100svh; padding: clamp(2rem, 5vw, 5rem) clamp(1.5rem, 3vw, 3rem); position: relative; z-index: 2; }
+  .broadcast-work__index h2, .broadcast-music h2, .broadcast-experience h2 { font-size: clamp(2.4rem, 4.5vw, 5.4rem); font-weight: 650; letter-spacing: -.08em; line-height: .84; margin-top: 1.5rem; max-width: 12ch; }
+  .broadcast-work__index ol { list-style: none; margin: clamp(3rem, 8vh, 7rem) 0 0; padding: 0; }
+  .broadcast-work__index a { display: grid; gap: .75rem; grid-template-columns: 2rem minmax(0, 1fr); padding: .55rem 0; text-decoration: none; }
+  .broadcast-work__index a[data-active] { color: var(--broadcast-accent); }
+  .broadcast-work__index span, .broadcast-tracks span, .broadcast-experience li > span, .broadcast-experience li > p:last-child { font-size: .7rem; font-weight: 700; }
+  .broadcast-project { min-height: 88svh; overflow: hidden; position: sticky; top: 0; }
+  .broadcast-project--1 { z-index: 1; }.broadcast-project--2 { z-index: 2; }.broadcast-project--3 { z-index: 3; }
+  .broadcast-project__media { display: block; height: 100%; overflow: hidden; }
+  .broadcast-project__media > span { display: block; height: 100%; width: 100%; }
+  .broadcast-project__media :global(img) { height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.7,.2,1); width: 100%; }
+  .broadcast-project__copy { align-content: end; background: var(--broadcast-black); color: var(--broadcast-bone); display: grid; inset: auto 0 0; min-height: 42%; padding: clamp(1.5rem, 4vw, 4rem); position: absolute; }
+  .broadcast-project__copy > p:first-child { color: var(--broadcast-accent); }
+  .broadcast-project__copy h3 { font-size: clamp(3rem, 7vw, 8rem); font-weight: 650; letter-spacing: -.09em; line-height: .78; margin-top: 1rem; max-width: 10ch; }
+  .broadcast-project__copy h3 a { text-decoration: none; }
+  .broadcast-project__copy > p:nth-of-type(2) { font-size: clamp(1rem, 1.4vw, 1.25rem); line-height: 1.35; margin-top: 1.25rem; max-width: 34rem; }
+  .broadcast-project__copy > a { color: var(--broadcast-accent); margin-top: 1rem; width: max-content; }
+  .broadcast-music, .broadcast-experience { padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 5vw, 5rem); }
+  .broadcast-marquee { background: var(--broadcast-accent); margin: clamp(3rem, 6vw, 6rem) calc(clamp(1.5rem, 5vw, 5rem) * -1) 0; overflow: hidden; white-space: nowrap; }
+  .broadcast-marquee__track { display: inline-flex; font-size: clamp(3rem, 9vw, 10rem); font-weight: 650; letter-spacing: -.09em; line-height: .85; padding-block: .12em; width: max-content; }
+  .broadcast-marquee__track span { margin-right: .28em; }.broadcast-marquee__track i { font-style: normal; }
+  .broadcast-tracks { display: grid; gap: .75rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 4vw, 4rem); }
+  .broadcast-tracks a { display: grid; gap: 1rem; min-width: 0; text-decoration: none; }.broadcast-tracks strong { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 650; letter-spacing: -.07em; line-height: .85; }.broadcast-tracks a:hover strong, .broadcast-tracks a:focus-visible strong { color: var(--broadcast-accent); }
+  .broadcast-experience { background: var(--broadcast-black); color: var(--broadcast-bone); }.broadcast-experience ol { list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }.broadcast-experience li { display: grid; gap: 1rem; grid-template-columns: 2rem minmax(12rem, 1fr) minmax(10rem, 1fr) auto; padding: 1rem 0; }.broadcast-experience h3 { font-size: clamp(1.35rem, 2vw, 2.15rem); font-weight: 650; letter-spacing: -.05em; line-height: 1; }.broadcast-experience li > p:last-child { text-align: right; }
+  .broadcast-contact { background: var(--broadcast-accent); min-height: 68svh; padding: clamp(2rem, 5vw, 5rem); }.broadcast-contact h2 { font-size: clamp(4rem, 10vw, 11rem); font-weight: 650; letter-spacing: -.1em; line-height: .76; margin-top: clamp(5rem, 13vw, 11rem); max-width: 10ch; }.broadcast-contact > a { display: inline-block; font-size: clamp(1.25rem, 2.4vw, 2.3rem); margin-top: 2rem; }
+  @media (max-width: 56.25rem) { .broadcast-hero { grid-template-columns: minmax(0, 1fr); min-height: auto; }.broadcast-hero h1 { font-size: clamp(3.5rem, 16vw, 6.5rem); margin-top: 4rem; }.broadcast-hero__frame { justify-self: start; max-width: 22rem; }.broadcast-work { grid-template-columns: minmax(0, 1fr); }.broadcast-work__index { min-height: auto; }.broadcast-project { min-height: 76svh; position: relative; }.broadcast-project__copy { min-height: 48%; }.broadcast-tracks { grid-template-columns: minmax(0, 1fr); }.broadcast-experience li { grid-template-columns: 2rem minmax(0, 1fr); }.broadcast-experience li > p { grid-column: 2; }.broadcast-experience li > p:last-child { text-align: left; } }
+  @media (prefers-reduced-motion: reduce) { .coral-broadcast [data-lab-reveal], .coral-broadcast [data-lab-stack] { opacity: 1 !important; transform: none !important; }.broadcast-marquee__track { transform: none !important; }.broadcast-hero__frame :global(img), .broadcast-project__media :global(img) { transition: none; } }
+</style>

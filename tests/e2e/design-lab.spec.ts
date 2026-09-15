@@ -186,3 +186,47 @@ for (const [slug, title] of [
     }
   });
 }
+
+test('Coral Broadcast keeps its coral signal concentrated and card-free', async ({ page }) => {
+  await page.goto('/design-lab/coral-broadcast/');
+
+  await expect(page.locator('[data-coral-broadcast]').evaluate((element) => (
+    getComputedStyle(element).getPropertyValue('--broadcast-accent').trim()
+  ))).resolves.toBe('#ff7777');
+  await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+  await expect(page.locator('.card')).toHaveCount(0);
+});
+
+test('Clau Poster Wall keeps its field solid and card-free', async ({ page }) => {
+  await page.goto('/design-lab/clau-poster-wall/');
+
+  await expect(page.locator('[data-clau-poster-wall]').evaluate((element) => (
+    getComputedStyle(element).getPropertyValue('--poster-field').trim()
+  ))).resolves.toBeTruthy();
+  await expect(page.locator('.clau-hero').evaluate((element) => (
+    getComputedStyle(element).backgroundImage
+  ))).resolves.toBe('none');
+  await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+  await expect(page.locator('.card')).toHaveCount(0);
+});
+
+for (const [slug, title] of [
+  ['coral-broadcast', 'Coral Broadcast'],
+  ['clau-poster-wall', 'Clau Poster Wall'],
+] as const) {
+  test(`${title} preserves complete content without horizontal overflow`, async ({ page }) => {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/design-lab/${slug}/`);
+
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+      await expect(page.locator('[data-lab-project]')).toHaveCount(3);
+      await expect(page.locator('[data-lab-track]')).toHaveCount(3);
+      await expect(page.locator('#experience li')).toHaveCount(3);
+      await expect(page.locator('a[href="/contact/"]')).toBeVisible();
+      await expect.poll(() => page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      )).toBe(true);
+    }
+  });
+}

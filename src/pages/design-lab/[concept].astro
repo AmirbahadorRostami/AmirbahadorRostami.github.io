@@ -7,6 +7,8 @@ import PosterIndex from '../../design-lab/concepts/PosterIndex.astro';
 import TypeImageCollision from '../../design-lab/concepts/TypeImageCollision.astro';
 import DarkroomCinema from '../../design-lab/concepts/DarkroomCinema.astro';
 import PrintedSignalLab from '../../design-lab/concepts/PrintedSignalLab.astro';
+import CoralBroadcast from '../../design-lab/concepts/CoralBroadcast.astro';
+import ClauPosterWall from '../../design-lab/concepts/ClauPosterWall.astro';
 
 export const getStaticPaths = (() => DESIGN_CONCEPTS.map(({ slug }) => ({
   params: { concept: slug },
@@ -20,9 +22,9 @@ const conceptComponents = {
   'type-image-collision': TypeImageCollision,
   'darkroom-cinema': DarkroomCinema,
   'printed-signal-lab': PrintedSignalLab,
-  'coral-broadcast': ConceptShell,
-  'clau-poster-wall': ConceptShell,
-} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell | typeof PosterIndex | typeof TypeImageCollision | typeof DarkroomCinema | typeof PrintedSignalLab>;
+  'coral-broadcast': CoralBroadcast,
+  'clau-poster-wall': ClauPosterWall,
+} satisfies Record<(typeof DESIGN_CONCEPTS)[number]['slug'], typeof ConceptShell | typeof PosterIndex | typeof TypeImageCollision | typeof DarkroomCinema | typeof PrintedSignalLab | typeof CoralBroadcast | typeof ClauPosterWall>;
 const Concept = conceptComponents[concept.slug as keyof typeof conceptComponents];
 ---
 
