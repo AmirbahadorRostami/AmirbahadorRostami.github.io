@@ -294,7 +294,19 @@ test('Coral Broadcast removes its sticky stack in reduced-motion mode', async ({
   await page.goto('/design-lab/coral-broadcast/');
   await expect(page.locator('[data-broadcast-project]').evaluateAll((projects) => projects.map(
     (project) => getComputedStyle(project).position,
-  ))).resolves.toEqual(['static', 'static', 'static']);
+  ))).resolves.toEqual(['relative', 'relative', 'relative']);
+  const misplacedOverlays = await page.locator('[data-broadcast-project]').evaluateAll((projects) => projects.flatMap((project) => {
+    const projectBox = project.getBoundingClientRect();
+    const overlayBox = project.querySelector<HTMLElement>('.broadcast-project__copy')?.getBoundingClientRect();
+    if (!overlayBox) return ['missing overlay'];
+    return overlayBox.top >= projectBox.top - 1
+      && overlayBox.right <= projectBox.right + 1
+      && overlayBox.bottom <= projectBox.bottom + 1
+      && overlayBox.left >= projectBox.left - 1
+      ? []
+      : ['overlay outside project'];
+  }));
+  expect(misplacedOverlays).toEqual([]);
 });
 
 test('interactive color states retain AA text contrast', async ({ page }) => {
@@ -485,11 +497,23 @@ test('Darkroom Cinema presents three cinematic project chapters', async ({ page 
 });
 
 test('Darkroom Cinema preserves the exact approved identity', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/design-lab/darkroom-cinema/');
 
   await expect(page.locator('#darkroom-title')).toHaveText(
     'Creative tinkerer. Musician. Professional maker of curious things.',
   );
+  const overflowingLines = await page.locator('#darkroom-title > span').evaluateAll((lines) => lines.flatMap((line) => {
+    const text = line.firstChild;
+    if (!text) return [];
+    const range = document.createRange();
+    range.selectNodeContents(text);
+    const textBox = range.getBoundingClientRect();
+    return textBox.left < -1 || textBox.right > window.innerWidth + 1
+      ? [line.textContent?.trim()]
+      : [];
+  }));
+  expect(overflowingLines).toEqual([]);
 });
 
 test('Darkroom Cinema uses spacing and typography without borders or item panels', async ({ page }) => {
