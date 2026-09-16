@@ -205,11 +205,12 @@ Astro's image pipeline serves the existing WebP project assets with descriptive 
 
 Verification on 2026-09-15 used Node 24 and the merge base `434459b1d950aa5a0faf77c5e9f8e2a22df38cc0`.
 
-- The full repository command passed 58 unit tests, an Astro check with 0 errors, 0 warnings, and 0 hints, a 19-page static build, 172 standard browser tests, and 1 contact-fallback browser test before the final focus regression was added.
+- The final full repository command passed 59 unit tests, an Astro check with 0 errors, 0 warnings, and 0 hints, a 19-page static build, 182 standard browser tests, and 1 contact-fallback browser test.
 - A production-preview geometry pass checked the hub and six concepts at 390×844, 768×1024, 1024×768, and 1440×900: 28 route/viewport combinations and 476 focusable targets. It found no document overflow after the verified focus-ring fix.
 - Desktop hero line counts for Poster Index, Type/Image Collision, Darkroom Cinema, Printed Signal Lab, Coral Broadcast, and Clau Poster Wall were respectively 2, 1, 3, 3, 2, and 3.
 - Printed Signal Lab uses six complete single-column rows at 390 and 768 pixels, then fills all twelve columns as `7+5`, `4+8`, and `6+6` at 1024 and 1440 pixels.
 - Full-page production-preview screenshots showed readable media overlays and no empty reserved dense-grid cells at all four review widths.
 - The merge-base diff contains only lab routes, lab-only shared files, the new lab test files, lab dependencies, and this documentation. Production pages, the production header/footer, existing production components, and pre-existing tests are unchanged.
+- Final review repairs added a progressively enhanced horizontal Type/Image accordion, square overlapping music art, a full-archive music path in every concept, responsive desktop-only pinning, reduced-motion static stacking, AA interaction-state contrast checks, shared approved identity copy, and transition/hot-reload cleanup coverage.
 - `npm audit --omit=dev` reports three pre-existing findings in Astro/esbuild/sharp (1 low, 1 high, 1 critical). `npm audit` adds the pre-existing Vitest/@vitest/mocker chain for five total findings (1 low, 2 moderate, 1 high, 1 critical). GSAP and the four Fontsource packages introduce no reported production vulnerability. The available blanket remediation requires forced breaking upgrades and is intentionally deferred.
 - The successful test commands still emit pre-existing Astro Markdown deprecation notices in two unit tests and Playwright's `NO_COLOR`/`FORCE_COLOR` environment notice; Astro's own diagnostic result remains clean.

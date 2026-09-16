@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { loadDesignLabContent } from '../content';
+import { DESIGN_LAB_IDENTITY, DESIGN_LAB_SUPPORTING_STATEMENT, loadDesignLabContent } from '../content';
 
 const { projects, music, experience } = await loadDesignLabContent();
 const signalLines = Array.from({ length: 15 }, (_, index) => index);
@@ -39,10 +39,10 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
       </div>
 
       <div class="signal-cell signal-cell--identity" data-grid-span>
-        <p>Creative technologist. Musician. Professional maker of curious things.</p>
+        <p>{DESIGN_LAB_IDENTITY}</p>
       </div>
       <div class="signal-cell signal-cell--statement" data-grid-span>
-        <p>I create immersive experiences, software, and sound that bring people together in unexpected ways.</p>
+        <p>{DESIGN_LAB_SUPPORTING_STATEMENT}</p>
       </div>
       <div class="signal-cell signal-cell--availability" data-grid-span>
         <p>Open to employment and freelance work.</p>
@@ -100,6 +100,7 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
         </a>
       ))}
     </div>
+    <a class="signal-music__archive" data-music-archive href="/music/">Explore the full music archive <span aria-hidden="true">↗</span></a>
   </section>
 
   <section id="experience" class="signal-experience" aria-labelledby="signal-experience-title">
@@ -127,10 +128,10 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
 </div>
 
 <script>
-  import { initializeDesignLabMotion } from '../motion';
+  import { initializeDesignLabMotion, registerDesignLabCleanup } from '../motion';
 
   const root = document.querySelector<HTMLElement>('[data-printed-signal-lab]');
-  if (root) initializeDesignLabMotion(root);
+  if (root) registerDesignLabCleanup(initializeDesignLabMotion(root));
 </script>
 
 <style>
@@ -225,6 +226,7 @@ const waveformBars = Array.from({ length: 24 }, (_, index) => index);
   .signal-tracks > a { align-items: center; border-bottom: 1px solid var(--carbon); display: grid; gap: clamp(.75rem, 2vw, 2rem); grid-template-columns: 2rem minmax(7rem, 2fr) minmax(12rem, 7fr) auto; min-height: 6.5rem; text-decoration: none; }
   .signal-tracks > a > span:first-child, .signal-tracks > a > span:last-child { font-size: .72rem; font-weight: 700; text-transform: uppercase; }
   .signal-tracks strong { font-size: clamp(1.5rem, 3vw, 3.4rem); font-weight: 650; letter-spacing: -.055em; }
+  .signal-music__archive { display: inline-block; font-weight: 700; margin-top: 2rem; }
   .signal-wave { align-items: center; display: flex; gap: .2rem; height: 2.75rem; overflow: hidden; }
   .signal-wave__bar { background: var(--oxide); display: block; flex: 1 1 0; height: 14%; min-width: 1px; }
   .signal-wave__bar--1, .signal-wave__bar--7 { height: 36%; }

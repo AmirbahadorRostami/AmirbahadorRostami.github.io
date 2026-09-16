@@ -23,6 +23,8 @@ export function initializeDesignLabMotion(root?: ParentNode): () => void {
   const scope = root ?? document;
   const animations: gsap.core.Animation[] = [];
   const triggers = new Set<ScrollTrigger>();
+  const pinTriggers = new Set<ScrollTrigger>();
+  const pinMedia = window.matchMedia('(min-width: 901px)');
 
   const ownAnimation = <T extends gsap.core.Animation>(animation: T): T => {
     animations.push(animation);
@@ -30,15 +32,28 @@ export function initializeDesignLabMotion(root?: ParentNode): () => void {
     return animation;
   };
 
-  scope.querySelectorAll<HTMLElement>('[data-lab-pin]').forEach((element) => {
-    triggers.add(ScrollTrigger.create({
-      trigger: element,
-      pin: true,
-      pinSpacing: true,
-      start: 'top top',
-      end: '+=100%',
-    }));
-  });
+  const clearPins = () => {
+    pinTriggers.forEach((trigger) => trigger.kill());
+    pinTriggers.clear();
+  };
+
+  const syncPins = () => {
+    clearPins();
+    if (!pinMedia.matches) return;
+
+    scope.querySelectorAll<HTMLElement>('[data-lab-pin]').forEach((element) => {
+      pinTriggers.add(ScrollTrigger.create({
+        trigger: element,
+        pin: true,
+        pinSpacing: true,
+        start: 'top top',
+        end: '+=100%',
+      }));
+    });
+  };
+
+  pinMedia.addEventListener('change', syncPins);
+  syncPins();
 
   scope.querySelectorAll<HTMLElement>('[data-lab-scale]').forEach((element) => {
     ownAnimation(gsap.fromTo(
@@ -139,9 +154,25 @@ export function initializeDesignLabMotion(root?: ParentNode): () => void {
   });
 
   return () => {
+    pinMedia.removeEventListener('change', syncPins);
+    clearPins();
     triggers.forEach((trigger) => trigger.kill());
     animations.forEach((animation) => animation.revert());
     triggers.clear();
     animations.length = 0;
   };
+}
+
+export function registerDesignLabCleanup(cleanup: () => void): () => void {
+  let active = true;
+  const dispose = () => {
+    if (!active) return;
+    active = false;
+    document.removeEventListener('astro:before-swap', dispose);
+    cleanup();
+  };
+
+  document.addEventListener('astro:before-swap', dispose, { once: true });
+  import.meta.hot?.dispose(dispose);
+  return dispose;
 }

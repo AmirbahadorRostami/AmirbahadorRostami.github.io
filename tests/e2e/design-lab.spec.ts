@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import { findFocusClippingViolations } from './helpers/focus-clipping';
 
 const slugs = [
@@ -12,7 +12,8 @@ const slugs = [
 ];
 
 const requiredContent = [
-  'Professional maker of curious things',
+  'Creative tinkerer. Musician. Professional maker of curious things.',
+  'I create immersive experiences, software, and sound that bring people together in unexpected ways.',
   'Toronto',
   'Open to employment and freelance work.',
   'Encounters',
@@ -33,6 +34,38 @@ const requiredProjectImageAlts = [
 ];
 
 const conceptNavigationLabels = ['Back to all concepts', 'Work', 'Music', 'Experience', 'Contact'];
+
+async function contrastRatio(target: Locator, background: Locator): Promise<number> {
+  return target.evaluate((element, backgroundElement) => {
+    const parse = (color: string) => color.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [0, 0, 0];
+    const luminance = (color: string) => {
+      const channels = parse(color).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= 0.04045
+          ? normalized / 12.92
+          : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    };
+    const style = getComputedStyle(element);
+    const foreground = luminance(style.color);
+    const targetBackground = style.backgroundColor;
+    const paintedBackground = (start: Element) => {
+      let current: Element | null = start;
+      while (current) {
+        const color = getComputedStyle(current).backgroundColor;
+        if (color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent') return color;
+        current = current.parentElement;
+      }
+      return 'rgb(255, 255, 255)';
+    };
+    const surfaceColor = targetBackground === 'rgba(0, 0, 0, 0)' || targetBackground === 'transparent'
+      ? paintedBackground(backgroundElement as Element)
+      : targetBackground;
+    const surface = luminance(surfaceColor);
+    return (Math.max(foreground, surface) + 0.05) / (Math.min(foreground, surface) + 0.05);
+  }, await background.elementHandle());
+}
 
 test('design lab exposes a six-concept comparison hub', async ({ page }) => {
   await page.goto('/design-lab/');
@@ -125,6 +158,7 @@ for (const slug of slugs) {
 
     const hiddenProjects = await page.locator('[data-lab-project]').evaluateAll((projects) => projects.flatMap((project) => (
       Array.from(project.querySelectorAll<HTMLElement>('h3, button, a')).flatMap((target) => {
+        if (target.closest('[hidden]')) return [];
         const style = getComputedStyle(target);
         return style.opacity !== '1' || style.transform !== 'none' || !target.checkVisibility()
           ? [{ text: target.textContent?.trim(), opacity: style.opacity, transform: style.transform }]
@@ -140,6 +174,7 @@ for (const slug of slugs) {
     await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(0);
 
     const nonStaticMotionLayout = await page.locator('[data-lab-pin], [data-lab-stack]').evaluateAll((elements) => elements.flatMap((element) => {
+      if (element.closest('[hidden]')) return [];
       const style = getComputedStyle(element);
       return style.position !== 'static' || style.opacity !== '1' || style.transform !== 'none'
         ? [{ position: style.position, opacity: style.opacity, transform: style.transform }]
@@ -148,6 +183,15 @@ for (const slug of slugs) {
     expect(nonStaticMotionLayout, JSON.stringify(nonStaticMotionLayout)).toEqual([]);
   });
 }
+
+test('every concept music section links to the full music archive', async ({ page }) => {
+  for (const slug of slugs) {
+    await page.goto(`/design-lab/${slug}/`);
+    const musicSection = page.locator('#music');
+    const archiveLink = musicSection.getByRole('link', { name: /full music archive/i });
+    await expect(archiveLink, slug).toHaveAttribute('href', '/music/');
+  }
+});
 
 for (const slug of slugs) {
   test(`${slug} retains the complete approved portfolio content`, async ({ page }) => {
@@ -202,6 +246,79 @@ test('Type/Image Collision accordion controls describe and control their panels'
       : [];
   }));
   expect(malformedControls, JSON.stringify(malformedControls)).toEqual([]);
+
+  const panels = page.locator('[data-collision-accordion] [role="region"]');
+  await expect(panels.nth(0)).toBeVisible();
+  await expect(panels.nth(1)).toBeHidden();
+  await controls.nth(1).click();
+  await expect(panels.nth(0)).toBeHidden();
+  await expect(panels.nth(1)).toBeVisible();
+  await controls.nth(2).focus();
+  await page.keyboard.press('Enter');
+  await expect(panels.nth(1)).toBeHidden();
+  await expect(panels.nth(2)).toBeVisible();
+});
+
+test('Type/Image Collision keeps project content available without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('/design-lab/type-image-collision/');
+
+  const panels = page.locator('[data-collision-accordion] [role="region"]');
+  await expect(panels).toHaveCount(3);
+  for (let index = 0; index < 3; index += 1) await expect(panels.nth(index)).toBeVisible();
+  await context.close();
+});
+
+test('Poster Index pinning responds to the 900px breakpoint and cleans up', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/design-lab/poster-index/');
+  await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(1);
+
+  await page.setViewportSize({ width: 900, height: 900 });
+  await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(0);
+  await page.setViewportSize({ width: 901, height: 900 });
+  await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(1);
+
+  const track = page.locator('[data-poster-marquee] [data-lab-marquee]');
+  await page.evaluate(() => document.dispatchEvent(new Event('astro:before-swap')));
+  await expect(page.locator('.pin-spacer, .gsap-pin-spacer')).toHaveCount(0);
+  const stopped = await track.evaluate((element) => getComputedStyle(element).transform);
+  await page.waitForTimeout(160);
+  await expect(track.evaluate((element) => getComputedStyle(element).transform)).resolves.toBe(stopped);
+});
+
+test('Coral Broadcast removes its sticky stack in reduced-motion mode', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/design-lab/coral-broadcast/');
+  await expect(page.locator('[data-broadcast-project]').evaluateAll((projects) => projects.map(
+    (project) => getComputedStyle(project).position,
+  ))).resolves.toEqual(['static', 'static', 'static']);
+});
+
+test('interactive color states retain AA text contrast', async ({ page }) => {
+  await page.goto('/design-lab/poster-index/');
+  const posterLink = page.locator('[data-poster-marquee] a').first();
+  await posterLink.hover({ force: true });
+  expect(await contrastRatio(posterLink, page.locator('.poster-marquee'))).toBeGreaterThanOrEqual(4.5);
+  await posterLink.focus();
+  expect(await contrastRatio(posterLink, page.locator('.poster-marquee'))).toBeGreaterThanOrEqual(4.5);
+
+  await page.goto('/design-lab/coral-broadcast/');
+  const coralLink = page.locator('.broadcast-tracks a').first();
+  const coralText = coralLink.locator('strong');
+  await coralLink.hover();
+  expect(await contrastRatio(coralText, page.locator('.broadcast-music'))).toBeGreaterThanOrEqual(4.5);
+  await coralLink.focus();
+  expect(await contrastRatio(coralText, page.locator('.broadcast-music'))).toBeGreaterThanOrEqual(4.5);
+
+  await page.goto('/design-lab/clau-poster-wall/');
+  const clauLink = page.locator('.clau-project h3 a').first();
+  await clauLink.hover();
+  expect(await contrastRatio(clauLink, page.locator('.clau-work'))).toBeGreaterThanOrEqual(4.5);
+  await clauLink.focus();
+  expect(await contrastRatio(clauLink, page.locator('.clau-work'))).toBeGreaterThanOrEqual(4.5);
 });
 
 for (const slug of ['coral-broadcast', 'clau-poster-wall'] as const) {
@@ -322,8 +439,43 @@ test('Type/Image Collision places the image between hero type layers', async ({ 
 test('Type/Image Collision restores the complete shared identity and scrub targets', async ({ page }) => {
   await page.goto('/design-lab/type-image-collision/');
 
-  await expect(page.getByText('Creative technologist. Musician. Professional maker of curious things.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Creative tinkerer. Musician. Professional maker of curious things.', { exact: true })).toBeVisible();
   await expect(page.locator('[data-lab-contrast-safe-reveal]')).toHaveCount(3);
+});
+
+test('Type/Image Collision uses expanding horizontal work panels and overlapping square music art on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/design-lab/type-image-collision/');
+
+  await expect(page.locator('.collision-accordions')).toHaveCSS('display', 'flex');
+  const projects = page.locator('.collision-project');
+  const widths = await projects.evaluateAll((elements) => elements.map(
+    (element) => element.getBoundingClientRect().width,
+  ));
+  expect(widths[0]).toBeGreaterThan(widths[1] * 2);
+
+  const thumbnails = page.locator('.collision-track-thumbnail');
+  await expect(thumbnails).toHaveCount(3);
+  const boxes = await thumbnails.evaluateAll((elements) => elements.map((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: rect.right, width: rect.width, height: rect.height };
+  }));
+  expect(boxes.every(({ width, height }) => Math.abs(width - height) < 1)).toBe(true);
+  expect(boxes[1].left).toBeLessThan(boxes[0].right);
+  expect(boxes[2].left).toBeLessThan(boxes[1].right);
+});
+
+test('Type/Image Collision returns its accordion and music art to a readable mobile flow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/design-lab/type-image-collision/');
+
+  await expect(page.locator('.collision-accordions')).toHaveCSS('display', 'block');
+  const projectTops = await page.locator('.collision-project').evaluateAll((elements) => elements.map(
+    (element) => element.getBoundingClientRect().top,
+  ));
+  expect(projectTops[0]).toBeLessThan(projectTops[1]);
+  expect(projectTops[1]).toBeLessThan(projectTops[2]);
+  await expect(page.locator('.collision-track-thumbnail')).toHaveCount(3);
 });
 
 test('Darkroom Cinema presents three cinematic project chapters', async ({ page }) => {
@@ -336,7 +488,7 @@ test('Darkroom Cinema preserves the exact approved identity', async ({ page }) =
   await page.goto('/design-lab/darkroom-cinema/');
 
   await expect(page.locator('#darkroom-title')).toHaveText(
-    'Creative technologist. Musician. Professional maker of curious things.',
+    'Creative tinkerer. Musician. Professional maker of curious things.',
   );
 });
 

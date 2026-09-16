@@ -1,10 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import { loadDesignLabContent } from '../content';
+import { DESIGN_LAB_IDENTITY, DESIGN_LAB_SUPPORTING_STATEMENT, loadDesignLabContent } from '../content';
 
 const { projects, music, experience } = await loadDesignLabContent();
 const luminousTrails = projects.find(({ id }) => id === 'luminous-trails');
 if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.');
+const darkroomIdentityLines = DESIGN_LAB_IDENTITY.match(/[^.]+\./g)?.map((line) => line.trim()) ?? [DESIGN_LAB_IDENTITY];
 ---
 
 <div class="darkroom" data-darkroom-cinema>
@@ -23,18 +24,16 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
     <div class="darkroom-hero__content">
       <p class="darkroom-hero__eyebrow">Amir Rostami — Toronto, Canada</p>
       <h1 id="darkroom-title">
-        <span>Creative technologist.</span>
-        <span>Musician. Professional</span>
-        <span>maker of curious things.</span>
+        {darkroomIdentityLines.map((line) => <span>{`${line}\u00a0`}</span>)}
       </h1>
-      <p class="darkroom-hero__statement">I create immersive experiences, software, and sound that bring people together in unexpected ways.</p>
+      <p class="darkroom-hero__statement">{DESIGN_LAB_SUPPORTING_STATEMENT}</p>
       <p class="darkroom-hero__availability">Open to employment and freelance work.</p>
     </div>
     <a class="darkroom-hero__cue" href="#work">Enter the work <span aria-hidden="true">↓</span></a>
   </section>
 
   <section id="work" class="darkroom-work" aria-labelledby="darkroom-work-title">
-    <aside class="darkroom-work__index" data-cinema-project-index>
+    <aside class="darkroom-work__index" data-cinema-project-index data-lab-pin>
       <p>Selected work</p>
       <h2 id="darkroom-work-title">Three chapters in public space.</h2>
       <ol>
@@ -81,6 +80,7 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
         </a>
       ))}
     </div>
+    <a class="darkroom-music__archive" data-music-archive href="/music/">Explore the full music archive <span aria-hidden="true">↗</span></a>
   </section>
 
   <section id="experience" class="darkroom-experience" aria-labelledby="darkroom-experience-title">
@@ -107,15 +107,12 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
 </div>
 
 <script>
-  import { initializeDesignLabMotion } from '../motion';
+  import { initializeDesignLabMotion, registerDesignLabCleanup } from '../motion';
 
   const root = document.querySelector<HTMLElement>('[data-darkroom-cinema]');
   if (root) {
-    const projectIndex = root.querySelector<HTMLElement>('[data-cinema-project-index]');
-    if (projectIndex && window.matchMedia('(min-width: 56.3125rem)').matches) {
-      projectIndex.setAttribute('data-lab-pin', '');
-    }
-    initializeDesignLabMotion(root);
+    const cleanupMotion = initializeDesignLabMotion(root);
+    registerDesignLabCleanup(cleanupMotion);
   }
 </script>
 
@@ -225,6 +222,7 @@ if (!luminousTrails) throw new Error('Darkroom Cinema requires Luminous Trails.'
   .darkroom-listening a { align-items: baseline; display: grid; gap: .75rem; grid-template-columns: 1.5rem minmax(0, 1fr) auto; padding: .65rem 0; text-decoration: none; }
   .darkroom-listening span { color: #9a9892; font-size: .7rem; }
   .darkroom-listening strong { font-size: clamp(1.25rem, 2vw, 2rem); font-weight: 430; letter-spacing: -.04em; }
+  .darkroom-music__archive { display: inline-block; margin-top: 2rem; }
   .darkroom-experience { background: var(--graphite); }
   .darkroom-experience ol { display: grid; gap: 2rem; list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }
   .darkroom-experience li { align-items: start; display: grid; gap: 1rem; grid-template-columns: 2rem minmax(14rem, .7fr) minmax(10rem, 1fr); padding: .35rem 0; }

@@ -9,6 +9,12 @@ export const FEATURED_PROJECT_IDS = [
 
 export const FEATURED_TRACK_TITLES = ['Float', 'Flow', 'La Paloma'] as const;
 
+export const DESIGN_LAB_IDENTITY =
+  'Creative tinkerer. Musician. Professional maker of curious things.';
+
+export const DESIGN_LAB_SUPPORTING_STATEMENT =
+  'I create immersive experiences, software, and sound that bring people together in unexpected ways.';
+
 export interface DesignLabContent {
   projects: CollectionEntry<'projects'>[];
   music: CollectionEntry<'music'>[];

@@ -35,7 +35,7 @@
 - Produces: `DesignConcept`, `DESIGN_CONCEPTS`, `designConceptBySlug(slug: string): DesignConcept | undefined`.
 - Consumes: no application interfaces.
 
-- [ ] **Step 1: Write the failing manifest test**
+- [x] **Step 1: Write the failing manifest test**
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -61,23 +61,23 @@ describe('design lab manifest', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and verify RED**
+- [x] **Step 2: Run the test and verify RED**
 
 Run: `npm run test:unit -- tests/unit/design-lab-manifest.test.ts`
 
 Expected: FAIL because `src/design-lab/manifest.ts` does not exist.
 
-- [ ] **Step 3: Implement the typed manifest**
+- [x] **Step 3: Implement the typed manifest**
 
 Define the exact fields `slug`, `name`, `shortName`, `referenceUrl`, `description`, `palette`, `font`, `hero`, and `motion`. Export the six immutable records in approved order and implement lookup with `Array.prototype.find`.
 
-- [ ] **Step 4: Run the manifest test and verify GREEN**
+- [x] **Step 4: Run the manifest test and verify GREEN**
 
 Run: `npm run test:unit -- tests/unit/design-lab-manifest.test.ts`
 
 Expected: PASS with two tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/design-lab/manifest.ts tests/unit/design-lab-manifest.test.ts
@@ -99,7 +99,7 @@ git commit -m "feat: define design lab concepts"
 - Consumes: `DESIGN_CONCEPTS` and `designConceptBySlug` from Task 1.
 - Produces: static routes for the hub and all six concepts; layout props `title`, `description`, `conceptSlug?`, and `bodyClass?`.
 
-- [ ] **Step 1: Add the failing route test**
+- [x] **Step 1: Add the failing route test**
 
 ```ts
 import { expect, test } from '@playwright/test';
@@ -128,29 +128,29 @@ for (const slug of slugs) {
 }
 ```
 
-- [ ] **Step 2: Run the route test and verify RED**
+- [x] **Step 2: Run the route test and verify RED**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts`
 
 Expected: FAIL with a 404 for `/design-lab/`.
 
-- [ ] **Step 3: Install motion and font dependencies**
+- [x] **Step 3: Install motion and font dependencies**
 
 Run: `npm install gsap @fontsource-variable/space-grotesk @fontsource-variable/archivo @fontsource-variable/outfit @fontsource-variable/geist`
 
 Expected: `package.json` and `package-lock.json` contain the five new runtime dependencies.
 
-- [ ] **Step 4: Implement the layout, hub, and static dynamic route**
+- [x] **Step 4: Implement the layout, hub, and static dynamic route**
 
 The layout must render a skip link, canonical metadata, `noindex, nofollow`, and a `<main class="lab-page">` with horizontal overflow containment. The dynamic route must export `getStaticPaths()` using all six manifest records and map each slug to its concept component without network access.
 
-- [ ] **Step 5: Run route tests and build**
+- [x] **Step 5: Run route tests and build**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts && npm run build`
 
 Expected: all seven route assertions pass and Astro outputs seven lab pages.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json package-lock.json src/layouts/DesignLabLayout.astro src/design-lab/styles/base.css src/pages/design-lab tests/e2e/design-lab.spec.ts
@@ -168,7 +168,7 @@ git commit -m "feat: scaffold design lab routes"
 - Produces: `loadDesignLabContent(): Promise<DesignLabContent>` containing `projects`, `music`, and `experience`; `initializeDesignLabMotion(root?: ParentNode): () => void`.
 - Consumes: Astro content collections and DOM elements carrying `data-lab-pin`, `data-lab-scale`, `data-lab-reveal`, `data-lab-stack`, and `data-lab-marquee`.
 
-- [ ] **Step 1: Write the failing content adapter test**
+- [x] **Step 1: Write the failing content adapter test**
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -182,23 +182,23 @@ describe('design lab content contract', () => {
 });
 ```
 
-- [ ] **Step 2: Run the content test and verify RED**
+- [x] **Step 2: Run the content test and verify RED**
 
 Run: `npm run test:unit -- tests/unit/design-lab-content.test.ts`
 
 Expected: FAIL because `src/design-lab/content.ts` does not exist.
 
-- [ ] **Step 3: Implement the adapter and progressive motion API**
+- [x] **Step 3: Implement the adapter and progressive motion API**
 
 Load and order the real collections with existing `sortByOrder`. Register ScrollTrigger once, return a cleanup function that kills only lab-owned triggers, skip all animated setup when `prefers-reduced-motion: reduce` matches, and scope selectors to the supplied root.
 
-- [ ] **Step 4: Run unit tests and type checking**
+- [x] **Step 4: Run unit tests and type checking**
 
 Run: `npm run test:unit -- tests/unit/design-lab-content.test.ts && npm run check`
 
 Expected: PASS with no TypeScript or Astro diagnostics.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/design-lab/content.ts src/design-lab/motion.ts tests/unit/design-lab-content.test.ts
@@ -217,31 +217,31 @@ git commit -m "feat: add design lab content and motion core"
 - Consumes: `DesignLabContent`, the shared layout, and motion data attributes.
 - Produces: complete pages for `/poster-index/` and `/type-image-collision/`.
 
-- [ ] **Step 1: Add failing shared-content and geometry assertions**
+- [x] **Step 1: Add failing shared-content and geometry assertions**
 
 For both routes assert one H1, exactly three `[data-lab-project]` elements, three `[data-lab-track]` elements, a visible contact link, and `document.documentElement.scrollWidth <= document.documentElement.clientWidth` at 390 and 1440 pixels.
 
-- [ ] **Step 2: Run the two-route tests and verify RED**
+- [x] **Step 2: Run the two-route tests and verify RED**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Poster Index|Type/Image"`
 
 Expected: FAIL because both concept components are absent.
 
-- [ ] **Step 3: Implement Poster Index**
+- [x] **Step 3: Implement Poster Index**
 
 Use Space Grotesk, espresso/bone/mint, an asymmetric two-line hero, one inline image mask, three interlocking project plates, an infinite music marquee, pinned work heading, and scale/fade media. Keep all non-image surfaces square.
 
-- [ ] **Step 4: Implement Type/Image Collision**
+- [x] **Step 4: Implement Type/Image Collision**
 
 Use Archivo, black/white, a layered editorial hero, three keyboard-operable horizontal accordion panels, a restrained music carousel, scrubbed word reveal, and scale/fade media.
 
-- [ ] **Step 5: Run responsive tests and verify GREEN**
+- [x] **Step 5: Run responsive tests and verify GREEN**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Poster Index|Type/Image"`
 
 Expected: PASS at desktop and mobile projects.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/design-lab/concepts/PosterIndex.astro src/design-lab/concepts/TypeImageCollision.astro src/pages/design-lab/[concept].astro tests/e2e/design-lab.spec.ts
@@ -260,31 +260,31 @@ git commit -m "feat: add first design lab concepts"
 - Consumes: the same shared content and motion contract as Task 4.
 - Produces: complete pages for `/darkroom-cinema/` and `/printed-signal-lab/`.
 
-- [ ] **Step 1: Add failing tests for cinematic chapters and dense grid math**
+- [x] **Step 1: Add failing tests for cinematic chapters and dense grid math**
 
 Assert Darkroom Cinema has three `[data-cinema-chapter]` sections and Printed Signal Lab has six `[data-grid-span]` elements whose desktop `grid-column-end` spans resolve to `7,5,4,8,6,6` in DOM order.
 
-- [ ] **Step 2: Run the two-route tests and verify RED**
+- [x] **Step 2: Run the two-route tests and verify RED**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Darkroom|Printed Signal"`
 
 Expected: FAIL because the concept components are absent.
 
-- [ ] **Step 3: Implement Darkroom Cinema**
+- [x] **Step 3: Implement Darkroom Cinema**
 
 Use Geist, full-bleed real project media, a centered maximum-three-line hero, three media chapters, a pinned project index, and a minimal listening strip. Avoid borders that turn chapters into cards.
 
-- [ ] **Step 4: Implement Printed Signal Lab**
+- [x] **Step 4: Implement Printed Signal Lab**
 
 Use Outfit, parchment/carbon/oxide, a flat SVG moiré instrument, complete twelve-column rows, waveform music rows, scrubbed type, and stacked work plates. The SVG must use strokes and flat fills only.
 
-- [ ] **Step 5: Run responsive tests and verify GREEN**
+- [x] **Step 5: Run responsive tests and verify GREEN**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Darkroom|Printed Signal"`
 
 Expected: PASS with complete grid spans and no horizontal overflow.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/design-lab/concepts/DarkroomCinema.astro src/design-lab/concepts/PrintedSignalLab.astro src/pages/design-lab/[concept].astro tests/e2e/design-lab.spec.ts
@@ -303,31 +303,31 @@ git commit -m "feat: add cinematic and print concepts"
 - Consumes: the same shared content and motion contract as Task 4.
 - Produces: complete pages for `/coral-broadcast/` and `/clau-poster-wall/`.
 
-- [ ] **Step 1: Add failing tests for concentrated palettes and anti-card structure**
+- [x] **Step 1: Add failing tests for concentrated palettes and anti-card structure**
 
 Assert Coral Broadcast exposes CSS variable `--broadcast-accent: #ff7777`; Clau Poster Wall exposes a solid `--poster-field` value and no `linear-gradient` or `radial-gradient` in computed hero background images; both routes contain three project links without elements matching `.card`.
 
-- [ ] **Step 2: Run the two-route tests and verify RED**
+- [x] **Step 2: Run the two-route tests and verify RED**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Coral Broadcast|Clau"`
 
 Expected: FAIL because the concept components are absent.
 
-- [ ] **Step 3: Implement Coral Broadcast**
+- [x] **Step 3: Implement Coral Broadcast**
 
 Use Archivo, black/bone/coral, a two-line asymmetric hero, vertically cropped work transmissions, a focus-pausing title marquee, pinned active-state changes, and stacked project layers.
 
-- [ ] **Step 4: Implement Clau Poster Wall**
+- [x] **Step 4: Implement Clau Poster Wall**
 
 Use Space Grotesk, solid periwinkle/black/signal green, a centered poster hero, monumental project names with inline image apertures, an anti-card poster wall, large music marquee, scrubbed text, and image scale/fade. Do not add gradients, shadows, or rounded containers.
 
-- [ ] **Step 5: Run responsive tests and verify GREEN**
+- [x] **Step 5: Run responsive tests and verify GREEN**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "Coral Broadcast|Clau"`
 
 Expected: PASS with the required palette variables and no overflow.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/design-lab/concepts/CoralBroadcast.astro src/design-lab/concepts/ClauPosterWall.astro src/pages/design-lab/[concept].astro tests/e2e/design-lab.spec.ts
@@ -346,27 +346,27 @@ git commit -m "feat: add broadcast and poster concepts"
 - Consumes: all six completed concept routes.
 - Produces: verified keyboard, reduced-motion, heading, contrast, and navigation behavior.
 
-- [ ] **Step 1: Add failing accessibility and motion assertions**
+- [x] **Step 1: Add failing accessibility and motion assertions**
 
 For every route, run axe, confirm exactly one H1, tab to the first navigation link and assert a visible focus indicator, emulate reduced motion and assert every project heading is visible with `opacity: 1`, then activate “Back to all concepts” and verify `/design-lab/`.
 
-- [ ] **Step 2: Run the accessibility tests and verify RED where defects exist**
+- [x] **Step 2: Run the accessibility tests and verify RED where defects exist**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "accessibility|reduced motion|navigation"`
 
 Expected: any failure must identify a specific semantic, focus, contrast, or animation-state defect.
 
-- [ ] **Step 3: Implement only the fixes demonstrated by failing tests**
+- [x] **Step 3: Implement only the fixes demonstrated by failing tests**
 
 Keep focus outlines at least 2 CSS pixels, restore all transformed content in reduced-motion mode, and ensure interactive accordion regions use buttons with `aria-expanded` and controlled panel IDs.
 
-- [ ] **Step 4: Run the focused tests and verify GREEN**
+- [x] **Step 4: Run the focused tests and verify GREEN**
 
 Run: `npx playwright test tests/e2e/design-lab.spec.ts --grep "accessibility|reduced motion|navigation"`
 
 Expected: PASS for every route.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/design-lab src/pages/design-lab tests/e2e/design-lab.spec.ts
@@ -385,31 +385,31 @@ git commit -m "test: harden design lab accessibility"
 - Consumes: the complete lab.
 - Produces: documented local viewing instructions and a verified branch ready for user review.
 
-- [ ] **Step 1: Run the full automated suite**
+- [x] **Step 1: Run the full automated suite**
 
 Run: `npm test`
 
 Expected: unit, Astro check/build, standard end-to-end, contact fallback, accessibility, and design-lab tests pass with no warnings.
 
-- [ ] **Step 2: Review all routes at four widths**
+- [x] **Step 2: Review all routes at four widths**
 
 Inspect the hub and six routes at 390×844, 768×1024, 1024×768, and 1440×900. Confirm no four-line desktop hero, clipped focus outline, empty dense-grid cell, unreadable media overlay, or horizontal overflow.
 
-- [ ] **Step 3: Verify production isolation**
+- [x] **Step 3: Verify production isolation**
 
 Compare `/`, `/work/`, `/music/`, `/about/`, and `/contact/` against the main-branch behavior. Confirm production navigation contains no design-lab link and the existing tests remain unchanged except for the new lab test file.
 
-- [ ] **Step 4: Update durable documentation**
+- [x] **Step 4: Update durable documentation**
 
 Document `npm run dev`, the `/design-lab/` path, the unlinked/noindex limitation, the six concept slugs, and the rule that one direction must be selected before production components are replaced.
 
-- [ ] **Step 5: Run final verification**
+- [x] **Step 5: Run final verification**
 
 Run: `git diff --check && npm test && git status --short`
 
 Expected: no whitespace errors, all tests pass, and only intended documentation or implementation files remain uncommitted.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add README.md docs src tests package.json package-lock.json
@@ -419,13 +419,14 @@ git commit -m "docs: finalize six-concept design lab"
 #### Task 8 verification evidence (2026-09-15)
 
 - Node/runtime: Node 24; merge base `434459b1d950aa5a0faf77c5e9f8e2a22df38cc0`.
-- Initial complete regression: 58 unit tests, Astro diagnostics `0 errors / 0 warnings / 0 hints`, 19 generated pages, 172 standard browser tests, and 1 contact-fallback test passed. The command also emitted pre-existing Markdown deprecation and `NO_COLOR`/`FORCE_COLOR` notices.
+- Final complete regression: 59 unit tests, Astro diagnostics `0 errors / 0 warnings / 0 hints`, 19 generated pages, 182 standard browser tests, and 1 contact-fallback test passed. The command also emitted pre-existing Markdown deprecation and `NO_COLOR`/`FORCE_COLOR` notices.
 - Visual/geometry review: 28 hub/concept viewport combinations, 28 full-page screenshots, and 476 focusable targets checked at 390×844, 768×1024, 1024×768, and 1440×900.
 - TDD defect repair: the new focus-clipping regression failed on the Poster Index marquee link with a 3px outline and 5px outward offset inside a clipping container; drawing the same 3px outline inward fixed the defect, and the focused test then passed across all routes and widths.
 - Desktop hero lines: Poster Index 2; Type/Image Collision 1; Darkroom Cinema 3; Printed Signal Lab 3; Coral Broadcast 2; Clau Poster Wall 3.
 - Dense-grid evidence: one complete column at 390/768; desktop rows total `7+5=12`, `4+8=12`, and `6+6=12` at 1024/1440.
 - Audit attribution: the production audit reports Astro/esbuild/sharp only (3 findings: 1 low, 1 high, 1 critical); the full audit adds Vitest/@vitest/mocker (5 findings: 1 low, 2 moderate, 1 high, 1 critical). No advisory is attributed to GSAP or any Fontsource package. Forced breaking upgrades were not applied.
 - Isolation: production pages, header/footer, existing production components, and pre-existing tests have a zero-byte diff from the merge base. Only lab pages/files/tests, lab dependencies, and Task 8 documentation differ.
+- Final-review repair: progressively enhanced Type/Image panels now collapse correctly, become horizontal on desktop, and retain no-JavaScript content; all concepts link to `/music/`; pinning is desktop-only; Coral's reduced-motion stack is static; audited interaction colors meet AA; approved shared copy and lifecycle cleanup are covered by browser tests.
 
 ## Self-review
 

@@ -1,13 +1,13 @@
 ---
 import { Image } from 'astro:assets';
-import { loadDesignLabContent } from '../content';
+import { DESIGN_LAB_IDENTITY, DESIGN_LAB_SUPPORTING_STATEMENT, loadDesignLabContent } from '../content';
 
 const { projects, music, experience } = await loadDesignLabContent();
 ---
 
 <div class="collision" data-type-image-collision>
   <section class="collision-hero" aria-labelledby="collision-title" data-lab-scrub-reveal-group>
-    <p class="collision-kicker">Amir Rostami / Creative technologist / Toronto, Canada</p>
+    <p class="collision-kicker">Amir Rostami / Creative tinkerer / Toronto, Canada</p>
     <div class="collision-hero__type-layer collision-hero__type-layer--background" data-collision-type-layer="background" aria-hidden="true">
       <span data-lab-contrast-safe-reveal>MAKE</span><span data-lab-contrast-safe-reveal>ROOM</span>
     </div>
@@ -15,7 +15,7 @@ const { projects, music, experience } = await loadDesignLabContent();
       <Image src={projects[0].data.hero} alt={projects[0].data.heroAlt} widths={[720, 1080, 1440]} sizes="(max-width: 48rem) calc(100vw - 3rem), 42vw" loading="eager" fetchpriority="high" />
     </a>
     <h1 id="collision-title" class="collision-hero__type-layer collision-hero__type-layer--foreground" data-collision-type-layer="foreground"><span class="sr-only">MAKE ROOM TO MEET.</span><span data-lab-contrast-safe-reveal aria-hidden="true">TO MEET.</span></h1>
-    <div class="collision-hero__copy"><p class="collision-hero__identity">Creative technologist. Musician. Professional maker of curious things.</p><p>I create immersive experiences, software, and sound that bring people together in unexpected ways.</p></div>
+    <div class="collision-hero__copy"><p class="collision-hero__identity">{DESIGN_LAB_IDENTITY}</p><p>{DESIGN_LAB_SUPPORTING_STATEMENT}</p></div>
     <p class="collision-hero__availability">Open to employment and freelance work.</p>
   </section>
 
@@ -25,11 +25,11 @@ const { projects, music, experience } = await loadDesignLabContent();
       {projects.map((project, index) => {
         const panelId = `collision-project-${index + 1}`;
         return (
-          <article class:list={['collision-project', { 'is-open': index === 0 }]} data-lab-project data-lab-stack>
-            <button type="button" aria-expanded={index === 0 ? 'true' : 'false'} aria-controls={panelId} id={`collision-button-${index + 1}`}>
+          <article class="collision-project" data-lab-project data-lab-stack>
+            <button type="button" aria-expanded="true" aria-controls={panelId} id={`collision-button-${index + 1}`}>
               <span>0{index + 1}</span><span>{project.data.title}</span><span aria-hidden="true">↘</span>
             </button>
-            <div class="collision-project__panel" id={panelId} role="region" aria-labelledby={`collision-button-${index + 1}`} hidden={index !== 0}>
+            <div class="collision-project__panel" id={panelId} role="region" aria-labelledby={`collision-button-${index + 1}`}>
               <a class="collision-project__image" href={`/work/${project.id}/`} aria-label={`View ${project.data.title}`}><span data-lab-scale><Image src={project.data.hero} alt={project.data.heroAlt} widths={[640, 960, 1280]} sizes="(max-width: 48rem) calc(100vw - 3rem), 56vw" /></span></a>
               <div><p>{project.data.cardSummary}</p><a href={`/work/${project.id}/`}>Open project <span aria-hidden="true">↗</span></a></div>
             </div>
@@ -42,8 +42,9 @@ const { projects, music, experience } = await loadDesignLabContent();
   <section id="music" class="collision-music" aria-labelledby="collision-music-title">
     <div class="collision-section-head"><p>02 — Music</p><h2 id="collision-music-title">Three tracks in a black-and-white sequence.</h2></div>
     <div class="collision-track-sequence" aria-label="Featured music">
-      {music.map((track, index) => <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer" data-lab-stack><span>0{index + 1}</span><strong>{track.data.title}</strong><span>Listen ↗</span></a>)}
+      {music.map((track, index) => <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer" data-lab-stack><span>0{index + 1}</span><span class="collision-track-thumbnail" aria-hidden="true"><Image src={projects[index].data.hero} alt="" widths={[320, 480, 640]} sizes="(max-width: 48rem) 12rem, 34vw" /></span><strong>{track.data.title}</strong><span>Listen ↗</span></a>)}
     </div>
+    <a class="collision-music__archive" data-music-archive href="/music/">Explore the full music archive <span aria-hidden="true">↗</span></a>
   </section>
 
   <section id="experience" class="collision-experience" aria-labelledby="collision-experience-title">
@@ -57,30 +58,40 @@ const { projects, music, experience } = await loadDesignLabContent();
 </div>
 
 <script>
-  import { initializeDesignLabMotion } from '../motion';
+  import { initializeDesignLabMotion, registerDesignLabCleanup } from '../motion';
 
   const root = document.querySelector<HTMLElement>('[data-type-image-collision]');
   if (root) {
-    initializeDesignLabMotion(root);
-    root.querySelectorAll<HTMLElement>('[data-collision-accordion] .collision-project').forEach((project) => {
+    const accordion = root.querySelector<HTMLElement>('[data-collision-accordion]');
+    const projects = Array.from(root.querySelectorAll<HTMLElement>('[data-collision-accordion] .collision-project'));
+    const removeAccordionListeners: Array<() => void> = [];
+    const setExpanded = (project: HTMLElement, expanded: boolean) => {
       const button = project.querySelector<HTMLButtonElement>('button');
       const panel = project.querySelector<HTMLElement>('[role="region"]');
       if (!button || !panel) return;
-      button.addEventListener('click', () => {
+      project.classList.toggle('is-open', expanded);
+      button.setAttribute('aria-expanded', String(expanded));
+      panel.hidden = !expanded;
+    };
+
+    accordion?.setAttribute('data-enhanced', '');
+    projects.forEach((project, index) => {
+      setExpanded(project, index === 0);
+      const button = project.querySelector<HTMLButtonElement>('button');
+      if (!button) return;
+      const onClick = () => {
         const opening = button.getAttribute('aria-expanded') !== 'true';
-        root.querySelectorAll<HTMLElement>('[data-collision-accordion] .collision-project').forEach((item) => {
-          const itemButton = item.querySelector<HTMLButtonElement>('button');
-          const itemPanel = item.querySelector<HTMLElement>('[role="region"]');
-          item.classList.remove('is-open');
-          itemButton?.setAttribute('aria-expanded', 'false');
-          if (itemPanel) itemPanel.hidden = true;
-        });
-        if (opening) {
-          project.classList.add('is-open');
-          button.setAttribute('aria-expanded', 'true');
-          panel.hidden = false;
-        }
-      });
+        projects.forEach((item) => setExpanded(item, false));
+        if (opening) setExpanded(project, true);
+      };
+      button.addEventListener('click', onClick);
+      removeAccordionListeners.push(() => button.removeEventListener('click', onClick));
+    });
+
+    const cleanupMotion = initializeDesignLabMotion(root);
+    registerDesignLabCleanup(() => {
+      cleanupMotion();
+      removeAccordionListeners.forEach((removeListener) => removeListener());
     });
   }
 </script>
@@ -89,10 +100,10 @@ const { projects, music, experience } = await loadDesignLabContent();
   .collision { --black: #080808; --white: #fbfbf9; --smoke: #d8d8d5; --headline-smoke: #8c8c89; background: var(--white); color: var(--black); overflow: clip; }.collision :is(h1, h2, h3, p) { margin: 0; }.collision a { text-underline-offset: .23em; text-decoration-thickness: 1px; }
   .collision-hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); min-height: min(55rem, calc(100svh - 4rem)); padding: clamp(1.5rem, 4vw, 4rem); position: relative; }.collision-kicker, .collision-hero__availability, .collision-section-head > p, .collision-contact > p { font-size: .78rem; font-weight: 700; letter-spacing: .055em; text-transform: uppercase; }.collision-kicker { grid-column: 1 / 7; }.collision-hero__type-layer { align-self: center; font-size: clamp(4rem, 12.2vw, 12rem); font-weight: 800; grid-column: 1 / 13; grid-row: 2; letter-spacing: -.105em; line-height: .71; margin: 0; max-width: 92rem; pointer-events: none; position: relative; width: 100%; }.collision-hero__type-layer > span:not(.sr-only) { display: block; }.collision-hero__type-layer--background { color: var(--headline-smoke); z-index: 1; }.collision-hero__type-layer--background > span:nth-child(2) { margin-left: 10vw; }.collision-hero__type-layer--foreground { color: var(--black); margin-left: 2vw; z-index: 3; }.collision .sr-only { clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }.collision-hero__image { align-self: end; aspect-ratio: 4 / 5; display: block; grid-column: 7 / 13; grid-row: 2; margin-bottom: 3vw; overflow: hidden; position: relative; z-index: 2; }.collision-hero__image :global(img), .collision-project__image :global(img) { height: 100%; object-fit: cover; transition: transform .55s ease; width: 100%; }.collision-hero__image:hover :global(img), .collision-hero__image:focus-visible :global(img), .collision-project__image:hover :global(img), .collision-project__image:focus-visible :global(img) { transform: scale(1.045); }.collision-hero__copy { align-self: end; display: grid; font-size: clamp(1rem, 1.45vw, 1.3rem); gap: 1rem; grid-column: 1 / 5; grid-row: 3; line-height: 1.35; max-width: 24rem; }.collision-hero__identity { font-weight: 700; }.collision-hero__availability { align-self: end; grid-column: 9 / 13; grid-row: 3; text-align: right; }
   .collision-work, .collision-music, .collision-experience { border-top: 1px solid var(--black); padding: clamp(2.5rem, 7vw, 7rem) clamp(1.5rem, 4vw, 4rem); }.collision-section-head { display: grid; gap: 1.25rem; grid-template-columns: 2.8rem minmax(0, 1fr); }.collision-section-head > p { grid-column: 1; }.collision-section-head h2 { font-size: clamp(2rem, 4.8vw, 5.3rem); font-weight: 700; grid-column: 2; letter-spacing: -.075em; line-height: .88; max-width: 14ch; }
-  .collision-accordions { border-top: 1px solid var(--black); margin-top: clamp(2.5rem, 7vw, 7rem); }.collision-project { border-bottom: 1px solid var(--black); }.collision-project button { align-items: center; background: transparent; border: 0; color: inherit; cursor: pointer; display: grid; font: inherit; font-size: clamp(1.8rem, 4.5vw, 5rem); font-weight: 700; gap: 1rem; grid-template-columns: 2.8rem minmax(0, 1fr) auto; letter-spacing: -.075em; line-height: .9; padding: 1rem 0; text-align: left; width: 100%; }.collision-project button span:first-child { font-size: .75rem; letter-spacing: .06em; }.collision-project button span:last-child { font-size: 1.25rem; transition: transform .25s ease; }.collision-project.is-open button span:last-child { transform: rotate(45deg); }.collision-project__panel { display: grid; gap: clamp(1.5rem, 5vw, 5rem); grid-template-columns: minmax(0, 8fr) minmax(12rem, 4fr); padding: 0 0 1.5rem 2.8rem; }.collision-project__image { aspect-ratio: 16 / 9; display: block; overflow: hidden; }.collision-project__image > span { display: block; height: 100%; width: 100%; }.collision-project__panel > div { display: flex; flex-direction: column; justify-content: space-between; }.collision-project__panel > div p { font-size: 1.05rem; line-height: 1.35; }.collision-project__panel > div a { font-weight: 700; margin-top: 2rem; }
-  .collision-music { background: var(--black); color: var(--white); }.collision-track-sequence { border-top: 1px solid var(--white); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2.5rem, 7vw, 7rem); overflow-x: auto; }.collision-track-sequence a { border-right: 1px solid var(--white); display: grid; gap: clamp(3rem, 12vw, 10rem) 1rem; min-height: 22rem; padding: 1rem; text-decoration: none; }.collision-track-sequence a:last-child { border-right: 0; }.collision-track-sequence strong { font-size: clamp(2rem, 4vw, 4.5rem); font-weight: 700; letter-spacing: -.075em; line-height: .85; }.collision-track-sequence a:hover { background: var(--white); color: var(--black); }
+  .collision-accordions { border-top: 1px solid var(--black); margin-top: clamp(2.5rem, 7vw, 7rem); }.collision-accordions[data-enhanced] { display: flex; min-height: clamp(32rem, 48vw, 46rem); }.collision-project { border-bottom: 1px solid var(--black); min-width: 0; }.collision-accordions[data-enhanced] .collision-project { border-right: 1px solid var(--black); display: flex; flex: 0 1 5.5rem; flex-direction: column; overflow: hidden; transition: flex .45s cubic-bezier(.2,.7,.2,1); }.collision-accordions[data-enhanced] .collision-project:last-child { border-right: 0; }.collision-accordions[data-enhanced] .collision-project.is-open { flex: 1 1 auto; }.collision-project button { align-items: center; background: transparent; border: 0; color: inherit; cursor: pointer; display: grid; flex: 0 0 auto; font: inherit; font-size: clamp(1.8rem, 4.5vw, 5rem); font-weight: 700; gap: 1rem; grid-template-columns: 2.8rem minmax(0, 1fr) auto; letter-spacing: -.075em; line-height: .9; min-height: 4.5rem; padding: 1rem; text-align: left; width: 100%; }.collision-project button span:first-child { font-size: .75rem; letter-spacing: .06em; }.collision-project button span:last-child { font-size: 1.25rem; transition: transform .25s ease; }.collision-project.is-open button span:last-child { transform: rotate(45deg); }.collision-project__panel { display: grid; flex: 1; gap: clamp(1.5rem, 3vw, 3rem); grid-template-columns: minmax(0, 8fr) minmax(10rem, 4fr); min-width: min(70vw, 62rem); padding: 0 1.5rem 1.5rem; }.collision-project__panel[hidden] { display: none; }.collision-project__image { aspect-ratio: 16 / 9; display: block; overflow: hidden; }.collision-project__image > span { display: block; height: 100%; width: 100%; }.collision-project__panel > div { display: flex; flex-direction: column; justify-content: space-between; }.collision-project__panel > div p { font-size: 1.05rem; line-height: 1.35; }.collision-project__panel > div a { font-weight: 700; margin-top: 2rem; }
+  .collision-music { background: var(--black); color: var(--white); }.collision-track-sequence { border-top: 1px solid var(--white); display: flex; margin-top: clamp(2.5rem, 7vw, 7rem); overflow: visible; }.collision-track-sequence a { border-right: 1px solid var(--white); display: grid; flex: 1 1 0; gap: 1rem; min-height: 30rem; min-width: 0; padding: 1rem; text-decoration: none; }.collision-track-sequence a:last-child { border-right: 0; }.collision-track-thumbnail { aspect-ratio: 1; display: block; margin-left: -1.5rem; overflow: hidden; width: calc(100% + 3rem); }.collision-track-thumbnail :global(img) { filter: grayscale(1); height: 100%; object-fit: cover; width: 100%; }.collision-track-sequence strong { align-self: end; font-size: clamp(2rem, 4vw, 4.5rem); font-weight: 700; letter-spacing: -.075em; line-height: .85; }.collision-track-sequence a:hover { background: var(--white); color: var(--black); }.collision-music__archive { display: inline-block; font-weight: 700; margin-top: 1.5rem; }
   .collision-experience ol { list-style: none; margin: clamp(2.5rem, 7vw, 7rem) 0 0; padding: 0; }.collision-experience li { border-top: 1px solid var(--black); display: grid; gap: 1rem; grid-template-columns: 2.8rem minmax(10rem, .7fr) minmax(10rem, 1fr) auto; padding: 1rem 0; }.collision-experience li > span, .collision-experience li > p:last-child { font-size: .78rem; }.collision-experience h3 { font-size: clamp(1.25rem, 2.4vw, 2.3rem); font-weight: 700; letter-spacing: -.06em; line-height: .95; }.collision-experience li > p:last-child { text-align: right; }
   .collision-contact { background: var(--smoke); border-top: 1px solid var(--black); min-height: 55svh; padding: clamp(2rem, 4vw, 4rem); }.collision-contact h2 { font-size: clamp(3rem, 9vw, 9rem); font-weight: 800; letter-spacing: -.1em; line-height: .78; margin-top: clamp(3rem, 13vw, 11rem); max-width: 11ch; }.collision-contact a { display: inline-block; font-size: clamp(1.25rem, 2.4vw, 2rem); font-weight: 700; margin-top: 2.5rem; }
-  @media (max-width: 48rem) { .collision-hero { min-height: auto; }.collision-kicker { grid-column: 1 / 13; }.collision-hero__type-layer { font-size: clamp(3.6rem, 17vw, 6rem); margin-top: 5rem; }.collision-hero__type-layer--background > span:nth-child(2), .collision-hero__type-layer--foreground { margin-left: 5vw; }.collision-hero__image { grid-column: 3 / 13; margin-top: 2rem; }.collision-hero__copy { grid-column: 1 / 11; margin-top: 2rem; }.collision-hero__availability { grid-column: 1 / 13; grid-row: 4; margin-top: 1.5rem; text-align: left; }.collision-project__panel { grid-template-columns: minmax(0, 1fr); padding-left: 0; }.collision-track-sequence { grid-template-columns: repeat(3, minmax(16rem, 1fr)); }.collision-experience li { grid-template-columns: 2.2rem minmax(0, 1fr); }.collision-experience li > p { grid-column: 2; }.collision-experience li > p:last-child { grid-column: 2; text-align: left; } }
-  @media (prefers-reduced-motion: reduce) { .collision-hero__image :global(img), .collision-project__image :global(img), .collision-project button span:last-child { transition: none; } }
+  @media (max-width: 48rem) { .collision-hero { min-height: auto; }.collision-kicker { grid-column: 1 / 13; }.collision-hero__type-layer { font-size: clamp(3.6rem, 17vw, 6rem); margin-top: 5rem; }.collision-hero__type-layer--background > span:nth-child(2), .collision-hero__type-layer--foreground { margin-left: 5vw; }.collision-hero__image { grid-column: 3 / 13; margin-top: 2rem; }.collision-hero__copy { grid-column: 1 / 11; margin-top: 2rem; }.collision-hero__availability { grid-column: 1 / 13; grid-row: 4; margin-top: 1.5rem; text-align: left; }.collision-accordions[data-enhanced] { display: block; min-height: 0; }.collision-accordions[data-enhanced] .collision-project { border-right: 0; display: block; overflow: visible; }.collision-project button { padding-inline: 0; }.collision-project__panel { grid-template-columns: minmax(0, 1fr); min-width: 0; padding: 0 0 1.5rem; }.collision-track-sequence { display: grid; grid-template-columns: repeat(3, minmax(16rem, 1fr)); overflow-x: auto; }.collision-track-sequence a { min-height: 26rem; }.collision-track-thumbnail { margin-left: 0; width: 12rem; }.collision-experience li { grid-template-columns: 2.2rem minmax(0, 1fr); }.collision-experience li > p { grid-column: 2; }.collision-experience li > p:last-child { grid-column: 2; text-align: left; } }
+  @media (prefers-reduced-motion: reduce) { .collision-accordions[data-enhanced] .collision-project, .collision-hero__image :global(img), .collision-project__image :global(img), .collision-project button span:last-child { transition: none; } }
 </style>

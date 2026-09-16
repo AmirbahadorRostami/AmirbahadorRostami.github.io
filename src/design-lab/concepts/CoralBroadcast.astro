@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { loadDesignLabContent } from '../content';
+import { DESIGN_LAB_IDENTITY, DESIGN_LAB_SUPPORTING_STATEMENT, loadDesignLabContent } from '../content';
 
 const { projects, music, experience } = await loadDesignLabContent();
 const [heroProject] = projects;
@@ -11,7 +11,8 @@ const [heroProject] = projects;
     <div class="broadcast-hero__copy">
       <p class="broadcast-utility">Amir Rostami / Toronto, Canada</p>
       <h1 id="broadcast-title"><span>SIGNALS</span><span>HUMAN.</span></h1>
-      <p class="broadcast-identity">Creative technologist. Musician. Professional maker of curious things.</p>
+      <p class="broadcast-identity">{DESIGN_LAB_IDENTITY}</p>
+      <p class="broadcast-supporting">{DESIGN_LAB_SUPPORTING_STATEMENT}</p>
       <p class="broadcast-availability">Open to employment and freelance work.</p>
     </div>
     <a class="broadcast-hero__frame" href={`/work/${heroProject.id}/`} aria-label={`View ${heroProject.data.title}`}>
@@ -28,7 +29,7 @@ const [heroProject] = projects;
   </section>
 
   <section id="work" class="broadcast-work" aria-labelledby="broadcast-work-title">
-    <div class="broadcast-work__index" data-broadcast-index>
+    <div class="broadcast-work__index" data-broadcast-index data-lab-pin>
       <p>01 / Work transmission</p>
       <h2 id="broadcast-work-title">Three places where people meet the signal.</h2>
       <ol>
@@ -73,6 +74,7 @@ const [heroProject] = projects;
         <a data-lab-track href={track.data.url} target="_blank" rel="noreferrer"><span>0{index + 1}</span><strong>{track.data.title}</strong><span>Listen ↗</span></a>
       ))}
     </div>
+    <a class="broadcast-music__archive" data-music-archive href="/music/">Explore the full music archive <span aria-hidden="true">↗</span></a>
   </section>
 
   <section id="experience" class="broadcast-experience" aria-labelledby="broadcast-experience-title">
@@ -94,13 +96,11 @@ const [heroProject] = projects;
 
 <script>
   import { gsap } from 'gsap';
-  import { initializeDesignLabMotion } from '../motion';
+  import { initializeDesignLabMotion, registerDesignLabCleanup } from '../motion';
 
   const root = document.querySelector<HTMLElement>('[data-coral-broadcast]');
   if (root) {
-    const index = root.querySelector<HTMLElement>('[data-broadcast-index]');
-    if (index && window.matchMedia('(min-width: 56.3125rem)').matches) index.setAttribute('data-lab-pin', '');
-    initializeDesignLabMotion(root);
+    const cleanupMotion = initializeDesignLabMotion(root);
 
     const marquee = root.querySelector<HTMLElement>('[data-broadcast-marquee]');
     const updateMarquee = () => {
@@ -135,6 +135,15 @@ const [heroProject] = projects;
     updateActiveProject();
     window.addEventListener('scroll', updateActiveProject, { passive: true });
     window.addEventListener('resize', updateActiveProject);
+    registerDesignLabCleanup(() => {
+      cleanupMotion();
+      marquee?.removeEventListener('mouseenter', updateMarquee);
+      marquee?.removeEventListener('mouseleave', updateMarquee);
+      marquee?.removeEventListener('focusin', updateMarquee);
+      marquee?.removeEventListener('focusout', updateMarquee);
+      window.removeEventListener('scroll', updateActiveProject);
+      window.removeEventListener('resize', updateActiveProject);
+    });
   }
 </script>
 
@@ -149,6 +158,7 @@ const [heroProject] = projects;
   .broadcast-hero h1 { font-size: clamp(3.7rem, 10.3vw, 11rem); font-weight: 650; letter-spacing: -.1em; line-height: .75; margin-top: clamp(3rem, 9vw, 8rem); max-width: 92rem; width: 100%; }
   .broadcast-hero h1 span { display: block; }
   .broadcast-identity { font-size: clamp(1.1rem, 1.8vw, 1.5rem); line-height: 1.25; margin-top: clamp(2rem, 4vw, 4rem); max-width: 35rem; }
+  .broadcast-supporting { line-height: 1.4; margin-top: 1rem; max-width: 40rem; }
   .broadcast-availability { color: var(--broadcast-accent-text); margin-top: 1.1rem; }
   .broadcast-hero__frame { align-self: end; display: grid; gap: .75rem; justify-self: end; max-width: 24rem; overflow: hidden; text-decoration: none; width: 100%; }
   .broadcast-hero__frame :global(img) { aspect-ratio: 3 / 4; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.2,1); width: 100%; }
@@ -177,9 +187,9 @@ const [heroProject] = projects;
   .broadcast-marquee__track { display: inline-flex; font-size: clamp(3rem, 9vw, 10rem); font-weight: 650; letter-spacing: -.09em; line-height: .85; padding-block: .12em; width: max-content; }
   .broadcast-marquee__track span { margin-right: .28em; }.broadcast-marquee__track i { font-style: normal; }
   .broadcast-tracks { display: grid; gap: .75rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 4vw, 4rem); }
-  .broadcast-tracks a { display: grid; gap: 1rem; min-width: 0; text-decoration: none; }.broadcast-tracks strong { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 650; letter-spacing: -.07em; line-height: .85; }.broadcast-tracks a:hover strong, .broadcast-tracks a:focus-visible strong { color: var(--broadcast-accent); }
+  .broadcast-tracks a { display: grid; gap: 1rem; min-width: 0; text-decoration: none; }.broadcast-tracks strong { font-size: clamp(1.8rem, 3vw, 3.5rem); font-weight: 650; letter-spacing: -.07em; line-height: .85; }.broadcast-tracks a:hover strong, .broadcast-tracks a:focus-visible strong { color: var(--broadcast-accent-text); }.broadcast-music__archive { display: inline-block; font-weight: 700; margin-top: 2rem; }
   .broadcast-experience { background: var(--broadcast-black); color: var(--broadcast-bone); }.broadcast-experience ol { list-style: none; margin: clamp(3rem, 7vw, 7rem) 0 0; padding: 0; }.broadcast-experience li { display: grid; gap: 1rem; grid-template-columns: 2rem minmax(12rem, 1fr) minmax(10rem, 1fr) auto; padding: 1rem 0; }.broadcast-experience h3 { font-size: clamp(1.35rem, 2vw, 2.15rem); font-weight: 650; letter-spacing: -.05em; line-height: 1; }.broadcast-experience li > p:last-child { text-align: right; }
   .broadcast-contact { background: var(--broadcast-accent); min-height: 68svh; padding: clamp(2rem, 5vw, 5rem); }.broadcast-contact h2 { font-size: clamp(4rem, 10vw, 11rem); font-weight: 650; letter-spacing: -.1em; line-height: .76; margin-top: clamp(5rem, 13vw, 11rem); max-width: 10ch; }.broadcast-contact > a { display: inline-block; font-size: clamp(1.25rem, 2.4vw, 2.3rem); margin-top: 2rem; }
   @media (max-width: 56.25rem) { .broadcast-hero { grid-template-columns: minmax(0, 1fr); min-height: auto; }.broadcast-hero h1 { font-size: clamp(3.5rem, 16vw, 6.5rem); margin-top: 4rem; }.broadcast-hero__frame { justify-self: start; max-width: 22rem; }.broadcast-work { grid-template-columns: minmax(0, 1fr); }.broadcast-work__index { min-height: auto; }.broadcast-project { height: 76svh; position: relative; }.broadcast-project__copy { min-height: 48%; }.broadcast-tracks { grid-template-columns: minmax(0, 1fr); }.broadcast-experience li { grid-template-columns: 2rem minmax(0, 1fr); }.broadcast-experience li > p { grid-column: 2; }.broadcast-experience li > p:last-child { text-align: left; } }
-  @media (prefers-reduced-motion: reduce) { .coral-broadcast [data-lab-reveal], .coral-broadcast [data-lab-stack] { opacity: 1 !important; transform: none !important; }.broadcast-marquee__track { transform: none !important; }.broadcast-hero__frame :global(img), .broadcast-project__media :global(img) { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .coral-broadcast [data-lab-reveal], .coral-broadcast [data-lab-stack] { opacity: 1 !important; transform: none !important; }.broadcast-project { position: static; }.broadcast-marquee__track { transform: none !important; }.broadcast-hero__frame :global(img), .broadcast-project__media :global(img) { transition: none; } }
 </style>
