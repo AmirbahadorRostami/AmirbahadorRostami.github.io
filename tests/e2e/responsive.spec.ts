@@ -42,6 +42,19 @@ test('homepage project and music grids have three columns on desktop and one on 
   await expect.poll(() => columnCount('#selected-music [data-music-grid]')).toBe(1);
 });
 
+test('work archive project grid has three columns on desktop and one on mobile', async ({ page }) => {
+  const columnCount = () => page.locator('.project-grid').evaluate((grid) => (
+    getComputedStyle(grid).gridTemplateColumns.split(' ').length
+  ));
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/work/');
+  await expect.poll(columnCount).toBe(3);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(columnCount).toBe(1);
+});
+
 test('case-study content stays inside the 320px viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/work/encounters/');
