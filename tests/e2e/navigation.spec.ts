@@ -58,13 +58,11 @@ test('primary navigation exposes the five approved destinations in order', async
   await page.goto('/');
 
   const navigation = page.getByRole('navigation', { name: 'Primary' });
-  await expect(navigation.getByRole('link')).toHaveText([
-    'Work',
-    'Experiments',
-    'Music',
-    'About',
-    'Contact',
-  ]);
+  const links = navigation.getByRole('link');
+  for (const [index, label] of ['Work', 'Experiments', 'Music', 'About', 'Contact'].entries()) {
+    await expect(links.nth(index)).toHaveAccessibleName(label);
+  }
+  await expect(links.locator('[aria-hidden="true"]')).toHaveText(['01', '02', '03', '04', '05']);
   expect(await navigation.getByRole('link').evaluateAll((links) => (
     links.map((link) => link.getAttribute('href'))
   ))).toEqual([
@@ -76,11 +74,100 @@ test('primary navigation exposes the five approved destinations in order', async
   ]);
 });
 
+test('production pages expose the Darkroom type and colour tokens', async ({ page }) => {
+  await page.goto('/');
+  const tokens = await page.evaluate(() => {
+    const styles = getComputedStyle(document.documentElement);
+    return {
+      signal: styles.getPropertyValue('--signal').trim(),
+      display: styles.getPropertyValue('--font-display').trim(),
+      mono: styles.getPropertyValue('--font-mono').trim(),
+      radius: styles.getPropertyValue('--radius').trim(),
+    };
+  });
+  expect.soft(tokens.signal).toBe('#a71414');
+  expect.soft(tokens.display).toContain('Outfit Variable');
+  expect.soft(tokens.mono).toContain('IBM Plex Mono');
+  expect.soft(tokens.mono).not.toContain('IBM Plex Mono Variable');
+  expect.soft(tokens.radius).toBe('0px');
+
+  const fonts = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return {
+      display: (await document.fonts.load('500 16px "Outfit Variable"')).length,
+      monoRegular: (await document.fonts.load('400 16px "IBM Plex Mono"')).map((face) => face.weight),
+      monoMedium: (await document.fonts.load('500 16px "IBM Plex Mono"')).map((face) => face.weight),
+    };
+  });
+  expect(fonts.display).toBeGreaterThan(0);
+  expect(fonts.monoRegular).toContain('400');
+  expect(fonts.monoMedium).toContain('500');
+});
+
+test('the production frame shows a compact wordmark, location and public profiles', async ({ page }) => {
+  await page.goto('/');
+  const brand = page.getByRole('banner').getByRole('link', { name: 'Amir Bahador Rostami — Home' });
+  await expect(brand).toHaveText('AMIR / ROSTAMI');
+  await expect(brand).toHaveAttribute('href', '/');
+  const footer = page.getByRole('contentinfo');
+  await expect(footer.getByText('Toronto, Canada', { exact: true })).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'SoundCloud' })).toHaveAttribute('href', 'https://soundcloud.com/amir-bahador-rostami');
+  await expect(footer.locator('a[href=""]')).toHaveCount(0);
+});
+
+test('current section navigation includes a visible signal line on detail pages', async ({ page }) => {
+  await page.goto('/work/encounters/');
+  const currentLink = page.getByRole('navigation', { name: 'Primary' }).locator('[aria-current="page"]');
+  await expect(currentLink).toHaveAccessibleName('Work');
+  const line = await currentLink.evaluate((link) => {
+    const style = getComputedStyle(link, '::after');
+    return { color: style.backgroundColor, height: parseFloat(style.height), opacity: style.opacity };
+  });
+  expect(line.color).toBe('rgb(167, 20, 20)');
+  expect(line.height).toBeGreaterThanOrEqual(2);
+  expect(line.opacity).toBe('1');
+});
+
 test('SignalField reports a reduced-motion state', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
 
   await expect(page.locator('[data-signal-field]')).toHaveAttribute('data-motion', 'reduced');
+});
+
+test('foundation primitives keep asymmetric columns and square accessible controls', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await page.locator('main').evaluate((main) => {
+    const fixture = document.createElement('section');
+    fixture.className = 'container grid-12';
+    fixture.dataset.foundationFixture = '';
+    fixture.innerHTML = '<div class="col-span-4"><p class="chapter-label">01 / Selected work</p><a class="button-link" href="/work/">View work</a></div><figure class="media-frame col-span-6 col-start-7"><figcaption>Project still</figcaption></figure>';
+    main.prepend(fixture);
+  });
+  const fixture = page.locator('[data-foundation-fixture]');
+  const columns = await fixture.locator(':scope > *').evaluateAll((elements) => elements.map((element) => {
+    const { width, x, y } = element.getBoundingClientRect();
+    return { width, x, y };
+  }));
+  expect(columns[1].width).toBeGreaterThan(columns[0].width * 1.4);
+  expect(columns[1].y).toBe(columns[0].y);
+
+  const button = fixture.getByRole('link', { name: 'View work' });
+  await expect(button).toHaveCSS('border-radius', '0px');
+  await expect(fixture.locator('.media-frame')).toHaveCSS('border-radius', '0px');
+  const target = await button.boundingBox();
+  expect(target?.width).toBeGreaterThanOrEqual(44);
+  expect(target?.height).toBeGreaterThanOrEqual(44);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const stacked = await fixture.locator(':scope > *').evaluateAll((elements) => elements.map((element) => {
+    const { width, x, y } = element.getBoundingClientRect();
+    return { width, x, y };
+  }));
+  expect(stacked[1].width).toBe(stacked[0].width);
+  expect(stacked[1].x).toBe(stacked[0].x);
+  expect(stacked[1].y).toBeGreaterThan(stacked[0].y);
 });
 
 test('mobile controls meet the 44px touch-target minimum', async ({ page }) => {
@@ -116,7 +203,7 @@ test('only control boundaries use the high-contrast control token', async ({ pag
   for (const route of ['/', '/work/', '/work/encounters/']) {
     await page.goto(route);
     const line = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--line').trim());
-    expect(line).toBe('#2a2e36');
+    expect(line).toBe('#34302c');
     const buttonColors = await page.locator('[data-menu-button], [data-work-filter], [data-video-facade] button').evaluateAll((buttons) => buttons.map((button) => {
       let surface: Element | null = button.parentElement;
       while (surface && getComputedStyle(surface).backgroundColor === 'rgba(0, 0, 0, 0)') {

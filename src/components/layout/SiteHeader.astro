@@ -7,14 +7,19 @@ const isCurrentRoute = (href: string) => currentPath === href || (href !== '/' &
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-brand" href="/">{SITE.name}</a>
+    <a class="site-brand" href="/" aria-label={`${SITE.name} — Home`}>AMIR <span class="site-brand__divider" aria-hidden="true">/</span> ROSTAMI</a>
     <button class="menu-button" type="button" aria-controls="primary-menu" aria-expanded="false" data-menu-button>
       Menu
     </button>
     <nav id="primary-menu" class="primary-menu" aria-label="Primary" data-primary-menu>
       <ul>
-        {SITE.navigation.map(({ label, href }) => (
-          <li><a href={href} aria-current={isCurrentRoute(href) ? 'page' : undefined}>{label}</a></li>
+        {SITE.navigation.map(({ label, href }, index) => (
+          <li>
+            <a href={href} aria-current={isCurrentRoute(href) ? 'page' : undefined}>
+              <span class="primary-menu__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <span>{label}</span>
+            </a>
+          </li>
         ))}
       </ul>
     </nav>

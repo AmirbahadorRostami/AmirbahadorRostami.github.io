@@ -42,12 +42,12 @@ const projectIndex = String(index).padStart(2, '0');
   .project-card__image-link { aspect-ratio: 4 / 3; background: var(--ink); display: block; overflow: hidden; }
   .project-card__image-link :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }
   .project-card__body { display: grid; gap: 1rem; padding: 1.25rem; }
-  .project-card__meta { color: var(--signal); display: flex; font-family: var(--font-mono); font-size: .75rem; justify-content: space-between; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+  .project-card__meta { color: var(--signal-text); display: flex; font-family: var(--font-mono); font-size: .75rem; justify-content: space-between; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
   h2 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -.04em; line-height: 1.05; margin: 0; }
   [data-depth='flagship'] h2 { font-size: clamp(1.6rem, 3.5vw, 2.35rem); }
   h2 a { text-decoration: none; }
-  h2 a:hover { color: var(--signal); }
+  h2 a:hover { color: var(--signal-text); }
   .project-card__body > p:not(.project-card__meta) { color: var(--muted); margin: 0; }
   .project-card__role { color: var(--paper); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
-  .project-card__link { color: var(--signal); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+  .project-card__link { color: var(--signal-text); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .2em; }
 </style>

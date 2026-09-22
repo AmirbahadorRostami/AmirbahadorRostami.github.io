@@ -8,6 +8,33 @@ const routes = [
   { path: '/404.html', canonical: `${origin}/404.html`, title: 'Page not found | Amir Rostami' },
 ];
 
+test('production routes default to index, follow', async ({ page }) => {
+  for (const route of ['/', '/work/', '/music/', '/about/', '/contact/']) {
+    await page.goto(route);
+    await expect(page.locator('meta[name="robots"]'), route).toHaveAttribute('content', 'index, follow');
+  }
+});
+
+test('design lab routes remain noindexed, visually isolated and unlinked', async ({ page }) => {
+  const labRoutes = [
+    '/design-lab/',
+    '/design-lab/poster-index/',
+    '/design-lab/type-image-collision/',
+    '/design-lab/darkroom-cinema/',
+    '/design-lab/printed-signal-lab/',
+    '/design-lab/coral-broadcast/',
+    '/design-lab/clau-poster-wall/',
+  ];
+  for (const route of labRoutes) {
+    await page.goto(route);
+    await expect(page.locator('meta[name="robots"]'), route).toHaveAttribute('content', 'noindex, nofollow');
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--signal').trim())).toBe('');
+    await expect(page.locator('.site-header, .site-footer')).toHaveCount(0);
+  }
+  await page.goto('/');
+  await expect(page.locator('a[href^="/design-lab/"]')).toHaveCount(0);
+});
+
 for (const route of routes) {
   test(`${route.path} publishes complete, absolute social metadata`, async ({ page }) => {
     await page.goto(route.path);

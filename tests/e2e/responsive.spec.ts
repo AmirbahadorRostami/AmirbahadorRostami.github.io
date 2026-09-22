@@ -5,7 +5,7 @@ const routes = [
   '/work/',
   '/work/encounters/',
   '/work/luminous-trails/',
-  '/work/remote-realities/',
+  '/work/ephemeral-pulses-of-a-finite-scroll/',
   '/work/biowords/',
   '/music/',
   '/about/',

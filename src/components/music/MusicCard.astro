@@ -79,11 +79,11 @@ const playerId = `music-player-${record.id}`;
 
 <style>
   .music-card { background: var(--surface-raised); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 1rem; min-width: 0; padding: clamp(1.25rem, 3vw, 2rem); }
-  .music-card__platform, .music-card__duration { color: var(--signal); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; margin: 0; text-transform: uppercase; }
+  .music-card__platform, .music-card__duration { color: var(--signal-text); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; margin: 0; text-transform: uppercase; }
   .music-card h3 { font-size: clamp(1.6rem, 3vw, 2.5rem); letter-spacing: -.05em; line-height: 1; margin: .25rem 0 0; }
   .music-card__description { color: var(--muted); margin: 0; }
-  .music-card a { color: var(--signal); font-weight: 700; margin-top: auto; text-decoration: underline; text-underline-offset: .25em; }
-  .music-card__load-player { align-self: start; background: transparent; border: 1px solid var(--signal); color: var(--paper); cursor: pointer; font: inherit; padding: .6rem .8rem; }
+  .music-card a { color: var(--signal-text); font-weight: 700; margin-top: auto; text-decoration: underline; text-underline-offset: .25em; }
+  .music-card__load-player { align-self: start; background: transparent; border: 1px solid var(--control-border); color: var(--paper); cursor: pointer; font: inherit; padding: .6rem .8rem; }
   .music-card__load-player:hover { background: color-mix(in srgb, var(--signal) 14%, transparent); }
   .music-card__player { min-width: 0; }
   .music-card__player:empty { display: none; }

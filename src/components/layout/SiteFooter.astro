@@ -4,11 +4,17 @@ import { SITE } from '../../config/site';
 
 <footer class="site-footer">
   <div class="container site-footer__inner">
-    <p>&copy; {new Date().getFullYear()} {SITE.name}. Toronto, Canada.</p>
-    <ul aria-label="Elsewhere">
-      {SITE.linkedInUrl && <li><a href={SITE.linkedInUrl}>LinkedIn</a></li>}
-      {SITE.spotifyUrl && <li><a href={SITE.spotifyUrl}>Spotify</a></li>}
-      {SITE.soundCloudUrl && <li><a href={SITE.soundCloudUrl}>SoundCloud</a></li>}
-    </ul>
+    <div class="site-footer__identity">
+      <p class="site-footer__name">{SITE.name}</p>
+      <p class="site-footer__location">{SITE.location}</p>
+    </div>
+    <nav aria-label="Elsewhere">
+      <ul>
+        {SITE.linkedInUrl && <li><a class="text-link" href={SITE.linkedInUrl}>LinkedIn</a></li>}
+        {SITE.spotifyUrl && <li><a class="text-link" href={SITE.spotifyUrl}>Spotify</a></li>}
+        {SITE.soundCloudUrl && <li><a class="text-link" href={SITE.soundCloudUrl}>SoundCloud</a></li>}
+      </ul>
+    </nav>
+    <p class="site-footer__copyright">&copy; {new Date().getFullYear()}</p>
   </div>
 </footer>

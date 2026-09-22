@@ -1,6 +1,9 @@
 ---
 import { SITE } from '../config/site';
 import { absoluteUrl } from '../lib/urls';
+import '@fontsource-variable/outfit';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import SkipLink from '../components/layout/SkipLink.astro';
 import SiteHeader from '../components/layout/SiteHeader.astro';
@@ -21,7 +24,7 @@ const {
   canonicalPath = Astro.url.pathname,
   image = '/og.png',
   flushMain = false,
-  robots,
+  robots = 'index, follow',
 } = Astro.props;
 const canonicalUrl = absoluteUrl(canonicalPath);
 const imageUrl = new URL(image, SITE.origin).toString();
@@ -33,7 +36,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-    {robots && <meta name="robots" content={robots} />}
+    <meta name="robots" content={robots} />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
