@@ -150,7 +150,13 @@ describe('launch inventory', () => {
     const expected = {
       encounters: { title: 'Encounters', depth: 'flagship', order: 1, featured: true },
       'luminous-trails': { title: 'Luminous Trails', depth: 'flagship', order: 2, featured: true },
-      'ephemeral-pulses-of-a-finite-scroll': { title: 'Remote Realities', depth: 'flagship', order: 3, featured: true },
+      'ephemeral-pulses-of-a-finite-scroll': {
+        title: 'Ephemeral Pulses of a Finite Scroll',
+        alternateTitle: 'Remote Realities',
+        depth: 'flagship',
+        order: 3,
+        featured: true,
+      },
       biowords: { title: 'BioWords', depth: 'short', order: 4, featured: false },
       'person-is-a-data-structure': { title: 'Person Is a Data Structure', depth: 'short', order: 5, featured: false },
     } as const;
@@ -160,6 +166,9 @@ describe('launch inventory', () => {
       const [, frontmatter = ''] = source.split(/^---\s*$/m);
 
       expect(frontmatter).toContain(`title: ${record.title}`);
+      if ('alternateTitle' in record) {
+        expect(frontmatter).toContain(`alternateTitle: ${record.alternateTitle}`);
+      }
       expect(frontmatter).toContain(`depth: ${record.depth}`);
       expect(frontmatter).toContain(`order: ${record.order}`);
       expect(frontmatter).toContain(`featured: ${record.featured}`);

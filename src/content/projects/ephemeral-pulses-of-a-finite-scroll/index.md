@@ -1,6 +1,6 @@
 ---
-title: Remote Realities
-alternateTitle: Ephemeral Pulses of a Finite Scroll
+title: Ephemeral Pulses of a Finite Scroll
+alternateTitle: Remote Realities
 summary: A technology-art project preserved from the original portfolio under the titles Remote Realities and Ephemeral Pulses of a Finite Scroll.
 cardSummary: A documented technology-art installation presented under two public titles.
 depth: flagship

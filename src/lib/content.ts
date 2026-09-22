@@ -26,10 +26,18 @@ function assertExpectedInventory(
   actualRecords: readonly string[],
   expectedRecords: readonly string[],
 ): void {
-  const actual = new Set(actualRecords);
-  const expected = new Set(expectedRecords);
-  const missing = expectedRecords.filter((record) => !actual.has(record));
-  const unexpected = actualRecords.filter((record) => !expected.has(record));
+  const missing = [...expectedRecords];
+  const unexpected: string[] = [];
+
+  for (const record of actualRecords) {
+    const expectedIndex = missing.indexOf(record);
+
+    if (expectedIndex === -1) {
+      unexpected.push(record);
+    } else {
+      missing.splice(expectedIndex, 1);
+    }
+  }
 
   if (missing.length > 0 || unexpected.length > 0) {
     throw new Error(

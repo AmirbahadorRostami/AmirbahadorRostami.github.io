@@ -136,6 +136,17 @@ describe('project query layer', () => {
     );
   });
 
+  it('rejects a duplicate approved experiment title as an unexpected record', async () => {
+    mockedExperimentEntries = [
+      ...experimentEntries,
+      { id: '08-duplicate', data: { title: 'Experiment 07', order: 8, state: 'placeholder' } },
+    ];
+
+    await expect(getPublishedExperiments()).rejects.toThrow(
+      'Experiment inventory mismatch. Missing: none. Unexpected: Experiment 07.',
+    );
+  });
+
   it('throws when there are more than three featured published projects', async () => {
     mockedProjectEntries = projectEntries.map((project) => (
       project.id === 'biowords'
