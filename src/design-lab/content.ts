@@ -4,7 +4,7 @@ import { sortByOrder } from '../lib/content';
 export const FEATURED_PROJECT_IDS = [
   'encounters',
   'luminous-trails',
-  'remote-realities',
+  'ephemeral-pulses-of-a-finite-scroll',
 ] as const;
 
 export const FEATURED_TRACK_TITLES = ['Float', 'Flow', 'La Paloma'] as const;
@@ -38,6 +38,22 @@ function selectInOrder<T>(
   });
 }
 
+function preserveDesignLabProjectTitle(
+  project: CollectionEntry<'projects'>,
+): CollectionEntry<'projects'> {
+  if (project.id !== 'ephemeral-pulses-of-a-finite-scroll' || !project.data.alternateTitle) {
+    return project;
+  }
+
+  return {
+    ...project,
+    data: {
+      ...project.data,
+      title: project.data.alternateTitle,
+    },
+  };
+}
+
 export async function loadDesignLabContent(): Promise<DesignLabContent> {
   const [projectEntries, musicEntries, experienceEntries] = await Promise.all([
     getCollection('projects'),
@@ -56,7 +72,8 @@ export async function loadDesignLabContent(): Promise<DesignLabContent> {
   );
 
   return {
-    projects: selectInOrder(projects, FEATURED_PROJECT_IDS, ({ id }) => id, 'project'),
+    projects: selectInOrder(projects, FEATURED_PROJECT_IDS, ({ id }) => id, 'project')
+      .map(preserveDesignLabProjectTitle),
     music: selectInOrder(music, FEATURED_TRACK_TITLES, ({ data }) => data.title, 'track'),
     experience,
   };
