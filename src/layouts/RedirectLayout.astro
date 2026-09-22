@@ -1,0 +1,18 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  destination: string;
+  label: string;
+}
+
+const { destination, label } = Astro.props;
+---
+
+<BaseLayout title={`${label} | Amir Bahador Rostami`} canonicalPath={destination} robots="noindex, follow">
+  <meta http-equiv="refresh" content={`0;url=${destination}`} slot="head" />
+  <section class="container redirect-page">
+    <h1>{label} has moved.</h1>
+    <p><a href={destination}>Continue to the current page</a></p>
+  </section>
+</BaseLayout>

@@ -12,6 +12,7 @@ export interface Props {
   canonicalPath?: string;
   image?: string;
   flushMain?: boolean;
+  robots?: string;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
   canonicalPath = Astro.url.pathname,
   image = '/og.png',
   flushMain = false,
+  robots,
 } = Astro.props;
 const canonicalUrl = absoluteUrl(canonicalPath);
 const imageUrl = new URL(image, SITE.origin).toString();
@@ -31,6 +33,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />
@@ -43,6 +46,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body>
     <SkipLink />

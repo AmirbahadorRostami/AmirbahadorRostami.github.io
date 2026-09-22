@@ -10,8 +10,8 @@ const { projects } = Astro.props;
 ---
 
 <ul class="project-grid" aria-label="Projects">
-  {projects.map((project) => (
-    <li><ProjectCard project={project} /></li>
+  {projects.map((project, index) => (
+    <li><ProjectCard project={project} index={index + 1} /></li>
   ))}
 </ul>
 

@@ -1,12 +1,13 @@
 export const SITE = {
-  name: 'Amir Rostami',
-  title: 'Amir Rostami — Creative Technologist & Musician',
+  name: 'Amir Bahador Rostami',
+  title: 'Amir Bahador Rostami — Creative Technologist & Musician',
   description:
-    'Creative tinkerer, musician, and maker of immersive experiences, software, and sound.',
+    'Portfolio of Amir Bahador Rostami, a Toronto creative technologist and musician building interactive systems, immersive artworks, digital experiences, and sound.',
   origin: 'https://amirbahadorrostami.github.io',
   location: 'Toronto, Canada',
   navigation: [
     { label: 'Work', href: '/work/' },
+    { label: 'Experiments', href: '/experiments/' },
     { label: 'Music', href: '/music/' },
     { label: 'About', href: '/about/' },
     { label: 'Contact', href: '/contact/' },

@@ -105,11 +105,3 @@ export async function getFeaturedProjects(): Promise<ProjectEntry[]> {
 
   return featuredProjects.slice(0, 3);
 }
-
-export async function getProjectCategories(): Promise<string[]> {
-  const projects = await getPublishedProjects();
-
-  return [...new Set(projects.flatMap(({ data }) => data.categories))].sort((left, right) => (
-    left.localeCompare(right)
-  ));
-}

@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 const origin = 'https://amirbahadorrostami.github.io';
 
 const routes = [
-  { path: '/', canonical: `${origin}/`, title: 'Amir Rostami — Creative Technologist & Musician' },
+  { path: '/', canonical: `${origin}/`, title: 'Amir Bahador Rostami — Creative Technologist & Musician' },
   { path: '/music/', canonical: `${origin}/music/`, title: 'Music | Amir Bahador Rostami' },
   { path: '/404.html', canonical: `${origin}/404.html`, title: 'Page not found | Amir Rostami' },
 ];

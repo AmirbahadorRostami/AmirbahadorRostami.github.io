@@ -54,23 +54,26 @@ test('Escape never hides the always-visible desktop primary navigation', async (
   await expect(menu).not.toHaveAttribute('hidden');
 });
 
-test('every project filter is reachable with Tab', async ({ page }) => {
-  await page.goto('/work/');
+test('primary navigation exposes the five approved destinations in order', async ({ page }) => {
+  await page.goto('/');
 
-  const expectedFilters = await page.locator('[data-work-filter]').evaluateAll((filters) => (
-    filters.map((filter) => filter.getAttribute('data-category'))
-  ));
-  const reachedFilters: string[] = [];
-
-  for (let step = 0; step < 30 && reachedFilters.length < expectedFilters.length; step += 1) {
-    await page.keyboard.press('Tab');
-    const activeCategory = await page.evaluate(() => (
-      document.activeElement?.getAttribute('data-category')
-    ));
-    if (activeCategory && !reachedFilters.includes(activeCategory)) reachedFilters.push(activeCategory);
-  }
-
-  expect(reachedFilters).toEqual(expectedFilters);
+  const navigation = page.getByRole('navigation', { name: 'Primary' });
+  await expect(navigation.getByRole('link')).toHaveText([
+    'Work',
+    'Experiments',
+    'Music',
+    'About',
+    'Contact',
+  ]);
+  expect(await navigation.getByRole('link').evaluateAll((links) => (
+    links.map((link) => link.getAttribute('href'))
+  ))).toEqual([
+    '/work/',
+    '/experiments/',
+    '/music/',
+    '/about/',
+    '/contact/',
+  ]);
 });
 
 test('SignalField reports a reduced-motion state', async ({ page }) => {

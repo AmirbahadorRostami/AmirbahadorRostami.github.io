@@ -54,7 +54,6 @@ vi.mock('astro:content', () => ({
 
 import {
   getFeaturedProjects,
-  getProjectCategories,
   getPublishedExperiments,
   getPublishedProjects,
   sortByOrder,
@@ -157,17 +156,4 @@ describe('project query layer', () => {
     await expect(getFeaturedProjects()).rejects.toThrow('Expected exactly three featured projects.');
   });
 
-  it('returns de-duplicated alphabetical categories from published projects', async () => {
-    await expect(getProjectCategories()).resolves.toEqual([
-      'augmented-reality',
-      'generative-art',
-      'geolocation',
-      'installation',
-      'interactive-installation',
-      'public-space',
-      'surveillance',
-      'technology-art',
-      'web-experience',
-    ]);
-  });
 });
