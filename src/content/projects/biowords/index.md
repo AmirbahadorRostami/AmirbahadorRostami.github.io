@@ -24,16 +24,20 @@ context: York University final project and exhibition
 collaborators: []
 credits: [Solo project by Amir Bahador Rostami]
 externalLinks: []
-liveExperiment: false
+liveExperiment: true
 outcomes: []
 draft: false
 ---
+
+<!-- chapter:experience -->
 
 ## The original work
 
 BioWords was my solo final project and exhibition at York University in 2019. Participants submitted text through Twitter using the hashtag `#biwords`. Local sentiment analysis scored each sentence, and its words became biomorphs: each sequence of letters supplied a creature's DNA.
 
 Genome and sentiment shaped flocking, community formation, and survival in the environment. The simulation's result returned to Twitter as a sentence formed from surviving words.
+
+<!-- chapter:technical -->
 
 ## The production adaptation
 

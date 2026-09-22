@@ -31,9 +31,13 @@ outcomes: []
 draft: false
 ---
 
+<!-- chapter:experience -->
+
 ## The installation
 
 Person Is a Data Structure was a collaborative university installation presented at Eleanor Winters Art Gallery, York University, in 2018. Its original proposal was titled Thank You For Your Face; Person Is a Data Structure is the final installation title.
+
+<!-- chapter:contribution -->
 
 ## My contribution
 

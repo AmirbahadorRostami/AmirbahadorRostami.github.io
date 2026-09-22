@@ -225,7 +225,7 @@ describe('launch inventory', () => {
       expect(frontmatter).toContain(`depth: ${record.depth}`);
       expect(frontmatter).toContain(`order: ${record.order}`);
       expect(frontmatter).toContain(`featured: ${record.featured}`);
-      expect(frontmatter).toContain('liveExperiment: false');
+      expect(frontmatter).toContain(`liveExperiment: ${slug === 'biowords'}`);
     }
   });
 

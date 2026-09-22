@@ -75,19 +75,31 @@ outcomes: []
 draft: false
 ---
 
+<!-- chapter:experience -->
+
 ## The experience
 
 Ephemeral Pulses of a Finite Scroll connects the movement of swing units through sound. When their movements reach rhythmic and harmonic synchronization, an additional note completes a chord.
 
+<!-- chapter:contribution -->
+
 ## My contribution
 
 I co-created the work with Elahe Rostami. The installation brings physical movement, sensing, and sound into a shared system.
+
+<!-- chapter:technical -->
 
 ## The system
 
 Each wireless swing unit sent accelerometer and gyroscope data to a master computer. The master compared the live movement data, detected rhythmic and harmonic synchronization, and instructed the swings to play the additional note that completed the chord.
 
 The hardware and software stack includes Raspberry Pi, an MPU-6050 accelerometer and gyroscope, Python, SuperCollider, an audio interface, an amplifier, and a surface transducer.
+
+<!-- chapter:process -->
+
+[Fabrication and assembly documentation planned for the final media pass.](#media-fabrication-assembly)
+
+<!-- chapter:credits -->
 
 ## Public context and credits
 

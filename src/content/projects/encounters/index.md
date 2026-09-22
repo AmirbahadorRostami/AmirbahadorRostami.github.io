@@ -86,19 +86,31 @@ outcomes: []
 draft: false
 ---
 
+<!-- chapter:experience -->
+
 ## The invitation
 
 Encounters begins with an invitation to someone nearby: take a walk together. Participants pair through the app, then follow augmented-reality wayfinding toward a shared virtual body of water. Avatars accompany the walk, bringing the paired participants into the AR experience.
 
 The destination makes room for conversation, silence, and remembrance. Shared bodies of water give the walk a place to pause together.
 
+<!-- chapter:contribution -->
+
 ## My contribution
 
 I co-created Encounters with Elahe Rostami and served as Technical Lead, systems architect, and client and AR developer. I implemented the complete client application and its AR experience.
 
+<!-- chapter:technical -->
+
 ## The system
 
 The mobile client uses Unity, AR Foundation, ARKit, and ARCore. The wider system includes Node.js and AWS. Pairing, wayfinding, avatars, and shared virtual water connect the invitation to the destination.
+
+<!-- chapter:process -->
+
+[Campus map and process documentation planned for the final media pass.](#media-campus-map-process)
+
+<!-- chapter:credits -->
 
 ## Public context
 

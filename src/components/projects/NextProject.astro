@@ -9,20 +9,25 @@ export interface Props {
 const { previous, next } = Astro.props;
 ---
 
-<nav class="project-navigation" aria-label="Project navigation">
-  <a href={`/work/${previous.id}/`} aria-label={`Previous project: ${previous.data.title}`}>
-    <span>Previous</span>
-    {previous.data.title}
-  </a>
-  <a class="project-navigation__next" href={`/work/${next.id}/`} aria-label={`Next project: ${next.data.title}`}>
-    <span>Next</span>
-    {next.data.title}
-  </a>
-</nav>
+<section class="related-work" data-related-work aria-labelledby="related-work-title">
+  <h2 class="chapter-label" id="related-work-title">Related work</h2>
+  <nav class="project-navigation" aria-label="Project navigation">
+    <a href={`/work/${previous.id}/`} aria-label={`Previous project: ${previous.data.title}`}>
+      <span>← Previous / {String(previous.data.order).padStart(2, '0')}</span>
+      {previous.data.title}
+    </a>
+    <a class="project-navigation__next" href={`/work/${next.id}/`} aria-label={`Next project: ${next.data.title}`}>
+      <span>Next / {String(next.data.order).padStart(2, '0')} →</span>
+      {next.data.title}
+    </a>
+  </nav>
+</section>
 
 <style>
-  .project-navigation { border-top: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 2rem; }
-  a { background: var(--surface-raised); border: 1px solid var(--line); display: grid; font-size: clamp(1.1rem, 2vw, 1.4rem); gap: .5rem; padding: 1.25rem; text-decoration: none; }
+  .related-work { border-top: 1px solid var(--line); display: grid; gap: 2rem; padding-top: 1.5rem; }
+  h2 { margin: 0; }
+  .project-navigation { display: grid; gap: 3rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  a { border-bottom: 1px solid var(--line); display: grid; font-size: clamp(1.5rem, 3vw, 3rem); gap: 1.5rem; letter-spacing: -.035em; line-height: 1.15; padding-block: 1rem 2rem; text-decoration: none; }
   a:hover { border-color: var(--signal); color: var(--signal-text); }
   span { color: var(--muted); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
   .project-navigation__next { text-align: right; }

@@ -77,17 +77,29 @@ outcomes: []
 draft: false
 ---
 
+<!-- chapter:experience -->
+
 ## The experience
 
 Luminous Trails translates participants' movement through Toronto into geolocated trails visible through augmented reality. Each path records a journey through the city, making movement part of the experience.
+
+<!-- chapter:contribution -->
 
 ## My contribution
 
 As Lead Technical Architect, I built the complete client application and AR interactions. I architected the backend; another team member implemented it.
 
+<!-- chapter:technical -->
+
 ## The system
 
 The client uses Unity, AR Foundation, ARKit, and ARCore. The backend uses Node.js and AWS. The architecture connects the participant's geolocated journey with the AR trails shown by the client.
+
+<!-- chapter:process -->
+
+[Map, prototype, and testing documentation planned for the final media pass.](#media-map-prototype-testing)
+
+<!-- chapter:credits -->
 
 ## Public context and credits
 

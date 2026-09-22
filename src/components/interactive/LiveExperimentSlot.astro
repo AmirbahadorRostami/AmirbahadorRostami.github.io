@@ -4,12 +4,17 @@ export interface Props {
   title: string;
 }
 
-const { enabled } = Astro.props;
+const { enabled, title } = Astro.props;
 ---
 
 {enabled && (
-  <section aria-labelledby="live-experiment-title">
-    <h2 id="live-experiment-title">Live experiment</h2>
+  <section class="live-experiment" data-live-experiment-slot aria-labelledby="live-experiment-title">
+    <h2 class="chapter-label" id="live-experiment-title">Live experiment <span class="sr-only">— {title}</span></h2>
     <slot />
   </section>
 )}
+
+<style>
+  .live-experiment { border-top: 1px solid var(--line); display: grid; gap: 2rem; padding-top: 1.5rem; }
+  h2 { margin: 0; }
+</style>
