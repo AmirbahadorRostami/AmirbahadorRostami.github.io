@@ -49,6 +49,59 @@ function readProjectCollection(): { id: string; data: Record<string, unknown> }[
 }
 
 describe('launch inventory', () => {
+  it('records the approved project titles, roles, stacks, and contexts', () => {
+    const byId = Object.fromEntries(readProjectCollection().map(({ id, data }) => [id, data]));
+
+    expect(byId.encounters).toMatchObject({
+      year: '2023',
+      context: "Main app-based artistic experience commissioned for Congress 2023 at York University's Keele Campus",
+      roles: ['Co-creator', 'Technical Lead', 'Systems architect', 'Client and AR developer'],
+      tools: ['Unity', 'AR Foundation', 'ARKit', 'ARCore', 'Node.js', 'AWS'],
+      credits: ['Creators: Amir Bahador Rostami and Elahe Rostami', 'Producer: Artifacts Lab'],
+    });
+    expect(byId['luminous-trails']).toMatchObject({
+      year: '2022',
+      context: 'Nuit Blanche Toronto 2022',
+      roles: ['Lead Technical Architect'],
+      tools: ['Unity', 'AR Foundation', 'ARKit', 'ARCore', 'Node.js', 'AWS'],
+      credits: [
+        'Artifacts Studio Ltd.', 'Roozbeh Moayyedian', 'Elahe Rostami',
+        'Amir Bahador Rostami', 'Can Baris Candan', 'Emad Moradian',
+      ],
+    });
+    expect(JSON.stringify(byId['luminous-trails'])).not.toMatch(/mysql|postgres|mongodb/i);
+    expect(byId['ephemeral-pulses-of-a-finite-scroll']).toMatchObject({
+      title: 'Ephemeral Pulses of a Finite Scroll',
+      year: '2020',
+      context: 'Remote Realities Themed Commission',
+      tools: [
+        'Raspberry Pi', 'MPU-6050', 'Python', 'SuperCollider',
+        'Audio interface', 'Amplifier', 'Surface transducer',
+      ],
+      credits: [
+        'Creators: Amir Rostami and Elahe Rostami',
+        'Co-presenters: Trinity Square Video and Dames Making Games',
+        'Supporter: EQ Bank',
+      ],
+    });
+    expect(byId.biowords).toMatchObject({
+      year: '2019',
+      context: 'York University final project and exhibition',
+      collaborators: [],
+      credits: ['Solo project by Amir Bahador Rostami'],
+    });
+    expect(byId['person-is-a-data-structure']).toMatchObject({
+      year: '2018',
+      roles: ['Technical artist', 'Systems developer'],
+      tools: ['Microsoft Azure Face API', 'Max/MSP', 'Processing'],
+      collaborators: [],
+    });
+    expect(byId['person-is-a-data-structure'].context).toContain('Collaborative university installation');
+    expect(byId['person-is-a-data-structure'].context).toContain('Eleanor Winters Art Gallery, York University');
+    expect(readProjectCollection().filter(({ data }) => data.depth === 'flagship')).toHaveLength(3);
+    expect(readProjectCollection().filter(({ data }) => data.depth === 'short')).toHaveLength(2);
+  });
+
   it('keeps the approved work and experiment inventories separate', async () => {
     expect(readProjectCollection().map(({ id }) => id).sort()).toEqual(
       [...expectedProjects].sort(),

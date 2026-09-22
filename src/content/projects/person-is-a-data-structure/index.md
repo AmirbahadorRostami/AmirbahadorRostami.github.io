@@ -1,13 +1,14 @@
 ---
 title: Person Is a Data Structure
-summary: An installation exploring surveillance, systems, and the relationship between individuals and the collective through connected mirror and screen spaces.
-cardSummary: Connected mirrors, cameras, voices, and screens examine surveillance and identity.
+year: "2018"
+summary: A collaborative university installation connecting facial data, cameras, displays, sensors, and physical systems.
+cardSummary: Facial data connects cameras, displays, and physical systems.
 depth: short
 order: 5
 featured: false
 categories: [interactive-installation, surveillance, machine-learning]
-roles: [Creative technologist, Installation developer]
-tools: [Machine learning, Cameras, Database, Parabolic speakers]
+roles: [Technical artist, Systems developer]
+tools: [Microsoft Azure Face API, Max/MSP, Processing]
 hero: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
 heroAlt: A dark installation of clustered monitors displaying fragmented close-ups of faces
 media:
@@ -19,17 +20,21 @@ media:
     caption: The installation connects mirror, camera, voice, and screen spaces to examine surveillance and identity.
     state: ready
     image: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
-context: Installed at the Eleanor Winters Art Gallery, Winters College, York University
+context: Collaborative university installation — Eleanor Winters Art Gallery, York University
 collaborators: []
-credits: []
+credits:
+  - "Technical artist and systems developer: Amir Bahador Rostami"
+  - Collaborative university installation
 externalLinks: []
 liveExperiment: false
 outcomes: []
 draft: false
 ---
 
-Person Is a Data Structure is an installation exploring surveillance, systems, and the relationship between the individual and the collective. Installed at the Eleanor Winters Art Gallery in Winters College at York University, it divided the gallery into two separate but technologically connected spaces.
+## The installation
 
-The Mirror Space formed the entrance: a hallway of six offset mirrors, each softly lit and paired with a parabolic speaker. At listening points in front of the mirrors, visitors could hear a story while hidden cameras recorded their faces. Machine-learning algorithms analyzed features from the captured footage and saved them in a database.
+Person Is a Data Structure was a collaborative university installation presented at Eleanor Winters Art Gallery, York University, in 2018. Its original proposal was titled Thank You For Your Face; Person Is a Data Structure is the final installation title.
 
-The Screen Space filled the larger part of the gallery with monitors arranged in sculptural formations. The screens combined live and prerecorded footage from the Mirror Space with transformed images of past visitors. Webcams at the monitors scanned approaching visitors so the system could select and display a curated version of their recorded video.
+## My contribution
+
+I worked as a technical artist and systems developer. My responsibilities included Microsoft Azure Face API, Max/MSP, Processing, and facial-data handling. I shared the integration of cameras, displays, sensors, networked components, and physical systems with the team.

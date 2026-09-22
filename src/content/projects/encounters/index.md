@@ -7,8 +7,8 @@ depth: flagship
 order: 1
 featured: true
 categories: [augmented-reality, social-experience, public-space]
-roles: [Creative technologist, XR developer]
-tools: [Augmented reality, Mobile application]
+roles: [Co-creator, Technical Lead, Systems architect, Client and AR developer]
+tools: [Unity, AR Foundation, ARKit, ARCore, Node.js, AWS]
 hero: ../../../assets/projects/encounters/encounters-card.webp
 heroAlt: A luminous letter E floating above layered blue lines in the Encounters artwork
 media:
@@ -73,17 +73,35 @@ media:
     alt: York University campus map showing the Encounters route and design process
     caption: Campus map and process documentation planned for the final media pass.
     state: placeholder
-context: Main app-based artistic experience commissioned for Congress 2023
-collaborators: []
-credits: []
-externalLinks: []
+context: Main app-based artistic experience commissioned for Congress 2023 at York University's Keele Campus
+collaborators: [Elahe Rostami]
+credits:
+  - "Creators: Amir Bahador Rostami and Elahe Rostami"
+  - "Producer: Artifacts Lab"
+externalLinks:
+  - label: Encounters at Congress 2023 — York University
+    url: https://www.yorku.ca/yfile/2023/05/30/encounters-brings-augmented-reality-to-congress-2023/
 liveExperiment: false
 outcomes: []
 draft: false
 ---
 
-Encounters is an immersive project that uses augmented reality to create a social experience in public space. By blending virtual and physical environments, it explores social presence and collective self-organization among participants. The piece was commissioned for Congress 2023, the annual meeting of the Federation of Social Sciences and Humanities in Canada, where it was staged as the main app-based artistic experience.
+## The invitation
 
-Through the AR interface, wayfinding cues such as arrows and route markers guide participants toward virtual bodies of water. Rivers, lakes, and streams represent movement within the academic environment. Before arriving, the app asks each participant to find someone nearby who will walk with them. Once paired, both people are led to the same location, turning a chance encounter into a shared journey.
+Encounters begins with an invitation to someone nearby: take a walk together. Participants pair through the app, then follow augmented-reality wayfinding toward a shared virtual body of water. Avatars accompany the walk, bringing the paired participants into the AR experience.
 
-The virtual water bodies create places for conversation, silence, or remembrance. Imagined underwater forests and fauna reveal themselves as people gather, supporting moments of reflection and relationship-building. Encounters reframes navigation as an interactive experience and begins with a simple invitation: "Will you take this walk with me?"
+The destination makes room for conversation, silence, and remembrance. Shared bodies of water give the walk a place to pause together.
+
+## My contribution
+
+I co-created Encounters with Elahe Rostami and served as Technical Lead, systems architect, and client and AR developer. I implemented the complete client application and its AR experience.
+
+## The system
+
+The mobile client uses Unity, AR Foundation, ARKit, and ARCore. The wider system includes Node.js and AWS. Pairing, wayfinding, avatars, and shared virtual water connect the invitation to the destination.
+
+## Public context
+
+Encounters was the main app-based artistic experience commissioned for Congress 2023 at York University's Keele Campus. It was created by Amir Bahador Rostami and Elahe Rostami and produced through Artifacts Lab.
+
+[York University's account of Encounters at Congress 2023](https://www.yorku.ca/yfile/2023/05/30/encounters-brings-augmented-reality-to-congress-2023/) documents the public context of the work.

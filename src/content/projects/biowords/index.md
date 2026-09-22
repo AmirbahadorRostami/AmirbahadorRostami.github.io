@@ -1,13 +1,14 @@
 ---
 title: BioWords
-summary: A web-based artificial-life experience that turns participants' sentences into creatures whose behavior reflects language and sentiment.
+year: "2019"
+summary: An artificial-life work that turns words from participants' sentences into biomorphs whose sentiment and DNA shape flocking, community, and survival.
 cardSummary: Sentences become artificial creatures with word-shaped DNA.
 depth: short
 order: 4
 featured: false
 categories: [artificial-life, generative-art, web-experience]
-roles: [Creative coder, Web developer]
-tools: [JavaScript, p5.js, Natural language processing]
+roles: [Solo creator]
+tools: [Local sentiment analysis, PixiJS (production adaptation)]
 hero: ../../../assets/projects/biowords/biowords-card.webp
 heroAlt: Small line-drawn BioWord creatures arranged across a white field
 media:
@@ -19,15 +20,23 @@ media:
     caption: BioWords transforms sentences into artificial creatures with word-shaped DNA.
     state: ready
     image: ../../../assets/projects/biowords/biowords-card.webp
-context: Web-based artificial-life experience
+context: York University final project and exhibition
 collaborators: []
-credits: []
+credits: [Solo project by Amir Bahador Rostami]
 externalLinks: []
 liveExperiment: false
 outcomes: []
 draft: false
 ---
 
-BioWords is a web-based artificial-life experience that invites participants to write sentences that are interpreted as artificial creatures roaming the screen.
+## The original work
 
-Natural-language processing determines the sentiment score of each sentence. The sentence is then divided into words, and each sequence of letters becomes DNA for a unique BioWord spawned into the virtual world. Every BioWord's behavior is shaped by its DNA and the sentiment inherited from its parent sentence.
+BioWords was my solo final project and exhibition at York University in 2019. Participants submitted text through Twitter using the hashtag `#biwords`. Local sentiment analysis scored each sentence, and its words became biomorphs: each sequence of letters supplied a creature's DNA.
+
+Genome and sentiment shaped flocking, community formation, and survival in the environment. The simulation's result returned to Twitter as a sentence formed from surviving words.
+
+## The production adaptation
+
+The production adaptation replaces the Twitter interaction with direct local text input and uses PixiJS for rendering. Sentiment analysis stays local; the experience has no X dependency and stores no submitted text or results.
+
+The result contains only original surviving words, ordered by survival time, longest-lived first, then by remaining energy. Survival determines the sequence rather than grammatical coherence.
