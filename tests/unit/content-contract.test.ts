@@ -1,22 +1,85 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { EXPECTED_PROJECT_SLUGS } from '../../src/lib/content';
+import { parse } from 'yaml';
+import { EXPECTED_PROJECT_SLUGS, sortByOrder } from '../../src/lib/content';
 import { collections } from '../../src/content.config';
 
 const contentRoot = resolve(import.meta.dirname, '../../src/content');
 
-function readJsonCollection(collection: string): Record<string, unknown>[] {
+const expectedProjects = [
+  'encounters',
+  'luminous-trails',
+  'ephemeral-pulses-of-a-finite-scroll',
+  'biowords',
+  'person-is-a-data-structure',
+];
+
+const expectedExperiments = [
+  'Cellular Automata',
+  'Experiment 02',
+  'Experiment 03',
+  'Experiment 04',
+  'Experiment 05',
+  'Experiment 06',
+  'Experiment 07',
+];
+
+function readJsonCollection<T = Record<string, unknown>>(collection: string): T[] {
   const directory = resolve(contentRoot, collection);
 
   if (!existsSync(directory)) return [];
 
   return readdirSync(directory)
     .filter((file) => file.endsWith('.json'))
-    .map((file) => JSON.parse(readFileSync(resolve(directory, file), 'utf8')));
+    .map((file) => JSON.parse(readFileSync(resolve(directory, file), 'utf8')) as T);
+}
+
+function readProjectCollection(): { id: string; data: Record<string, unknown> }[] {
+  const directory = resolve(contentRoot, 'projects');
+
+  return readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map(({ name }) => {
+      const source = readFileSync(resolve(directory, name, 'index.md'), 'utf8');
+      const [, frontmatter = ''] = source.split(/^---\s*$/m);
+
+      return { id: name, data: parse(frontmatter) };
+    });
 }
 
 describe('launch inventory', () => {
+  it('keeps the approved work and experiment inventories separate', async () => {
+    expect(readProjectCollection().map(({ id }) => id).sort()).toEqual(
+      [...expectedProjects].sort(),
+    );
+    const experiments = sortByOrder(readJsonCollection<{
+      title: string;
+      order: number;
+      state: string;
+    }>('experiments').map((data) => ({ data })));
+    expect(experiments.map(({ data }) => data.title)).toEqual(expectedExperiments);
+    expect(experiments.map(({ data }) => data.state)).toEqual([
+      'ready', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder',
+    ]);
+  });
+
+  it('requires every project media record to describe its fallback', async () => {
+    for (const { data } of readProjectCollection()) {
+      for (const media of data.media as Record<string, unknown>[]) {
+        expect(media).toEqual(expect.objectContaining({
+          id: expect.any(String),
+          type: expect.stringMatching(/^(image|video|diagram)$/),
+          aspectRatio: expect.stringMatching(/^\d+\s*\/\s*\d+$/),
+          alt: expect.any(String),
+          caption: expect.any(String),
+          intention: expect.any(String),
+          state: expect.stringMatching(/^(ready|placeholder)$/),
+        }));
+      }
+    }
+  });
+
   it('accepts only HTTPS URLs for externally rendered content links', () => {
     const musicSchema = collections.music.schema;
     if (!musicSchema || typeof musicSchema === 'function') {
@@ -40,14 +103,13 @@ describe('launch inventory', () => {
       .toBe(false);
   });
 
-  it('contains the six approved project slugs', () => {
+  it('contains the five approved project slugs', () => {
     expect(EXPECTED_PROJECT_SLUGS).toEqual([
       'encounters',
       'luminous-trails',
-      'remote-realities',
+      'ephemeral-pulses-of-a-finite-scroll',
       'biowords',
       'person-is-a-data-structure',
-      'cellular-automata',
     ]);
   });
 
@@ -78,6 +140,7 @@ describe('launch inventory', () => {
       expect(frontmatter, `${slug} frontmatter`).toMatch(/^tools:\s*\[\S/m);
       expect(frontmatter, `${slug} frontmatter`).toMatch(/^hero:\s*\.\.\/\.\.\/\.\.\/assets\//m);
       expect(frontmatter, `${slug} frontmatter`).toMatch(/^heroAlt:\s*\S/m);
+      expect(frontmatter, `${slug} frontmatter`).toMatch(/^media:\s*$/m);
       expect(frontmatter, `${slug} frontmatter`).toMatch(/^draft:\s*false\s*$/m);
       expect(body.trim(), `${slug} body`).not.toBe('');
     }
@@ -87,10 +150,9 @@ describe('launch inventory', () => {
     const expected = {
       encounters: { title: 'Encounters', depth: 'flagship', order: 1, featured: true },
       'luminous-trails': { title: 'Luminous Trails', depth: 'flagship', order: 2, featured: true },
-      'remote-realities': { title: 'Remote Realities', depth: 'flagship', order: 3, featured: true },
+      'ephemeral-pulses-of-a-finite-scroll': { title: 'Remote Realities', depth: 'flagship', order: 3, featured: true },
       biowords: { title: 'BioWords', depth: 'short', order: 4, featured: false },
       'person-is-a-data-structure': { title: 'Person Is a Data Structure', depth: 'short', order: 5, featured: false },
-      'cellular-automata': { title: 'Cellular Automata', depth: 'short', order: 6, featured: false },
     } as const;
 
     for (const [slug, record] of Object.entries(expected)) {

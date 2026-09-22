@@ -3,13 +3,41 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export const EXPECTED_PROJECT_SLUGS = [
   'encounters',
   'luminous-trails',
-  'remote-realities',
+  'ephemeral-pulses-of-a-finite-scroll',
   'biowords',
   'person-is-a-data-structure',
-  'cellular-automata',
+] as const;
+
+export const EXPECTED_EXPERIMENT_TITLES = [
+  'Cellular Automata',
+  'Experiment 02',
+  'Experiment 03',
+  'Experiment 04',
+  'Experiment 05',
+  'Experiment 06',
+  'Experiment 07',
 ] as const;
 
 type ProjectEntry = CollectionEntry<'projects'>;
+type ExperimentEntry = CollectionEntry<'experiments'>;
+
+function assertExpectedInventory(
+  inventoryName: string,
+  actualRecords: readonly string[],
+  expectedRecords: readonly string[],
+): void {
+  const actual = new Set(actualRecords);
+  const expected = new Set(expectedRecords);
+  const missing = expectedRecords.filter((record) => !actual.has(record));
+  const unexpected = actualRecords.filter((record) => !expected.has(record));
+
+  if (missing.length > 0 || unexpected.length > 0) {
+    throw new Error(
+      `${inventoryName} inventory mismatch. Missing: ${missing.join(', ') || 'none'}. `
+      + `Unexpected: ${unexpected.join(', ') || 'none'}.`,
+    );
+  }
+}
 
 export function adjacentEntries<T extends { id: string }>(
   entries: T[],
@@ -37,7 +65,21 @@ export function sortByOrder<T extends { data: { order: number } }>(entries: T[])
 export async function getPublishedProjects(): Promise<ProjectEntry[]> {
   const projects = await getCollection('projects', ({ data }) => !data.draft);
 
+  assertExpectedInventory('Project', projects.map(({ id }) => id), EXPECTED_PROJECT_SLUGS);
+
   return sortByOrder(projects);
+}
+
+export async function getPublishedExperiments(): Promise<ExperimentEntry[]> {
+  const experiments = await getCollection('experiments');
+
+  assertExpectedInventory(
+    'Experiment',
+    experiments.map(({ data }) => data.title),
+    EXPECTED_EXPERIMENT_TITLES,
+  );
+
+  return sortByOrder(experiments);
 }
 
 export async function getAdjacentProject(

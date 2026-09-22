@@ -1,9 +1,10 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, type ImageFunction } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const nonemptyString = z.string().trim().min(1);
 const positiveOrder = z.number().int().positive();
+const aspectRatio = z.string().regex(/^\d+\s*\/\s*\d+$/);
 const httpsUrl = z.url().refine((value) => new URL(value).protocol === 'https:', {
   message: 'External URLs must use HTTPS.',
 });
@@ -11,9 +12,26 @@ const externalLink = z.object({
   label: nonemptyString,
   url: httpsUrl,
 });
-const video = z.object({
-  title: nonemptyString,
-  url: httpsUrl,
+const mediaSource = z.object({
+  src: nonemptyString,
+  type: z.enum(['video/mp4', 'video/webm']),
+});
+const projectMedia = ({ image }: { image: ImageFunction }) => z.object({
+  id: nonemptyString,
+  type: z.enum(['image', 'video', 'diagram']),
+  intention: nonemptyString,
+  aspectRatio,
+  alt: nonemptyString,
+  caption: nonemptyString,
+  state: z.enum(['ready', 'placeholder']),
+  image: image().optional(),
+  poster: image().optional(),
+  sources: z.array(mediaSource).default([]),
+  externalUrl: httpsUrl.optional(),
+}).superRefine((media, context) => {
+  if (media.state === 'ready' && media.type === 'image' && !media.image) {
+    context.addIssue({ code: 'custom', message: 'Ready image media requires image.' });
+  }
 });
 
 const projects = defineCollection({
@@ -36,10 +54,27 @@ const projects = defineCollection({
     collaborators: z.array(nonemptyString).default([]),
     credits: z.array(nonemptyString).default([]),
     externalLinks: z.array(externalLink).default([]),
-    videos: z.array(video).default([]),
+    media: z.array(projectMedia({ image })).min(1),
     liveExperiment: z.boolean().default(false),
     outcomes: z.array(nonemptyString).default([]),
     draft: z.boolean().default(false),
+  }),
+});
+
+const experiments = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/experiments' }),
+  schema: ({ image }) => z.object({
+    title: nonemptyString,
+    order: positiveOrder,
+    state: z.enum(['ready', 'placeholder']),
+    year: nonemptyString.optional(),
+    description: nonemptyString.optional(),
+    technique: nonemptyString.optional(),
+    tools: z.array(nonemptyString).default([]),
+    processNotes: nonemptyString.optional(),
+    sourceUrl: httpsUrl.optional(),
+    poster: image().optional(),
+    sources: z.array(mediaSource).default([]),
   }),
 });
 
@@ -76,4 +111,4 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { projects, music, experience };
+export const collections = { projects, experiments, music, experience };

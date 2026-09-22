@@ -10,11 +10,19 @@ roles: [Creative coder, Web developer]
 tools: [JavaScript, p5.js, Natural language processing]
 hero: ../../../assets/projects/biowords/biowords-card.webp
 heroAlt: Small line-drawn BioWord creatures arranged across a white field
+media:
+  - id: opening-image
+    type: image
+    intention: BioWords opening image
+    aspectRatio: 16 / 9
+    alt: Small line-drawn BioWord creatures arranged across a white field
+    caption: BioWords transforms sentences into artificial creatures with word-shaped DNA.
+    state: ready
+    image: ../../../assets/projects/biowords/biowords-card.webp
 context: Web-based artificial-life experience
 collaborators: []
 credits: []
 externalLinks: []
-videos: []
 liveExperiment: false
 outcomes: []
 draft: false

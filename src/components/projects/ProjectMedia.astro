@@ -87,7 +87,6 @@ const projectImages: Record<string, ProjectImage[]> = {
 
 const { project } = Astro.props;
 const images = projectImages[project.id] ?? [];
-const hasMedia = images.length > 0 || project.data.videos.length > 0;
 
 function youtubeVideoId(url: string): string | undefined {
   const parsedUrl = new URL(url);
@@ -96,10 +95,16 @@ function youtubeVideoId(url: string): string | undefined {
     : undefined;
 }
 
-const videos = project.data.videos.map((video) => ({
-  ...video,
-  videoId: youtubeVideoId(video.url),
-}));
+const videos = project.data.media.flatMap((media) => (
+  media.type === 'video' && media.state === 'ready' && media.externalUrl
+    ? [{
+        title: media.caption,
+        url: media.externalUrl,
+        videoId: youtubeVideoId(media.externalUrl),
+      }]
+    : []
+));
+const hasMedia = images.length > 0 || videos.length > 0;
 ---
 
 {hasMedia && (

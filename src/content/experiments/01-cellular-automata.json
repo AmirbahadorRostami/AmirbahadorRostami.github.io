@@ -1,0 +1,11 @@
+{
+  "title": "Cellular Automata",
+  "order": 1,
+  "state": "ready",
+  "description": "A browser-based generative study in which simple local rules accumulate into dense, branching forms.",
+  "technique": "Cellular automata",
+  "tools": ["JavaScript"],
+  "sourceUrl": "https://codepen.io/amirbahadorrostami/pen/GRMQewe",
+  "poster": "../../assets/projects/cellular-automata/cellular-automata-card.webp",
+  "sources": []
+}

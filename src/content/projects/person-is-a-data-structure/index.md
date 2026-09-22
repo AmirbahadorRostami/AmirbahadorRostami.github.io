@@ -10,11 +10,19 @@ roles: [Creative technologist, Installation developer]
 tools: [Machine learning, Cameras, Database, Parabolic speakers]
 hero: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
 heroAlt: A dark installation of clustered monitors displaying fragmented close-ups of faces
+media:
+  - id: opening-image
+    type: image
+    intention: Person Is a Data Structure opening image
+    aspectRatio: 16 / 9
+    alt: A dark installation of clustered monitors displaying fragmented close-ups of faces
+    caption: The installation connects mirror, camera, voice, and screen spaces to examine surveillance and identity.
+    state: ready
+    image: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
 context: Installed at the Eleanor Winters Art Gallery, Winters College, York University
 collaborators: []
 credits: []
 externalLinks: []
-videos: []
 liveExperiment: false
 outcomes: []
 draft: false
