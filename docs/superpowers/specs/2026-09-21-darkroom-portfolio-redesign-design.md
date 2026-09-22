@@ -2,7 +2,7 @@
 
 **Owner:** Amir Bahador Rostami
 
-**Status:** Approved design; awaiting written-spec review
+**Status:** Approved for implementation planning
 
 **Date:** 2026-09-21
 
