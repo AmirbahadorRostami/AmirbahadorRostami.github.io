@@ -9,25 +9,49 @@ const sectionOrder = [
   'selected-work',
   'selected-music',
   'experience',
+  'experiments-invitation',
   'contact-invitation',
 ];
 
-test('homepage presents the approved narrative order and introduction', async ({ page }) => {
+test('homepage presents the approved Darkroom narrative', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Creative tinkerer. Musician. Professional maker of curious things.',
+    'Part engineer. Part musician. Entirely too curious.',
   );
   await expect(page.locator('#hero')).toContainText(
-    'I create immersive experiences, software, and sound that bring people together in unexpected ways.',
+    'I design and build interactive systems, immersive artworks, and digital experiences that explore how technology can change the way people connect.',
   );
   await expect(page.locator('#hero')).toContainText('Toronto, Canada');
   await expect(page.locator('#hero')).toContainText('Open to employment and freelance work.');
+  await expect(page.locator('#hero').getByRole('link', { name: "See what I've been building" })).toHaveAttribute(
+    'href',
+    '#selected-work',
+  );
+  await expect(page.locator('#hero').getByRole('link', { name: 'Work with me' })).toHaveAttribute(
+    'href',
+    '/contact/',
+  );
 
   const sections = await page
     .locator('main > section')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
   expect(sections).toEqual(sectionOrder);
+});
+
+test('hero keeps its readable content before the decorative field in document order', async ({ page }) => {
+  await page.goto('/');
+
+  const contentPrecedesField = await page.locator('#hero').evaluate((hero) => {
+    const content = hero.querySelector('.hero__content');
+    const field = hero.querySelector('[data-signal-field]');
+
+    if (!content || !field) throw new Error('Hero content or decorative field is missing.');
+
+    return Boolean(content.compareDocumentPosition(field) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  expect(contentPrecedesField).toBe(true);
 });
 
 test('homepage facts and both actions remain inside representative first viewports', async ({ page }) => {
@@ -61,14 +85,23 @@ test('homepage renders the exact selected work and music inventories', async ({ 
   await page.goto('/');
 
   const selectedProjects = page.locator('#selected-work [data-project-card]');
+  await expect(page.locator('#selected-work').getByRole('heading', { level: 2 }).first()).toHaveText(
+    'Things to enter, follow, swing, listen to, and occasionally get lost inside.',
+  );
+  await expect(page.locator('#selected-work')).toContainText(
+    'Interactive installations, augmented worlds, living simulations, and the technical systems that make them possible.',
+  );
   await expect(selectedProjects).toHaveCount(3);
   await expect(selectedProjects.getByRole('heading', { level: 2 })).toHaveText([
     'Encounters',
     'Luminous Trails',
-    'Remote Realities',
+    'Ephemeral Pulses',
   ]);
 
   const selectedMusic = page.locator('#selected-music [data-music-card]');
+  await expect(page.locator('#selected-music').getByRole('heading', { level: 2 })).toHaveText(
+    'Music by Baha',
+  );
   await expect(selectedMusic).toHaveCount(3);
   await expect(selectedMusic.getByRole('heading', { level: 3 })).toHaveText([
     'Float',
@@ -80,10 +113,11 @@ test('homepage renders the exact selected work and music inventories', async ({ 
     'href',
     '/music/',
   );
+  await expect(page.locator('#selected-music [data-music-grid] [data-music-gateway]')).toHaveCount(0);
 });
 
 test('selected work and music use wrapping grid layouts instead of horizontal strips', async ({ page }) => {
-  await page.setViewportSize({ width: 1100, height: 900 });
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
 
   const desktopLayouts = await page.evaluate(() => {
@@ -104,7 +138,12 @@ test('selected work and music use wrapping grid layouts instead of horizontal st
   });
 
   expect(desktopLayouts.work).toEqual({ columns: 3, display: 'grid', overflows: false });
-  expect(desktopLayouts.music).toEqual({ columns: 2, display: 'grid', overflows: false });
+  expect(desktopLayouts.music).toEqual({ columns: 3, display: 'grid', overflows: false });
+  const projectWidths = await page.locator('#selected-work .project-grid > li').evaluateAll(
+    (items) => items.map((item) => item.getBoundingClientRect().width),
+  );
+  expect(projectWidths[0]).toBeGreaterThan(projectWidths[1] * 1.5);
+  expect(projectWidths[2]).toBeGreaterThan(projectWidths[1] * 1.5);
 
   await page.setViewportSize({ width: 390, height: 844 });
 
@@ -135,7 +174,7 @@ test('selected work cards keep compact 4:3 image geometry on desktop and mobile'
   expect(violations, JSON.stringify(measurements, null, 2)).toEqual([]);
 });
 
-test('experience preview stays focused and the contact invitation welcomes the full opportunity set', async ({ page }) => {
+test('experience preview and closing invitations preserve the approved content and links', async ({ page }) => {
   await page.goto('/');
 
   const experienceEntries = page.locator('#experience [data-experience-entry]');
@@ -146,13 +185,23 @@ test('experience preview stays focused and the contact invitation welcomes the f
     'Antimodular Research',
   ]);
 
+  const experiments = page.locator('#experiments-invitation');
+  await expect(experiments.getByRole('heading', { level: 2 })).toHaveText(
+    'Small systems making big, strange pictures.',
+  );
+  await expect(experiments).toContainText(
+    'A collection of generative video studies built from cellular automata, simulations, procedural rules, and other algorithms left alone long enough to become interesting.',
+  );
+  await expect(experiments.getByRole('link')).toHaveAttribute('href', '/experiments/');
+
   const contact = page.locator('#contact-invitation');
-  await expect(contact.getByRole('heading', { level: 2 })).toContainText(/employment/i);
-  await expect(contact.getByRole('heading', { level: 2 })).toContainText(/freelance/i);
-  await expect(contact).toContainText(/commissions/i);
-  await expect(contact).toContainText(/exhibitions/i);
-  await expect(contact).toContainText(/residencies/i);
-  await expect(contact.getByRole('link', { name: /get in touch/i })).toHaveAttribute(
+  await expect(contact.getByRole('heading', { level: 2 })).toHaveText(
+    'Have a role, a commission, or a strange problem worth solving?',
+  );
+  await expect(contact).toContainText(
+    "I'm open to employment, freelance collaborations, exhibitions, commissions, and residencies. Tell me what you're working on, what you need, and where you think I might fit.",
+  );
+  await expect(contact.getByRole('link', { name: 'Send the signal' })).toHaveAttribute(
     'href',
     '/contact/',
   );

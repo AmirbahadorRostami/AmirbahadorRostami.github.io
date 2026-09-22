@@ -74,7 +74,7 @@ const chapters = [
 </BaseLayout>
 
 <style>
-  .project-detail { display: grid; gap: clamp(3.5rem, 8vw, 8rem); }
+  .project-detail { display: grid; gap: clamp(3.5rem, 8vw, 8rem); grid-template-columns: minmax(0, 1fr); }
   .project-hero { display: grid; gap: clamp(1.5rem, 3vw, 3rem); }
   .project-hero__back { justify-self: start; }
   .project-hero .eyebrow { margin: 0; }
@@ -95,7 +95,7 @@ const chapters = [
   .project-story__body :global(code) { font-family: var(--font-mono); font-size: .85em; overflow-wrap: anywhere; }
   .project-credit-list { border-top: 1px solid var(--line); margin-top: 2rem; padding-top: 1.5rem; }
   .project-credit-list ul, ul.project-credit-list { display: grid; font-size: 1rem; gap: .75rem; list-style: none; margin-bottom: 0; padding-left: 0; }
-  .project-documentation { border-top: 1px solid var(--line); display: grid; gap: clamp(2rem, 5vw, 4rem); padding-top: 1.5rem; }
+  .project-documentation { border-top: 1px solid var(--line); display: grid; gap: clamp(2rem, 5vw, 4rem); grid-template-columns: minmax(0, 1fr); padding-top: 1.5rem; }
   .project-links { list-style: none; margin: 0; padding: 0; }
   .project-detail[data-depth='short'] { gap: clamp(3rem, 6vw, 5rem); }
 

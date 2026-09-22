@@ -100,6 +100,7 @@ const { project } = Astro.props;
   .project-media__video-link p { margin: 0; }
 
   @media (max-width: 44rem) {
+    .project-media { grid-template-columns: minmax(0, 1fr); }
     figure:nth-child(n) { grid-column: 1 / -1; }
   }
 </style>

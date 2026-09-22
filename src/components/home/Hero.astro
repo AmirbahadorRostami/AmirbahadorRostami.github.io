@@ -4,22 +4,22 @@ import { SITE } from '../../config/site';
 ---
 
 <section id="hero" class="hero">
-  <SignalField />
   <div class="container hero__content">
     <p class="eyebrow">Creative technologist / musician / nerd</p>
-    <h1>Creative tinkerer. Musician. Professional maker of curious things.</h1>
+    <h1>Part engineer. Part musician. Entirely too curious.</h1>
     <p class="hero__introduction">
-      I create immersive experiences, software, and sound that bring people together in unexpected ways.
+      I design and build interactive systems, immersive artworks, and digital experiences that explore how technology can change the way people connect.
     </p>
     <ul class="hero__facts" aria-label="Location and availability">
       <li>{SITE.location}</li>
       <li>Open to employment and freelance work.</li>
     </ul>
     <div class="hero__actions">
-      <a class="hero__link" href="#selected-work">Follow the curious signal <span aria-hidden="true">↓</span></a>
-      <a class="hero__link" href="/contact/">Start a conversation <span aria-hidden="true">↗</span></a>
+      <a class="hero__link" href="#selected-work">See what I've been building <span aria-hidden="true">↓</span></a>
+      <a class="hero__link" href="/contact/">Work with me <span aria-hidden="true">↗</span></a>
     </div>
   </div>
+  <SignalField />
 </section>
 
 <style>
@@ -52,11 +52,11 @@ import { SITE } from '../../config/site';
   .hero__link { color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .55rem; text-decoration-thickness: 1px; text-underline-offset: .3em; }
 
   @media (max-width: 42rem) {
-    .hero { min-height: calc(100svh - 4.5rem); padding-block: 1.75rem; }
+    .hero { min-height: calc(100svh - 4.5rem); padding-block: 1.25rem; }
     .hero::after { background: linear-gradient(90deg, var(--ink) 25%, rgb(8 9 11 / .48)); }
-    h1 { font-size: clamp(2.35rem, 13vw, 3.25rem); }
-    .hero__introduction { line-height: 1.45; margin-top: 1rem; }
-    .hero__facts { font-size: .7rem; margin-top: .85rem; }
-    .hero__actions { align-items: flex-start; flex-direction: column; margin-top: 1rem; }
+    h1 { font-size: clamp(2.15rem, 11.5vw, 3.25rem); }
+    .hero__introduction { font-size: .9rem; line-height: 1.35; margin-top: .8rem; }
+    .hero__facts { font-size: .65rem; margin-top: .65rem; }
+    .hero__actions { align-items: flex-start; flex-direction: column; font-size: .78rem; gap: .25rem; margin-top: .65rem; }
   }
 </style>

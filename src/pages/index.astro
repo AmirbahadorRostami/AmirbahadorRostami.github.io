@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import ContactCallout from '../components/home/ContactCallout.astro';
 import ExperiencePreview from '../components/home/ExperiencePreview.astro';
+import ExperimentsInvitation from '../components/home/ExperimentsInvitation.astro';
 import Hero from '../components/home/Hero.astro';
 import SelectedMusic from '../components/home/SelectedMusic.astro';
 import SelectedWork from '../components/home/SelectedWork.astro';
@@ -14,7 +15,12 @@ const experience = await getCollection('experience');
 
 const featuredProjects = sortByOrder(
   projects.filter(({ data }) => data.featured && !data.draft),
-);
+).map((project) => project.id === 'ephemeral-pulses-of-a-finite-scroll'
+  ? {
+      ...project,
+      data: { ...project.data, title: 'Ephemeral Pulses' },
+    }
+  : project);
 const featuredMusic = sortByOrder(
   music.filter(({ data }) => data.featured && !data.draft),
 );
@@ -36,5 +42,6 @@ if (featuredMusic.length !== 3) {
   <SelectedWork projects={featuredProjects} />
   <SelectedMusic records={featuredMusic} />
   <ExperiencePreview entries={featuredExperience} />
+  <ExperimentsInvitation />
   <ContactCallout />
 </BaseLayout>

@@ -1,0 +1,25 @@
+<section id="experiments-invitation" class="experiments-invitation">
+  <div class="container experiments-invitation__inner">
+    <p class="eyebrow">Experiments</p>
+    <h2>Small systems making big, strange pictures.</h2>
+    <p>
+      A collection of generative video studies built from cellular automata, simulations, procedural rules,
+      and other algorithms left alone long enough to become interesting.
+    </p>
+    <a href="/experiments/">Enter the experiments <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<style>
+  .experiments-invitation { border-bottom: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
+  .experiments-invitation__inner { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1.2fr) minmax(16rem, .8fr); }
+  .eyebrow { grid-column: 1 / -1; margin: 0; }
+  h2 { font-size: clamp(2.6rem, 7vw, 6.5rem); letter-spacing: -.07em; line-height: .9; margin: 0; max-width: 10ch; }
+  .experiments-invitation__inner > p:not(.eyebrow) { align-self: end; color: var(--muted); margin: 0; max-width: 34rem; }
+  a { color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .6rem; grid-column: 2; justify-self: start; min-height: 44px; padding-block: .65rem; text-underline-offset: .3em; }
+
+  @media (max-width: 42rem) {
+    .experiments-invitation__inner { grid-template-columns: minmax(0, 1fr); }
+    a { grid-column: auto; }
+  }
+</style>

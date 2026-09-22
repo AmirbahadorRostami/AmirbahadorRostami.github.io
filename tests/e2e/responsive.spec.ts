@@ -27,15 +27,29 @@ for (const route of routes) {
   }
 }
 
-test('the flagship project grid has three columns on desktop and one on mobile', async ({ page }) => {
-  const columnCount = () => page.locator('.project-grid').evaluate((grid) => (
+test('homepage project and music grids have three columns on desktop and one on mobile', async ({ page }) => {
+  const columnCount = (selector: string) => page.locator(selector).evaluate((grid) => (
     getComputedStyle(grid).gridTemplateColumns.split(' ').length
   ));
 
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/work/');
-  await expect.poll(columnCount).toBe(3);
+  await page.goto('/');
+  await expect.poll(() => columnCount('#selected-work .project-grid')).toBe(3);
+  await expect.poll(() => columnCount('#selected-music [data-music-grid]')).toBe(3);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect.poll(columnCount).toBe(1);
+  await expect.poll(() => columnCount('#selected-work .project-grid')).toBe(1);
+  await expect.poll(() => columnCount('#selected-music [data-music-grid]')).toBe(1);
+});
+
+test('case-study content stays inside the 320px viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/work/encounters/');
+
+  const geometry = await page.evaluate(() => ({
+    documentWidth: document.documentElement.scrollWidth,
+    viewportWidth: window.innerWidth,
+  }));
+
+  expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
 });
