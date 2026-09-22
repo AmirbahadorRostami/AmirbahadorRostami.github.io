@@ -97,6 +97,16 @@ test('loads privacy-enhanced Encounters video only after explicit activation', a
   expect(youtubeRequests.some((url) => url.startsWith('https://www.youtube-nocookie.com/'))).toBe(true);
 });
 
+test('project-media hover borders retain deep red while labels use accessible text red', async ({ page }) => {
+  await page.goto('/work/encounters/');
+  const playButton = page.locator('[data-video-facade][data-video-id="eJJue_cGV3E"] button');
+  await playButton.hover();
+
+  await expect(playButton).toHaveCSS('border-top-color', 'rgb(167, 20, 20)');
+  await expect(playButton).toHaveCSS('color', 'rgb(207, 98, 90)');
+  await expect(playButton.locator('[aria-hidden="true"]')).toHaveCSS('color', 'rgb(167, 20, 20)');
+});
+
 test('keeps Encounters videos as explicit third-party links without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();

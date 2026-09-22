@@ -94,6 +94,19 @@ test('generated contact HTML contains no email address or phone-number-shaped te
   expect(html).not.toMatch(/\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
 });
 
+test('invalid controls keep neutral boundaries and accessible error text', async ({ page }) => {
+  await page.goto('/contact/');
+  await page.getByRole('button', { name: 'Send message' }).click();
+
+  const invalidControls = page.locator('[data-contact-form] [aria-invalid="true"]');
+  await expect(invalidControls).toHaveCount(3);
+  const borders = await invalidControls.evaluateAll((controls) => controls.map((control) => getComputedStyle(control).borderTopColor));
+  expect(borders).toEqual(['rgb(119, 112, 103)', 'rgb(119, 112, 103)', 'rgb(119, 112, 103)']);
+  for (const message of ['Tell me your name.', 'Enter a valid reply email.', 'Please include at least 20 characters.']) {
+    await expect(page.getByText(message)).toHaveCSS('color', 'rgb(207, 98, 90)');
+  }
+});
+
 test('renders active contact-control boundaries with at least 3:1 contrast', async ({ page }) => {
   await page.goto('/contact/');
 

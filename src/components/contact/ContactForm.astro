@@ -209,8 +209,8 @@ const configured = endpoint.length > 0;
   label { font-weight: 700; }
   input, select, textarea { background: var(--surface-raised); border: 1px solid var(--contact-control-border); border-radius: var(--radius-sm); color: var(--paper); font: inherit; padding: .75rem; width: 100%; }
   textarea { resize: vertical; }
-  input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: var(--coral); }
-  .contact-form__error { color: var(--coral); margin: 0; min-height: 1.5rem; }
+  input[aria-invalid='true'], textarea[aria-invalid='true'] { border-color: var(--control-border); }
+  .contact-form__error { color: var(--signal-text); margin: 0; min-height: 1.5rem; }
   .contact-form__honeypot { height: 0; overflow: hidden; position: absolute; width: 0; }
   button, .contact-form__fallback a { background: var(--signal); border: 1px solid var(--control-border); color: var(--paper); cursor: pointer; display: inline-block; font: inherit; font-weight: 800; margin-top: 1.5rem; padding: .85rem 1.15rem; text-decoration: none; }
   button:disabled { cursor: not-allowed; opacity: .65; }

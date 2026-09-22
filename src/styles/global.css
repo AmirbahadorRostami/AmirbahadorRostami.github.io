@@ -19,7 +19,7 @@
   /* Keep existing production consumers square while their page styles migrate. */
   --radius-sm: var(--radius);
   --radius-md: var(--radius);
-  --coral: var(--signal-text);
+  --coral: var(--signal);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -75,7 +75,7 @@ button { min-width: 44px; }
   padding: .875rem 1.25rem;
   text-decoration: none;
 }
-.button-link:hover { background: var(--surface-raised); border-color: var(--signal-text); }
+.button-link:hover { background: var(--surface-raised); border-color: var(--signal); }
 .media-frame { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin: 0; }
 .media-frame > :is(img, video, iframe) { width: 100%; }
 .media-frame > figcaption { color: var(--muted); font-family: var(--font-mono); font-size: .75rem; padding: .75rem 1rem; }

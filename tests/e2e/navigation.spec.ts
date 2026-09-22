@@ -135,6 +135,16 @@ test('SignalField reports a reduced-motion state', async ({ page }) => {
   await expect(page.locator('[data-signal-field]')).toHaveAttribute('data-motion', 'reduced');
 });
 
+test('SignalField graphical accents keep the canonical deep red', async ({ page }) => {
+  await page.goto('/');
+  const colors = await page.locator('[data-signal-field]').evaluate((field) => ({
+    points: [...field.querySelectorAll('.signal-field__point')].map((point) => getComputedStyle(point).fill),
+    stops: [...field.querySelectorAll('stop')].map((stop) => getComputedStyle(stop).stopColor),
+  }));
+  expect.soft(colors.points).toEqual(['rgb(167, 20, 20)', 'rgb(167, 20, 20)', 'rgb(167, 20, 20)']);
+  expect(colors.stops).toEqual(Array(5).fill('rgb(167, 20, 20)'));
+});
+
 test('foundation primitives keep asymmetric columns and square accessible controls', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
@@ -159,6 +169,8 @@ test('foundation primitives keep asymmetric columns and square accessible contro
   const target = await button.boundingBox();
   expect(target?.width).toBeGreaterThanOrEqual(44);
   expect(target?.height).toBeGreaterThanOrEqual(44);
+  await button.hover();
+  await expect(button).toHaveCSS('border-top-color', 'rgb(167, 20, 20)');
 
   await page.setViewportSize({ width: 390, height: 844 });
   const stacked = await fixture.locator(':scope > *').evaluateAll((elements) => elements.map((element) => {
