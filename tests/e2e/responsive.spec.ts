@@ -7,6 +7,7 @@ const routes = [
   '/work/luminous-trails/',
   '/work/ephemeral-pulses-of-a-finite-scroll/',
   '/work/biowords/',
+  '/experiments/',
   '/music/',
   '/about/',
   '/contact/',
@@ -52,6 +53,19 @@ test('work archive project grid has three columns on desktop and one on mobile',
   await expect.poll(columnCount).toBe(3);
 
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(columnCount).toBe(1);
+});
+
+test('experiments screening grid shifts from two columns to one at 48rem', async ({ page }) => {
+  const columnCount = () => page.locator('[data-experiment-grid]').evaluate((grid) => (
+    getComputedStyle(grid).gridTemplateColumns.split(' ').length
+  ));
+
+  await page.setViewportSize({ width: 1100, height: 900 });
+  await page.goto('/experiments/');
+  await expect.poll(columnCount).toBe(2);
+
+  await page.setViewportSize({ width: 768, height: 900 });
   await expect.poll(columnCount).toBe(1);
 });
 

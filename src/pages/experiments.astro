@@ -1,0 +1,21 @@
+---
+import ExperimentGrid from '../components/experiments/ExperimentGrid.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedExperiments } from '../lib/content';
+
+const experiments = await getPublishedExperiments();
+---
+
+<BaseLayout title="Experiments | Amir Bahador Rostami" canonicalPath="/experiments/" description="Generative video studies by Amir Bahador Rostami.">
+  <section class="container experiments-archive" aria-labelledby="experiments-title">
+    <p class="eyebrow">Screening room / 07 studies</p>
+    <h1 id="experiments-title">Small systems making big, strange pictures.</h1>
+    <p class="experiments-archive__intro">A collection of generative video studies built from cellular automata, simulations, procedural rules, and other algorithms left alone long enough to become interesting.</p>
+    <ExperimentGrid experiments={experiments} />
+  </section>
+</BaseLayout>
+
+<style>
+  .experiments-archive > h1 { max-width: 11ch; }
+  .experiments-archive__intro { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.35rem); margin: 1.5rem 0 0; max-width: 62ch; }
+</style>

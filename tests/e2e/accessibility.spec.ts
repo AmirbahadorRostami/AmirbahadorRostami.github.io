@@ -8,6 +8,7 @@ const auditedRoutes = [
   '/work/luminous-trails/',
   '/work/ephemeral-pulses-of-a-finite-scroll/',
   '/work/biowords/',
+  '/experiments/',
   '/music/',
   '/about/',
   '/contact/',

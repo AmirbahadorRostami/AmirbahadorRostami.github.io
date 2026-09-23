@@ -1,0 +1,23 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ExperimentCard from './ExperimentCard.astro';
+
+export interface Props {
+  experiments: CollectionEntry<'experiments'>[];
+}
+
+const { experiments } = Astro.props;
+---
+
+<div class="experiment-grid" data-experiment-grid>
+  {experiments.map((experiment) => <ExperimentCard experiment={experiment} />)}
+</div>
+
+<style>
+  .experiment-grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem) clamp(1.25rem, 3vw, 3rem); grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); margin-top: clamp(3rem, 7vw, 6rem); }
+  .experiment-grid > :nth-child(2n) { margin-top: clamp(2rem, 7vw, 7rem); }
+  @media (max-width: 48rem) {
+    .experiment-grid { grid-template-columns: minmax(0, 1fr); }
+    .experiment-grid > :nth-child(2n) { margin-top: 0; }
+  }
+</style>
