@@ -3,14 +3,15 @@ import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
   entry: CollectionEntry<'experience'>;
+  number: number;
 }
 
-const { entry } = Astro.props;
+const { entry, number } = Astro.props;
 const { category, organization, period, role, summary } = entry.data;
 ---
 
 <li class="timeline-entry" data-category={category} data-timeline-entry>
-  <p class="timeline-entry__period" data-timeline-period>{period}</p>
+  <p class="timeline-entry__period" data-timeline-period><span class="timeline-entry__number" data-timeline-number aria-hidden="true">{String(number).padStart(2, '0')}</span><span>{period}</span></p>
   <div class="timeline-entry__identity">
     <h3>{role}</h3>
     <p data-timeline-organization>{organization}</p>
@@ -31,7 +32,8 @@ const { category, organization, period, role, summary } = entry.data;
 
   .timeline-entry:last-child { border-bottom: 1px solid var(--line); }
   .timeline-entry > * { min-width: 0; }
-  .timeline-entry__period { color: var(--signal-text); font-family: var(--font-mono); font-size: .75rem; margin: .2rem 0 0; }
+  .timeline-entry__period { color: var(--signal-text); display: flex; flex-wrap: wrap; font-family: var(--font-mono); font-size: .75rem; gap: .75rem; margin: .2rem 0 0; }
+  .timeline-entry__number { color: var(--muted); }
   .timeline-entry h3 { font-size: clamp(1.2rem, 2.2vw, 1.55rem); letter-spacing: -.025em; line-height: 1.15; margin: 0; }
   .timeline-entry__identity p { color: var(--paper); margin: .45rem 0 0; overflow-wrap: anywhere; }
   .timeline-entry__summary { color: var(--muted); margin: 0; }

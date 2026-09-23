@@ -1,6 +1,19 @@
 import { expect, test } from '@playwright/test';
 
 const endpoint = 'https://contact.test/submit';
+const emailPattern = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+const phonePattern = /\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/;
+
+test('contact invites the approved opportunity set', async ({ page }) => {
+  await page.goto('/contact/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'Have a role, a commission, or a strange problem worth solving?',
+  );
+  await expect(page.locator('.contact-form__intro')).toHaveText(
+    "I'm open to employment, freelance collaborations, exhibitions, commissions, and residencies. Tell me what you're working on, what you need, and where you think I might fit.",
+  );
+  await expect(page.getByRole('button', { name: 'Send the signal' })).toBeVisible();
+});
 
 function contrastRatio(foreground: string, background: string): number {
   const relativeLuminance = (color: string) => {
@@ -41,7 +54,7 @@ test('submits a configured form and resets it after a successful response', asyn
   await fillValidContactForm(page);
 
   const delivery = page.waitForRequest(endpoint);
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send the signal' }).click();
   await delivery;
 
   await expect(page.getByRole('status')).toHaveText('Thanks—your message is on its way.');
@@ -55,7 +68,7 @@ test('preserves fields and exposes a retry after a delivery failure', async ({ p
   await fillValidContactForm(page);
 
   const delivery = page.waitForRequest(endpoint);
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send the signal' }).click();
   await delivery;
 
   await expect(page.getByRole('status')).toHaveText(
@@ -78,7 +91,7 @@ test('blocks invalid local fields without contacting the delivery endpoint', asy
   await page.getByLabel('Name').fill('');
   await page.getByLabel('Reply email').fill('not-an-email');
   await page.getByLabel('Message').fill('Too short');
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send the signal' }).click();
 
   await expect(page.getByText('Tell me your name.')).toBeVisible();
   await expect(page.getByText('Enter a valid reply email.')).toBeVisible();
@@ -86,17 +99,18 @@ test('blocks invalid local fields without contacting the delivery endpoint', asy
   expect(deliveryRequest).toBe(false);
 });
 
-test('generated contact HTML contains no email address or phone-number-shaped text', async ({ page }) => {
-  const response = await page.request.get('/contact/');
-  const html = await response.text();
-
-  expect(html).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
-  expect(html).not.toMatch(/\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
+test('generated homepage, About, and Contact HTML contain no private contact details', async ({ page }) => {
+  for (const route of ['/', '/about/', '/contact/']) {
+    const response = await page.request.get(route);
+    const html = await response.text();
+    expect(emailPattern.test(html), `${route} must not expose an email address`).toBe(false);
+    expect(phonePattern.test(html), `${route} must not expose a phone number`).toBe(false);
+  }
 });
 
 test('invalid controls keep neutral boundaries and accessible error text', async ({ page }) => {
   await page.goto('/contact/');
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send the signal' }).click();
 
   const invalidControls = page.locator('[data-contact-form] [aria-invalid="true"]');
   await expect(invalidControls).toHaveCount(3);

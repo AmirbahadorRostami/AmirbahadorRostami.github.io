@@ -9,9 +9,9 @@ const configured = endpoint.length > 0;
 <section class="contact-form" aria-labelledby="contact-form-title">
   <div class="container contact-form__inner">
     <p class="eyebrow">Start a conversation</p>
-    <h1 id="contact-form-title">Let’s make something curious.</h1>
+    <h1 id="contact-form-title">Have a role, a commission, or a strange problem worth solving?</h1>
     <p class="contact-form__intro">
-      Tell me a little about what you are building, imagining, or bringing into the world.
+      I'm open to employment, freelance collaborations, exhibitions, commissions, and residencies. Tell me what you're working on, what you need, and where you think I might fit.
     </p>
 
     <form
@@ -91,17 +91,23 @@ const configured = endpoint.length > 0;
       </div>
 
       <button type="submit" data-contact-control data-contact-submit disabled={!configured}>
-        {configured ? 'Send message' : 'Form unavailable'}
+        {configured ? 'Send the signal' : 'Form unavailable'}
       </button>
       <p class="contact-form__status" role="status" aria-live="polite" data-contact-status>
         {!configured && 'The direct form is being connected. Please check back soon.'}
       </p>
     </form>
 
+    {configured && linkedInUrl && (
+      <a class="contact-form__secondary" href={linkedInUrl}>Find me on LinkedIn</a>
+    )}
+
     {!configured && (
       <aside class="contact-form__fallback" data-contact-fallback>
         <p>The direct form is being connected.</p>
-        {linkedInUrl && <a href={linkedInUrl}>Continue the conversation on LinkedIn</a>}
+        {linkedInUrl
+          ? <a href={linkedInUrl}>Find me on LinkedIn</a>
+          : <p>Please check back soon for a way to get in touch.</p>}
       </aside>
     )}
   </div>
@@ -144,7 +150,7 @@ const configured = endpoint.length > 0;
             ? 'Retry message'
             : state === 'unconfigured'
               ? 'Form unavailable'
-              : 'Send message';
+              : 'Send the signal';
       }
     };
 
@@ -217,4 +223,5 @@ const configured = endpoint.length > 0;
   .contact-form__status { min-height: 1.5rem; margin: 1rem 0 0; }
   .contact-form__fallback { border-left: 2px solid var(--signal); color: var(--muted); margin-top: 1.5rem; padding-left: 1rem; }
   .contact-form__fallback p { margin: 0; }
+  .contact-form__secondary { color: var(--signal-text); display: inline-block; margin-top: 1.5rem; text-underline-offset: .25em; }
 </style>

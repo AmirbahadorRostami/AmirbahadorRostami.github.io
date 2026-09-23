@@ -22,11 +22,11 @@ const organizations = [
 const emailPattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const phonePattern = /(?<!\d)(?:\+?1[\s.()-]*)?(?:\(?\d{3}\)?[\s.-]*)\d{3}[\s.-]*\d{4}(?!\d)/;
 
-test('about page leads with the approved identity, portrait, and connective biography', async ({ page }) => {
+test('about page leads with the approved pulse biography and portrait', async ({ page }) => {
   await page.goto('/about/');
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Part engineer. Part artist. Entirely curious.',
+    'I build systems with a pulse: software that remembers where people have walked, sculptures that listen to movement, and small virtual organisms born from language.',
   );
 
   const portrait = page.getByRole('img', { name: /portrait of Amir Rostami/i });
@@ -34,12 +34,9 @@ test('about page leads with the approved identity, portrait, and connective biog
   await expect(portrait).toHaveAttribute('fetchpriority', 'high');
 
   const biography = page.locator('[data-about-biography]');
-  await expect(biography).toContainText(/engineering/i);
-  await expect(biography).toContainText(/art/i);
-  await expect(biography).toContainText(/music/i);
-  await expect(biography).toContainText(/creative technology/i);
-  await expect(biography).toContainText(/human connection/i);
-  await expect(biography).toContainText(/social communication/i);
+  await expect(biography.locator('p')).toHaveCount(1);
+  await expect(biography).toContainText("My name is Amir. I'm an engineer, artist, musician, and persistent tinkerer working in Toronto.");
+  await expect(biography).toContainText('something people can enter, disturb, and transform together.');
 });
 
 test('about page renders all experience records in content order as a semantic timeline', async ({ page }) => {
@@ -49,6 +46,9 @@ test('about page renders all experience records in content order as a semantic t
   const entries = timeline.locator(':scope > li[data-timeline-entry]');
   await expect(timeline).toHaveCount(1);
   await expect(entries).toHaveCount(13);
+  await expect(entries.locator('[data-timeline-number]')).toHaveText(
+    Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, '0')),
+  );
   await expect(entries.locator('[data-timeline-organization]')).toHaveText(organizations);
 
   for (const entry of await entries.all()) {
@@ -88,8 +88,8 @@ test('about page provides education, contextual skills, and a private-safe resum
   await expect(resume).toHaveAttribute('download', 'Amir-Rostami-Resume.pdf');
 
   const html = await page.content();
-  expect(html).not.toMatch(emailPattern);
-  expect(html).not.toMatch(phonePattern);
+  expect(emailPattern.test(html), 'About HTML must not expose an email address').toBe(false);
+  expect(phonePattern.test(html), 'About HTML must not expose a phone number').toBe(false);
 
   const deployedResume = join(process.cwd(), 'dist/documents/Amir-Rostami-Resume.pdf');
   expect(statSync(deployedResume).size).toBeGreaterThan(1_000);
@@ -101,8 +101,8 @@ test('about page provides education, contextual skills, and a private-safe resum
     pdfAudit.parserExposedText,
   ].join('\n');
   expect(pdfAudit.searchableText).toContain('PROFESSIONAL EXPERIENCE');
-  expect(parserVisibleContent).not.toMatch(emailPattern);
-  expect(parserVisibleContent).not.toMatch(phonePattern);
+  expect(emailPattern.test(parserVisibleContent), 'Résumé must not expose an email address').toBe(false);
+  expect(phonePattern.test(parserVisibleContent), 'Résumé must not expose a phone number').toBe(false);
   expect(pdfAudit.attachmentCount).toBe(0);
   expect(pdfAudit.embeddedFileObjectCount).toBe(0);
   expect(pdfAudit.fieldCount).toBe(0);

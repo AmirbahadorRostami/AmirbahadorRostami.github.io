@@ -10,7 +10,7 @@ const { entries } = Astro.props;
 ---
 
 <ol class="timeline" data-timeline role="list">
-  {entries.map((entry) => <TimelineEntry entry={entry} />)}
+  {entries.map((entry, index) => <TimelineEntry entry={entry} number={index + 1} />)}
 </ol>
 
 <style>
