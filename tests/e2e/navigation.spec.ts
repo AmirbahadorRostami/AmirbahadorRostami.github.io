@@ -128,21 +128,12 @@ test('current section navigation includes a visible signal line on detail pages'
   expect(line.opacity).toBe('1');
 });
 
-test('SignalField reports a reduced-motion state', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
+test('10 PRINT art loads only on the homepage', async ({ page }) => {
   await page.goto('/');
-
-  await expect(page.locator('[data-signal-field]')).toHaveAttribute('data-motion', 'reduced');
-});
-
-test('SignalField graphical accents keep the canonical deep red', async ({ page }) => {
-  await page.goto('/');
-  const colors = await page.locator('[data-signal-field]').evaluate((field) => ({
-    points: [...field.querySelectorAll('.signal-field__point')].map((point) => getComputedStyle(point).fill),
-    stops: [...field.querySelectorAll('stop')].map((stop) => getComputedStyle(stop).stopColor),
-  }));
-  expect.soft(colors.points).toEqual(['rgb(167, 20, 20)', 'rgb(167, 20, 20)', 'rgb(167, 20, 20)']);
-  expect(colors.stops).toEqual(Array(5).fill('rgb(167, 20, 20)'));
+  await expect(page.locator('[data-ten-print]')).toHaveCount(1);
+  await page.goto('/about/');
+  await expect(page.locator('[data-ten-print]')).toHaveCount(0);
+  await expect(page.locator('canvas')).toHaveCount(0);
 });
 
 test('foundation primitives keep asymmetric columns and square accessible controls', async ({ page }) => {

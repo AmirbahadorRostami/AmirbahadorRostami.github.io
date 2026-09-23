@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="grid" width="160" height="160" patternUnits="userSpaceOnUse">
+      <path d="M0 0 40 40M80 0 40 40M80 0l40 40m40-40-40 40M0 80l40-40m0 0 40 40m40-40 40 40m0-40-40 40M0 80l40 40m40-40-40 40m40-40 40 40m40-40-40 40M0 160l40-40m0 0 40 40m0 0 40-40m0 0 40 40" fill="none" stroke="#a71414" stroke-width="2" opacity=".7"/>
+      <path d="M0 40 40 80m40-40L40 80m40 0 40 40m40-40-40 40M0 120l40-40m0 0 40 40m40-40 40 40m0-40-40 40" fill="none" stroke="#d54e3d" stroke-width="1" opacity=".35"/>
+    </pattern>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="white" stop-opacity="0"/>
+      <stop offset=".28" stop-color="white" stop-opacity=".14"/>
+      <stop offset=".72" stop-color="white" stop-opacity=".88"/>
+      <stop offset="1" stop-color="white" stop-opacity=".64"/>
+    </linearGradient>
+    <mask id="visibility"><rect width="1440" height="760" fill="url(#fade)"/></mask>
+  </defs>
+  <rect width="1440" height="760" fill="url(#grid)" mask="url(#visibility)"/>
+</svg>

@@ -1,0 +1,144 @@
+<div class="ten-print" data-ten-print data-render-state="fallback" data-motion="full" aria-hidden="true">
+  <img src="/media/ten-print-fallback.svg" alt="" aria-hidden="true" />
+  <div class="ten-print__mount" data-ten-print-mount></div>
+</div>
+
+<style>
+  .ten-print { inset: 0; overflow: hidden; pointer-events: none; position: absolute; }
+  .ten-print img,
+  .ten-print__mount { height: 100%; inset: 0; position: absolute; width: 100%; }
+  .ten-print img { object-fit: cover; }
+  .ten-print__mount { opacity: 0; }
+  .ten-print[data-render-state='ready'] img,
+  .ten-print[data-render-state='paused'] img { visibility: hidden; }
+  .ten-print[data-render-state='ready'] .ten-print__mount,
+  .ten-print[data-render-state='paused'] .ten-print__mount { opacity: 1; }
+  .ten-print__mount :global(canvas) { display: block; height: 100%; width: 100%; }
+</style>
+
+<script>
+  import { createTenPrintCells } from '../../lib/ten-print';
+
+  const field = document.querySelector<HTMLElement>('[data-ten-print]');
+  const mount = field?.querySelector<HTMLElement>('[data-ten-print-mount]');
+
+  if (field && mount) {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let application: import('pixi.js').Application | null = null;
+    let drawing: import('pixi.js').Graphics | null = null;
+    let initializing = false;
+    let disposed = false;
+    let intersecting = false;
+    let dirty = true;
+    let resizeTimer: number | undefined;
+
+    const isActive = () => intersecting && document.visibilityState === 'visible';
+
+    const draw = () => {
+      if (!application || !drawing || !isActive()) return;
+      const width = Math.max(1, Math.ceil(mount.clientWidth));
+      const height = Math.max(1, Math.ceil(mount.clientHeight));
+      application.renderer.resize(width, height);
+      drawing.clear();
+
+      for (const cell of createTenPrintCells({ width, height, cellSize: 40, seed: 1982 })) {
+        const { x, y, size, direction, alpha, tone } = cell;
+        const startX = direction === 'forward' ? x : x + size;
+        const endX = direction === 'forward' ? x + size : x;
+        drawing.moveTo(startX, y).lineTo(endX, y + size).stroke({
+          width: tone > 0.82 ? 2.2 : 1.3,
+          color: tone > 0.7 ? 0xd54e3d : 0xa71414,
+          alpha,
+        });
+      }
+
+      application.renderer.render(application.stage);
+      dirty = false;
+      field.dataset.renderState = 'ready';
+    };
+
+    const initialize = async () => {
+      if (application || initializing || disposed || !isActive()) return;
+      initializing = true;
+      let nextApplication: import('pixi.js').Application | null = null;
+      try {
+        const { Application, Graphics } = await import('pixi.js');
+        if (disposed) return;
+        nextApplication = new Application();
+        await nextApplication.init({
+          backgroundAlpha: 0,
+          antialias: true,
+          autoDensity: true,
+          preference: 'webgl',
+          resolution: Math.min(window.devicePixelRatio || 1, 2),
+          width: Math.max(1, mount.clientWidth),
+          height: Math.max(1, mount.clientHeight),
+        });
+        if (disposed) {
+          nextApplication.destroy(true);
+          return;
+        }
+        nextApplication.ticker.stop();
+        drawing = new Graphics();
+        nextApplication.stage.addChild(drawing);
+        mount.appendChild(nextApplication.canvas);
+        application = nextApplication;
+        if (isActive()) draw();
+      } catch {
+        try {
+          nextApplication?.destroy(true);
+        } catch {
+          // An app whose renderer never initialized may not be destroyable.
+        }
+        application = null;
+        drawing = null;
+        mount.replaceChildren();
+        if (!disposed) field.dataset.renderState = 'error';
+      } finally {
+        initializing = false;
+      }
+    };
+
+    const updateState = () => {
+      field.dataset.motion = motion.matches ? 'reduced' : 'full';
+      if (!isActive()) {
+        if (application) field.dataset.renderState = 'paused';
+        return;
+      }
+      if (!application) {
+        if (field.dataset.renderState !== 'error') void initialize();
+        return;
+      }
+      if (dirty) draw();
+      else field.dataset.renderState = 'ready';
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      intersecting = entry?.isIntersecting ?? false;
+      updateState();
+    });
+    const resizeObserver = new ResizeObserver(() => {
+      dirty = true;
+      window.clearTimeout(resizeTimer);
+      if (isActive()) resizeTimer = window.setTimeout(draw, 120);
+    });
+    const dispose = () => {
+      disposed = true;
+      observer.disconnect();
+      resizeObserver.disconnect();
+      window.clearTimeout(resizeTimer);
+      document.removeEventListener('visibilitychange', updateState);
+      document.removeEventListener('astro:before-swap', dispose);
+      motion.removeEventListener('change', updateState);
+      application?.destroy(true);
+      application = null;
+    };
+
+    observer.observe(field);
+    resizeObserver.observe(mount);
+    document.addEventListener('visibilitychange', updateState);
+    document.addEventListener('astro:before-swap', dispose);
+    motion.addEventListener('change', updateState);
+    updateState();
+  }
+</script>

@@ -44,7 +44,7 @@ test('hero keeps its readable content before the decorative field in document or
 
   const contentPrecedesField = await page.locator('#hero').evaluate((hero) => {
     const content = hero.querySelector('.hero__content');
-    const field = hero.querySelector('[data-signal-field]');
+    const field = hero.querySelector('[data-ten-print]');
 
     if (!content || !field) throw new Error('Hero content or decorative field is missing.');
 
@@ -207,44 +207,76 @@ test('experience preview and closing invitations preserve the approved content a
   );
 });
 
-test('SignalField is decorative and defaults to a static no-JavaScript state', async ({ browser }) => {
+test('10 PRINT retains its static art without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/');
 
-  const signalField = page.locator('[data-signal-field]');
-  await expect(signalField).toHaveAttribute('aria-hidden', 'true');
-  await expect(signalField).toHaveAttribute('data-animation-state', 'static');
-  await expect(signalField.locator('[data-signal-orb]').first()).toHaveCSS(
-    'animation-play-state',
-    'paused',
-  );
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('aria-hidden', 'true');
+  await expect(field).toHaveAttribute('data-render-state', 'fallback');
+  await expect(field.locator('img')).toBeVisible();
+  expect(await field.locator('img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
 
   await context.close();
 });
 
-test('SignalField follows intersection and live reduced-motion preferences', async ({ page }) => {
+test('10 PRINT renders a complete still field under reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
 
-  const signalField = page.locator('[data-signal-field]');
-  const firstOrb = signalField.locator('[data-signal-orb]').first();
-  await expect(signalField).toHaveAttribute('data-animation-state', 'static');
-  await expect(firstOrb).toHaveCSS('animation-play-state', 'paused');
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-motion', 'reduced');
+  await expect(field).toHaveAttribute('data-render-state', 'ready');
+  await expect(field.locator('canvas')).toBeVisible();
+  await expect(field.locator('img')).toBeHidden();
+});
 
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await signalField.scrollIntoViewIfNeeded();
-  await expect(signalField).toHaveAttribute('data-animation-state', 'running');
-  await expect(firstOrb).toHaveCSS('animation-play-state', 'running');
+test('10 PRINT preserves the static image when graphics initialization fails', async ({ page }) => {
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = () => null;
+  });
+  await page.goto('/');
+
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-render-state', 'error');
+  await expect(field.locator('img')).toBeVisible();
+});
+
+test('10 PRINT pauses offscreen and resumes without restarting its field', async ({ page }) => {
+  await page.goto('/');
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-render-state', 'ready');
+  const canvas = field.locator('canvas');
+  const initialPixels = await canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height }));
+  expect(initialPixels.width).toBeGreaterThan(0);
+  expect(initialPixels.height).toBeGreaterThan(0);
 
   await page.locator('#contact-invitation').scrollIntoViewIfNeeded();
-  await expect(signalField).toHaveAttribute('data-animation-state', 'paused');
-  await expect(firstOrb).toHaveCSS('animation-play-state', 'paused');
+  await expect(field).toHaveAttribute('data-render-state', 'paused');
 
-  await signalField.scrollIntoViewIfNeeded();
-  await expect(signalField).toHaveAttribute('data-animation-state', 'running');
+  await field.scrollIntoViewIfNeeded();
+  await expect(field).toHaveAttribute('data-render-state', 'ready');
+  expect(await canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height })))
+    .toEqual(initialPixels);
+});
 
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(signalField).toHaveAttribute('data-animation-state', 'static');
-  await expect(firstOrb).toHaveCSS('animation-play-state', 'paused');
+test('10 PRINT defers resize work offscreen and redraws on return', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/');
+
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-render-state', 'ready');
+  const canvas = field.locator('canvas');
+  const originalWidth = await canvas.evaluate((element: HTMLCanvasElement) => element.width);
+
+  await page.locator('#contact-invitation').scrollIntoViewIfNeeded();
+  await expect(field).toHaveAttribute('data-render-state', 'paused');
+  await page.setViewportSize({ width: 800, height: 600 });
+  await page.waitForTimeout(200);
+  expect(await canvas.evaluate((element: HTMLCanvasElement) => element.width)).toBe(originalWidth);
+
+  await field.scrollIntoViewIfNeeded();
+  await expect(field).toHaveAttribute('data-render-state', 'ready');
+  expect(await canvas.evaluate((element: HTMLCanvasElement) => element.width)).toBeLessThan(originalWidth);
 });
