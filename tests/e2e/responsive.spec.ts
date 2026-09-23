@@ -14,6 +14,20 @@ const routes = [
 ];
 const widths = [320, 390, 768, 1440];
 
+test('BioWords active controls have 44px targets and long results fit 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto('/work/biowords/');
+  await expect(page.locator('[data-biowords]')).toHaveAttribute('data-ready', 'true');
+  await page.getByLabel('Words for the ecosystem').fill('a'.repeat(280));
+  await page.getByRole('button', { name: 'Begin', exact: true }).click();
+  await page.getByRole('button', { name: 'Skip to Result' }).click();
+  for (const button of await page.locator('[data-biowords] button').all()) {
+    const box = await button.boundingBox();
+    expect(box!.width).toBeGreaterThanOrEqual(44); expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+});
+
 for (const route of routes) {
   for (const width of widths) {
     test(`${route} does not overflow at ${width}px`, async ({ page }) => {

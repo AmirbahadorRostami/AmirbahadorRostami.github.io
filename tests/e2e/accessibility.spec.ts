@@ -14,6 +14,14 @@ const auditedRoutes = [
   '/contact/',
 ];
 
+test('BioWords completed controls and live result remain accessible', async ({ page }) => {
+  await page.goto('/work/biowords/');
+  await expect(page.locator('[data-biowords]')).toHaveAttribute('data-ready', 'true');
+  await page.getByRole('button', { name: 'Begin', exact: true }).click();
+  await page.getByRole('button', { name: 'Skip to Result' }).click();
+  expect((await new AxeBuilder({ page }).include('[data-biowords]').analyze()).violations).toEqual([]);
+});
+
 test('reduced motion exposes reveal content immediately', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');

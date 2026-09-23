@@ -1,6 +1,7 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import BioWordsExperience from '../../components/interactive/BioWordsExperience.astro';
 import { getAdjacentProject, getPublishedProjects } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -30,4 +31,5 @@ const [{ Content }, { previous, next }] = await Promise.all([
 
 <ProjectLayout project={project} previous={previous} next={next}>
   <Content />
+  {project.id === 'biowords' && <BioWordsExperience slot="live-experiment" />}
 </ProjectLayout>
