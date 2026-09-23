@@ -77,7 +77,9 @@ const playerId = `music-player-${record.id}`;
     card.dataset.playerLoaded = 'true';
     button.dataset.playerLoaded = 'true';
     button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', `Player loaded for ${button.dataset.trackTitle}`);
     button.textContent = 'Player loaded';
+    button.disabled = true;
   });
 </script>
 
@@ -89,7 +91,8 @@ const playerId = `music-player-${record.id}`;
   .music-card__description { color: var(--muted); margin: 0; }
   .music-card a { align-self: start; color: var(--signal-text); display: inline-flex; align-items: center; font-weight: 700; margin-top: auto; min-height: 44px; text-decoration: underline; text-underline-offset: .25em; }
   .music-card__load-player { align-self: start; background: transparent; border: 1px solid var(--control-border); color: var(--paper); cursor: pointer; font: inherit; min-height: 44px; padding: .6rem .8rem; }
-  .music-card__load-player:hover { background: color-mix(in srgb, var(--signal) 14%, transparent); }
+  .music-card__load-player:not(:disabled):hover { background: color-mix(in srgb, var(--signal) 14%, transparent); }
+  .music-card__load-player:disabled { cursor: default; opacity: .7; }
   .music-card__player { min-width: 0; }
   .music-card__player:empty { display: none; }
   .music-card__player iframe { border: 0; height: 10rem; width: 100%; }

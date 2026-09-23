@@ -69,14 +69,18 @@ test('a player loader controls its named player region without granting autoplay
   await page.goto('/music/');
 
   const card = page.locator('[data-music-card]', { hasText: 'La Paloma' });
-  const button = card.getByRole('button', { name: 'Load player for La Paloma' });
+  const button = card.locator('[data-music-player-button]');
   const player = card.locator('[data-music-player]');
 
+  await expect(button).toHaveAccessibleName('Load player for La Paloma');
   await expect(player).toHaveAttribute('id', /\S/);
   const playerId = await player.getAttribute('id');
   expect(playerId).not.toBeNull();
   await expect(button).toHaveAttribute('aria-controls', playerId!);
   await button.click();
+  await expect(button).toHaveAccessibleName('Player loaded for La Paloma');
+  await expect(button).toBeDisabled();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
   await expect(player.locator('iframe')).not.toHaveAttribute('allow', /autoplay/i);
   await expect(player.locator('iframe')).not.toHaveAttribute('src', /auto_play|autoplay/i);
 });
