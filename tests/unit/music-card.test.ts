@@ -84,4 +84,14 @@ describe('MusicCard', () => {
       expect(html).not.toContain('data-embed-url');
     }
   });
+
+  it('renders a visible archive number when the grid supplies one', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(MusicCard, {
+      props: { record: musicRecord('soundcloud', 'https://soundcloud.com/artist/example'), number: 7 },
+    });
+
+    expect(html).toContain('07');
+    expect(html).toContain('data-music-number');
+  });
 });

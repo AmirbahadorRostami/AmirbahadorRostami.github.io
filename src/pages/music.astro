@@ -8,17 +8,23 @@ import { sortByOrder } from '../lib/content';
 const music = sortByOrder((await getCollection('music')).filter(({ data }) => !data.draft));
 const featuredMusic = music.filter(({ data }) => data.featured);
 const catalogMusic = music.filter(({ data }) => !data.featured);
+const profiles = [
+  { label: 'SoundCloud', url: SITE.soundCloudUrl },
+  { label: 'Spotify', url: SITE.spotifyUrl },
+  { label: 'Apple Music', url: SITE.appleMusicUrl },
+].filter(({ url }) => Boolean(url));
 ---
 
-<BaseLayout title="Music | Amir Bahador Rostami" canonicalPath="/music/">
+<BaseLayout title="Music by Baha | Amir Bahador Rostami" canonicalPath="/music/">
   <section class="container music-archive" aria-labelledby="music-title">
-    <p class="eyebrow">Listening room</p>
-    <h1 id="music-title">Things I make with sound.</h1>
-    <p class="music-archive__intro">Music is another way I build atmosphere, follow curiosity, and make space for people to feel something together.</p>
-    {(SITE.spotifyUrl || SITE.soundCloudUrl) && (
+    <p class="eyebrow">Baha / Listening archive</p>
+    <h1 id="music-title">Music by Baha</h1>
+    <p class="music-archive__intro">Baha is the musical project of Amir Bahador Rostami—a place where electronic and acoustic instruments drift into the same orbit, forming spacey textures, vibrant colours, and sweet harmonies across big landscapes.</p>
+    {profiles.length > 0 && (
       <nav aria-label="Music profiles" class="music-archive__profiles">
-        {SITE.spotifyUrl && <a href={SITE.spotifyUrl} rel="noopener noreferrer" target="_blank">Spotify profile</a>}
-        {SITE.soundCloudUrl && <a href={SITE.soundCloudUrl} rel="noopener noreferrer" target="_blank">SoundCloud profile</a>}
+        {profiles.map(({ label, url }) => (
+          <a aria-label={`${label} profile`} href={url} rel="noopener noreferrer" target="_blank">{label}</a>
+        ))}
       </nav>
     )}
 
@@ -29,16 +35,18 @@ const catalogMusic = music.filter(({ data }) => !data.featured);
 
     <section class="music-archive__group" data-music-group="catalog" aria-labelledby="catalog-tracks-title">
       <h2 id="catalog-tracks-title">More music</h2>
-      <MusicGrid records={catalogMusic} />
+      <MusicGrid records={catalogMusic} startIndex={featuredMusic.length + 1} />
     </section>
   </section>
 </BaseLayout>
 
 <style>
-  .music-archive > h1 { max-width: 11ch; }
-  .music-archive__intro { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.35rem); margin: 1.5rem 0 0; max-width: 55ch; }
-  .music-archive__profiles { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
-  .music-archive__profiles a { border: 1px solid var(--line); color: var(--signal-text); padding: .5rem .75rem; text-underline-offset: .2em; }
-  .music-archive__group { margin-top: clamp(3rem, 8vw, 6rem); }
-  .music-archive__group h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -.04em; margin: 0; }
+  .music-archive { padding-block: clamp(4rem, 10vw, 8rem); }
+  .music-archive > h1 { font-size: clamp(3.5rem, 9vw, 8rem); letter-spacing: -.07em; line-height: .92; margin: 1rem 0 0; max-width: 11ch; }
+  .music-archive__intro { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.55; margin: 2rem 0 0; max-width: 55ch; }
+  .music-archive__profiles { display: flex; flex-wrap: wrap; gap: 1px; margin-top: 2rem; }
+  .music-archive__profiles a { align-items: center; border: 1px solid var(--line); color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; min-height: 44px; padding: .7rem 1rem; text-decoration: none; text-transform: uppercase; }
+  .music-archive__profiles a:hover { border-color: var(--signal); }
+  .music-archive__group { margin-top: clamp(4rem, 9vw, 7rem); }
+  .music-archive__group h2 { border-top: 1px solid var(--line); font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -.04em; margin: 0; padding-top: 1rem; }
 </style>

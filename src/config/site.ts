@@ -15,4 +15,5 @@ export const SITE = {
   linkedInUrl: '',
   spotifyUrl: '',
   soundCloudUrl: 'https://soundcloud.com/amir-bahador-rostami',
+  appleMusicUrl: '',
 } as const;

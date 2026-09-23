@@ -34,7 +34,7 @@ export function deriveMusicEmbedUrl(platform: string, rawUrl: string): string | 
     return undefined;
   }
 
-  return `https://w.soundcloud.com/player/?url=${encodeURIComponent(url.toString())}`;
+  return `https://w.soundcloud.com/player/?url=${encodeURIComponent(`${url.origin}${url.pathname}`)}`;
 }
 
 export function embedPermissionsFor(platform: string): string {

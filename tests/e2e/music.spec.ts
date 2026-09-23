@@ -10,11 +10,16 @@ const trackTitles = [
   'Into the Daylight',
 ];
 
-test('music page renders the approved seven-track featured-first catalog', async ({ page }) => {
+test('presents all seven releases as Music by Baha', async ({ page }) => {
   await page.goto('/music/');
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Things I make with sound.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Music by Baha');
+  await expect(page.locator('.music-archive__intro')).toHaveText(
+    'Baha is the musical project of Amir Bahador Rostami—a place where electronic and acoustic instruments drift into the same orbit, forming spacey textures, vibrant colours, and sweet harmonies across big landscapes.',
+  );
   await expect(page.locator('[data-music-card]')).toHaveCount(7);
+  await expect(page.locator('[data-music-number]')).toHaveText(['01', '02', '03', '04', '05', '06', '07']);
+  await expect(page.locator('iframe')).toHaveCount(0);
   await expect(page.locator('[data-music-card] h3')).toHaveText(trackTitles);
   await expect(page.locator('[data-music-group="featured"] [data-music-card] h3')).toHaveText([
     'La Paloma',
@@ -101,6 +106,8 @@ test('music platform profile links only render for configured profiles', async (
     'https://soundcloud.com/amir-bahador-rostami',
   );
   await expect(page.getByRole('link', { name: 'Spotify profile' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Apple Music profile' })).toHaveCount(0);
+  await expect(page.locator('.music-archive__profiles a')).toHaveText(['SoundCloud']);
 });
 
 test('music catalog uses responsive grids with no horizontal overflow', async ({ page }) => {
@@ -122,4 +129,17 @@ test('music catalog uses responsive grids with no horizontal overflow', async ({
     { columns: 1, display: 'grid', overflows: false },
     { columns: 1, display: 'grid', overflows: false },
   ]);
+
+  await page.setViewportSize({ width: 768, height: 900 });
+  expect(await measure()).toEqual([
+    { columns: 2, display: 'grid', overflows: false },
+    { columns: 2, display: 'grid', overflows: false },
+  ]);
+
+  await page.setViewportSize({ width: 320, height: 700 });
+  expect(await measure()).toEqual([
+    { columns: 1, display: 'grid', overflows: false },
+    { columns: 1, display: 'grid', overflows: false },
+  ]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
