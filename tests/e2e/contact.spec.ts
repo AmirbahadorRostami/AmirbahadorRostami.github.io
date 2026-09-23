@@ -15,6 +15,25 @@ test('contact invites the approved opportunity set', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Send the signal' })).toBeVisible();
 });
 
+test('configured LinkedIn action has a 44px touch target', async ({ page }) => {
+  await page.goto('/contact/');
+  const height = await page.evaluate(() => {
+    const inner = document.querySelector<HTMLElement>('.contact-form__inner');
+    if (!inner) throw new Error('Contact component is missing.');
+    const link = document.createElement('a');
+    link.className = 'contact-form__secondary';
+    link.textContent = 'Find me on LinkedIn';
+    link.href = 'https://www.linkedin.com/in/test-fixture/';
+    for (const attribute of inner.attributes) {
+      if (attribute.name.startsWith('data-astro-cid-')) link.setAttribute(attribute.name, '');
+    }
+    inner.append(link);
+    return link.getBoundingClientRect().height;
+  });
+
+  expect(height).toBeGreaterThanOrEqual(44);
+});
+
 function contrastRatio(foreground: string, background: string): number {
   const relativeLuminance = (color: string) => {
     const values = color.match(/\d+(?:\.\d+)?/g)?.map(Number);
