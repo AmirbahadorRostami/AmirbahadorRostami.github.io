@@ -101,6 +101,9 @@ describe('ProjectMedia', () => {
     expect(html).toContain('poster="');
     expect(html).toContain('src="/media/test.webm" type="video/webm"');
     expect(html).toContain('src="/media/test.mp4" type="video/mp4"');
+    const outsideVideo = html.replace(/<video\b[\s\S]*?<\/video>/g, '');
+    expect(outsideVideo).toContain('href="/media/test.webm"');
+    expect(outsideVideo).toContain('Open System architecture');
     expect(html).not.toContain('autoplay');
   });
 
@@ -116,5 +119,18 @@ describe('ProjectMedia', () => {
     expect(html).toContain('href="https://www.youtube.com/watch?v=eJJue_cGV3E"');
     expect(html).not.toContain('<iframe');
     expect(html).not.toContain('ytimg.com');
+  });
+
+  it('does not expose unsafe local video sources as playable or fallback links', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(ProjectMedia, {
+      props: { project: projectWithMedia([{
+        ...placeholder, type: 'video', state: 'ready',
+        sources: [{ src: 'javascript:alert(1)', type: 'video/mp4' }],
+      }]) },
+    });
+    expect(html).not.toContain('javascript:');
+    expect(html).not.toContain('<video');
+    expect(html).toContain('data-media-state="placeholder"');
   });
 });

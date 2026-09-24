@@ -92,7 +92,10 @@ export function mountBioWords(root: HTMLElement): () => void {
       else if (action === 'skip') controller?.skip();
       if (motion.matches && (action === 'begin' || action === 'resume')) { controller?.advance(500); controller?.pause(); }
       sync();
-    } catch (error) { status.textContent = error instanceof Error ? error.message : 'Please enter words to begin.'; }
+    } catch (error) {
+      announced = error instanceof Error ? error.message : 'Please enter words to begin.';
+      status.textContent = announced;
+    }
   };
   const change = () => { count.textContent = `${input.value.length} / 280 characters`; };
   root.addEventListener('click', click); input.addEventListener('input', change);

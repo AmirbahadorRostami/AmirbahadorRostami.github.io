@@ -59,7 +59,7 @@ The lab remains separate from production navigation and templates.
 
 Project fields such as `alternateTitle`, `year`, and `context` are optional. Empty optional lists are hidden by the project layout, so leave them empty rather than writing placeholder headings.
 
-Each `media` item has an `id`, `type` (`image`, `video`, or `diagram`), `intention`, `aspectRatio` (for example `16 / 9`), `alt`, `caption`, and `state` (`ready` or `placeholder`). A ready image or diagram needs `image`; video can use `poster`, typed MP4/WebM `sources`, or an HTTPS `externalUrl`. For missing media, keep `state: placeholder` and provide a useful intention, alt text, and caption. The frame then shows the project, expected content, media type, preferred ratio, and status without changing the page template.
+Each `media` item has an `id`, `type` (`image`, `video`, or `diagram`), `intention`, `aspectRatio` (for example `16 / 9`), `alt`, `caption`, and `state` (`ready` or `placeholder`). A ready image or diagram needs `image`; video playback requires typed MP4/WebM `sources` or an HTTPS `externalUrl`. A `poster` is optional and does not make a video playable by itself. For missing media, keep `state: placeholder` and provide a useful intention, alt text, and caption. The frame then shows the project, expected content, media type, preferred ratio, and status without changing the page template.
 
 For the final media pass, add approved source images to `Media/`, add deterministic source-to-output entries to `MEDIA_JOBS` in `scripts/prepare-media.mjs`, and run `npm run media:prepare`. Reference the optimized files from `src/assets/`, set the relevant `image` or `poster`, and switch that media record to `state: ready`. Use meaningful alt text and captions, then check the asset for private information. For video, prepare a poster and compressed MP4/WebM sources or an approved external URL. Do not use filenames as alt text. Confirm the final LinkedIn and Baha platform URLs in `src/config/site.ts`, the six unknown experiment titles and metadata, and any remaining project or track media with Amir before launch. The current SoundCloud profile value also needs owner confirmation.
 
@@ -82,6 +82,8 @@ For GitHub Pages, add an Actions repository variable named `PUBLIC_CONTACT_FORM_
 This is the username site `amirbahadorrostami.github.io`, so Astro has no `base` path configured. In GitHub repository settings, set Pages **Source** to **GitHub Actions** before the first deployment. That setting and any deployment are intentionally outside this repository change. If hosting moves later, retain the static build, update the deployment integration and canonical `site`/origin configuration as needed, and replace the contact endpoint without coupling pages to a provider.
 
 ## Project documents
+
+Final-review verification (2026-09-23, Node 24): 115 unit tests, 0 Astro errors/warnings/hints across 116 files, 21 static pages, 233 configured browser tests, and one unconfigured-contact test passed. The 320px homepage review confirmed 44px CTA and track-link targets with visible focus and no horizontal overflow.
 
 - [Living design specification](docs/superpowers/specs/2026-08-31-personal-portfolio-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-08-31-core-portfolio-implementation.md)

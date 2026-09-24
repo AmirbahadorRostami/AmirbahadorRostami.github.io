@@ -78,3 +78,25 @@ it('supports compatible neighbors and makes negative environments harsher', () =
   expect(stepSimulation({ ...state, sentiment: 1 }, 50).creatures[0].energy)
     .toBeGreaterThan(stepSimulation({ ...state, sentiment: -1 }, 50).creatures[0].energy);
 });
+
+it('gives compatible neighbors more energy support than incompatible neighbors', () => {
+  const compatible = createSimulation('one two', 1);
+  compatible.creatures.forEach((c, i) => Object.assign(c, {
+    x: 0.45 + i * 0.1, y: 0.5, vx: 0, vy: 0, energy: 50, genome: [0.2],
+  }));
+  const incompatible = structuredClone(compatible);
+  incompatible.creatures[1].genome = [0.9];
+  expect(stepSimulation(compatible, 50).creatures[0].energy)
+    .toBeGreaterThan(stepSimulation(incompatible, 50).creatures[0].energy);
+});
+
+it('moves toward separated neighbors, away from crowded neighbors, and inward at boundaries', () => {
+  const state = createSimulation('one two', 1);
+  state.creatures.forEach((c, i) => Object.assign(c, { x: 0.5 + i * 0.1, y: 0.5, vx: 0, vy: 0 }));
+  expect(stepSimulation(state, 50).creatures[0].vx).toBeGreaterThan(0);
+  state.creatures[1].x = 0.52;
+  expect(stepSimulation(state, 50).creatures[0].vx).toBeLessThan(0);
+  const boundary = createSimulation('alone', 1);
+  Object.assign(boundary.creatures[0], { x: 0.02, y: 0.5, vx: 0, vy: 0 });
+  expect(stepSimulation(boundary, 50).creatures[0].vx).toBeGreaterThan(0);
+});

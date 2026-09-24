@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { experimentAnchor, hasPlayableSources } from '../../src/lib/experiments';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import ExperimentCard from '../../src/components/experiments/ExperimentCard.astro';
+
+it('keeps a local video fallback visible outside the experiment player', async () => {
+  const container = await AstroContainer.create();
+  const html = await container.renderToString(ExperimentCard, { props: { experiment: {
+    data: { title: 'Synthetic study', order: 1, state: 'ready', tools: [], sources: [
+      { src: '/media/synthetic.webm', type: 'video/webm' },
+      { src: '//unsafe.test/video.mp4', type: 'video/mp4' },
+    ] },
+  } } });
+  const outsideVideo = html.replace(/<video\b[\s\S]*?<\/video>/g, '');
+  expect(outsideVideo).toContain('href="/media/synthetic.webm"');
+  expect(outsideVideo).toContain('Open Synthetic study video');
+  expect(html).not.toContain('unsafe.test');
+});
 
 describe('experiment archive helpers', () => {
   it('creates stable lower-case anchors', () => {

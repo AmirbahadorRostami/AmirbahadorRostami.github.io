@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { parseYouTubeUrl } from '../../lib/project-media';
+import { hasPlayableSources } from '../../lib/experiments';
 
 export interface Props {
   project: CollectionEntry<'projects'>;
@@ -13,8 +14,9 @@ const { project } = Astro.props;
 <div class="project-media" data-project-media>
   {project.data.media.map((media, index) => {
     const youtube = media.externalUrl ? parseYouTubeUrl(media.externalUrl) : undefined;
+    const sources = media.sources.filter(source => hasPlayableSources([source]));
     const hasImage = (media.type === 'image' || media.type === 'diagram') && media.image;
-    const hasVideo = media.type === 'video' && (media.sources.length > 0 || media.externalUrl);
+    const hasVideo = media.type === 'video' && (sources.length > 0 || media.externalUrl);
     const placeholder = media.state === 'placeholder' || (!hasImage && !hasVideo);
 
     return (
@@ -33,10 +35,9 @@ const { project } = Astro.props;
             </div>
           ) : hasImage && media.image ? (
             <Image src={media.image} alt={media.alt} layout="constrained" loading="lazy" />
-          ) : media.sources.length > 0 ? (
+          ) : sources.length > 0 ? (
             <video controls preload="none" playsinline poster={media.poster?.src ?? project.data.hero.src} aria-label={media.alt} aria-describedby={`caption-${media.id}`}>
-              {media.sources.map((source) => <source src={source.src} type={source.type} />)}
-              <a href={media.sources[0].src}>Open {media.intention}</a>
+              {sources.map((source) => <source src={source.src} type={source.type} />)}
             </video>
           ) : youtube ? (
             <div class="project-media__video-frame" data-video-facade data-video-id={youtube.videoId} data-video-title={media.caption} data-state="idle">
@@ -57,6 +58,9 @@ const { project } = Astro.props;
         <figcaption id={`caption-${media.id}`}>
           <span class="project-media__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
           <span>{media.caption}</span>
+          {!placeholder && hasVideo && sources.length > 0 && (
+            <a href={sources[0].src}>Open {media.intention}</a>
+          )}
           {!placeholder && youtube && (
             <a href={`https://www.youtube.com/watch?v=${youtube.videoId}`} rel="noopener noreferrer" target="_blank" aria-label={`Watch ${media.caption} on YouTube`}>Watch on YouTube ↗</a>
           )}

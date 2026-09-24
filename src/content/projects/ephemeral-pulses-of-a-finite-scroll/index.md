@@ -85,7 +85,7 @@ Ephemeral Pulses of a Finite Scroll connects the movement of swing units through
 
 ## My contribution
 
-I co-created the work with Elahe Rostami. The installation brings physical movement, sensing, and sound into a shared system.
+I co-created the work with Elahe Rostami and personally handled the coding, hardware design, hardware sourcing, system integration, fabrication, and assembly. The installation brings physical movement, sensing, and sound into a shared system.
 
 <!-- chapter:technical -->
 

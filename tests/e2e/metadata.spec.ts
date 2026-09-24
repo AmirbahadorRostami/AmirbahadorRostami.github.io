@@ -6,8 +6,13 @@ const origin = 'https://amirbahadorrostami.github.io';
 
 test('all canonical production routes have distinct descriptions and matching social metadata', async ({ page }) => {
   const descriptions = new Set<string>();
+  const titles = new Set<string>();
   for (const route of productionRoutes) {
     await page.goto(route);
+    const title = (await page.title()).trim();
+    expect(title, route).toMatch(/\S+/);
+    expect(titles.has(title), route).toBe(false);
+    titles.add(title);
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${origin}${route}`);
     const description = await page.locator('meta[name="description"]').getAttribute('content');

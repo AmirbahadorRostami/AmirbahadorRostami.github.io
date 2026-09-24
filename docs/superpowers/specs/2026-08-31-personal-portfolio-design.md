@@ -254,7 +254,7 @@ The final owner media pass will:
 - Performance and bundle review
 - Privacy and metadata checks
 
-On 2026-09-23, `npm test` passed: 111 unit tests, Astro diagnostics with 0 errors/0 warnings/0 hints, 21 static pages, 230 configured Playwright tests, and the unconfigured-contact test. Representative screenshots of eight routes at 320×568, 390×844, 768×1024, and 1440×900 showed no horizontal overflow or clipped headings; keyboard focus and responsive layout also have automated coverage. The broad source/output text scan matched numeric literals and two comments inside bundled PixiJS. Authored source and generated HTML had no unfinished markers or private contact details. See the [detailed release record](./2026-09-21-darkroom-portfolio-redesign-design.md#release-verification) for scope and caveats.
+On 2026-09-23, the final-review `npm test` passed: 115 unit tests, Astro diagnostics on 116 files with 0 errors/0 warnings/0 hints, 21 static pages, 233 configured Playwright tests, and the unconfigured-contact test. Representative screenshots of eight routes at 320×568, 390×844, 768×1024, and 1440×900 showed no horizontal overflow or clipped headings; a fresh 320px homepage check confirmed the corrected 44px CTA and track-link targets. Keyboard focus and responsive layout also have automated coverage. The broad source/output text scan matched numeric literals and two comments inside bundled PixiJS. Authored source and generated HTML had no unfinished markers or private contact details. See the [detailed release record](./2026-09-21-darkroom-portfolio-redesign-design.md#release-verification) for scope and caveats.
 
 ### Phase 7: Final media and launch
 
