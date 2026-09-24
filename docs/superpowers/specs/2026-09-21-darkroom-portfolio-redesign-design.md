@@ -2,13 +2,15 @@
 
 **Owner:** Amir Bahador Rostami
 
-**Status:** Approved for implementation planning
+**Status:** Implemented and verified
 
 **Date:** 2026-09-21
 
 **Branch:** codex/darkroom-portfolio
 
 **Base:** codex/six-concept-design-lab at 777a152
+
+**Task 13 implementation commit:** 06b3b390 (`test: harden portfolio metadata privacy and bundles`)
 
 ## Purpose
 
@@ -485,6 +487,16 @@ Build checks:
 - Internal links
 - No private contact details in output
 - No PixiJS bundle on unrelated routes
+
+### Release verification
+
+Verified on 2026-09-23 on `codex/darkroom-portfolio` at Task 13 commit `06b3b390`, before this documentation commit. Node 24 `npm test` passed its complete chain: 22 unit-test files and 111 tests; `astro check` on 115 files with 0 errors, 0 warnings, and 0 hints; 21 static pages built with a sitemap; 230 configured Chromium Playwright tests; and one unconfigured-contact Chromium test. The browser suite covers the inventory, three flagship and two short case studies, redirects, static and graphics fallbacks, music activation, contact states, accessibility, metadata, privacy, and bundle scope.
+
+Representative screenshots covered `/`, `/work/`, `/work/encounters/`, `/work/biowords/`, `/experiments/`, `/music/`, `/about/`, and `/contact/` at 320×568, 390×844, 768×1024, and 1440×900. All 32 captures had no horizontal overflow or clipped first- and second-level headings; Experiment 02–07 labels were present at every width. Visual samples at each width showed readable hierarchy and mobile sequencing. Keyboard focus and single-column behavior have browser-test coverage.
+
+The explicit `rg` source/output audit returned matches, which were classified: phone-shaped matches were numeric literals and decimals in the 10 PRINT code and minified PixiJS bundle; two `TODO` comments came from bundled PixiJS. Authored `src` has no `TODO`, `TBD`, or matching public email; generated HTML has none either. The production privacy tests also audit built HTML, scripts, and the public résumé PDF. No authored unfinished marker or private email/phone output was found. The exact audit command and classification are recorded in the Task 14 release report.
+
+Non-blocking maintenance remains: a stale BioWords status cache after invalid Begin/Restart, deeper model-flocking coverage, and dedicated Task 13 privacy/metadata coverage were deferred in the task ledger. The build emits an optional large PixiJS chunk warning, and Astro emits markdown deprecation notices in unit tests. The separately reported `npm audit --omit=dev` findings affect Astro (critical), sharp (high), and esbuild (low); resolving them requires a dependency review rather than an automatic breaking upgrade. Final owner-supplied media, profile URLs, contact endpoint, experiment metadata, and any custom domain remain open below.
 
 ## Approved implementation approach
 

@@ -2,9 +2,9 @@
 
 **Owner:** Amir Bahador Rostami
 
-**Status:** Darkroom Cinema redesign approved; implementation planning pending
+**Status:** Darkroom Cinema implemented and release-verified; owner media and launch inputs remain
 
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-23
 
 ## Purpose
 
@@ -51,7 +51,7 @@ Approved actions:
 
 ## Approved direction
 
-The production site will use the Darkroom Cinema direction selected from the six-concept design lab.
+The production site uses the Darkroom Cinema direction selected from the six-concept design lab.
 
 Core characteristics:
 
@@ -61,7 +61,7 @@ Core characteristics:
 - No purple gradients, glossy three-dimensional blobs, colourful feature-row palettes, generic icon grids, system-only typography, or rounded-everything friendliness
 - Restrained motion with complete reduced-motion and no-JavaScript fallbacks
 
-The old 10 PRINT sketch becomes a PixiJS homepage field. BioWords becomes a second PixiJS experience using a separate testable simulation core.
+The old 10 PRINT sketch is a PixiJS homepage field. BioWords is a second PixiJS experience using a separate testable simulation core. Both preserve static HTML and usable fallbacks if JavaScript or WebGL fails.
 
 ## Information architecture
 
@@ -82,13 +82,15 @@ Homepage:
 5. Experiments invitation
 6. Contact invitation
 
-Production sections:
+Implemented production sections:
 
-- Work: five projects
-- Experiments: seven generative videos
+- Work: five projects, with three full flagship case studies and two short studies
+- Experiments: seven video-study entries, with Cellular Automata documented and six neutral placeholders awaiting media
 - Music: seven Baha tracks
 - About: biography, thirteen-entry timeline, education, skills, and résumé
-- Contact: short private form and LinkedIn fallback
+- Contact: short private form when `PUBLIC_CONTACT_FORM_ENDPOINT` is configured; LinkedIn fallback when its URL is supplied
+
+The static output also includes `/404.html`. `/work/remote-realities/` redirects to `/work/ephemeral-pulses-of-a-finite-scroll/`; `/work/cellular-automata/` redirects to the Cellular Automata anchor on `/experiments/`. The six-concept design lab remains unlinked and `noindex, nofollow`.
 
 ## Work inventory
 
@@ -110,12 +112,12 @@ Confirmed project facts:
 - Encounters: 2023; Congress 2023; created by Amir and Elahe Rostami through Artifacts Lab; Amir was co-creator, Technical Lead, systems architect, and client/AR developer; Unity, AR Foundation, ARKit, ARCore, Node.js, and AWS.
 - Luminous Trails: 2022; Nuit Blanche Toronto; Amir was Lead Technical Architect, built the complete client and AR interactions, and architected the Node.js/AWS backend implemented by another team member.
 - Ephemeral Pulses of a Finite Scroll: 2020; Remote Realities commission; created by Amir and Elahe Rostami; co-presented by Trinity Square Video and Dames Making Games; supported by EQ Bank; Raspberry Pi, MPU-6050, Python, SuperCollider, wireless master coordination, and physical fabrication.
-- BioWords: 2019; solo York University final project; original Twitter hashtag artwork; direct-input PixiJS adaptation planned.
+- BioWords: 2019; solo York University final project; original Twitter hashtag artwork; direct-input PixiJS adaptation implemented. The result uses only original surviving words, ordered by survival time and then remaining energy.
 - Person Is a Data Structure: 2018; Eleanor Winters Art Gallery; collaborative university installation; collaborator names omitted; Amir's documented technical role is credited accurately.
 
 ## Experiments
 
-The Experiments page contains seven videos total:
+The Experiments page contains seven video-study entries:
 
 1. Cellular Automata
 2. Experiment 02
@@ -125,7 +127,7 @@ The Experiments page contains seven videos total:
 6. Experiment 06
 7. Experiment 07
 
-The six unknown entries remain neutral placeholders until the final media pass. No titles, dates, descriptions, tools, or algorithms are invented.
+The six unknown entries remain neutral placeholders until the final media pass. No titles, dates, descriptions, tools, or algorithms are invented. `state: "placeholder"` is a deliberate content readiness value; Cellular Automata is `ready` with its current poster and source link.
 
 ## Music
 
@@ -141,7 +143,7 @@ Platform order:
 2. Spotify
 3. Apple Music
 
-The existing seven-track catalog remains. Audio never autoplays.
+The existing seven-track catalog remains. Audio never autoplays; third-party players load only after activation. The current SoundCloud profile value needs owner confirmation, while LinkedIn, Spotify, and Apple Music profile values are still empty.
 
 ## About and experience
 
@@ -181,7 +183,7 @@ Amir's email address and phone number must not be present in generated HTML, Jav
 - TypeScript
 - Static output compatible with GitHub Pages
 - Astro content collections
-- PixiJS only on the homepage and BioWords page
+- PixiJS only on the homepage and BioWords page, with complete static fallbacks
 - Replaceable contact endpoint
 - GitHub Actions deployment
 
@@ -191,7 +193,7 @@ No production backend, CMS, database, authentication, analytics platform, or ser
 
 All absent media uses intentional, accessible placeholders. Each placeholder identifies the project, expected content, media type, preferred aspect ratio, and caption or alternative-text requirement.
 
-The final media pass will:
+The final owner media pass will:
 
 - Import original photographs, renders, diagrams, video, posters, and interface captures
 - Produce responsive images
@@ -199,7 +201,7 @@ The final media pass will:
 - Create poster frames
 - Write captions and alternative text
 - Check for private data
-- Replace all placeholders
+- Replace the remaining intentional placeholders by updating collection media records, not page templates
 
 ## Implementation phases
 
@@ -213,16 +215,16 @@ The final media pass will:
 - [x] Approve technical architecture and verification
 - [x] Create separate codex/darkroom-portfolio branch
 - [x] Update living documentation
-- [ ] User reviews written redesign specification
-- [ ] Write detailed implementation plan
+- [x] User reviews written redesign specification
+- [x] Write detailed implementation plan
 
-### Phase 2: Production design system
+### Phase 2: Production design system — complete
 
 - Implement Darkroom Cinema tokens, typography, shell, navigation, footer, focus, and motion
 - Preserve semantic HTML and static primary content
 - Implement the PixiJS hero with fallbacks
 
-### Phase 3: Content and routes
+### Phase 3: Content and routes — complete
 
 - Update project records and attribution
 - Rename the Remote Realities route and add compatibility redirect
@@ -230,20 +232,20 @@ The final media pass will:
 - Move Cellular Automata and add its compatibility redirect
 - Update Music, About, Contact, metadata, and navigation
 
-### Phase 4: Case studies and media placeholders
+### Phase 4: Case studies and media placeholders — complete
 
 - Build flagship editorial templates
 - Build compact case-study template
 - Add structured placeholder galleries and diagrams
 - Preserve existing usable documentation
 
-### Phase 5: BioWords
+### Phase 5: BioWords — complete
 
 - Build the deterministic TypeScript simulation
 - Build the PixiJS renderer and accessible controls
 - Implement reduced-motion, skip-to-result, static fallback, and local-only processing
 
-### Phase 6: Verification
+### Phase 6: Verification — complete for the current content
 
 - Unit tests
 - Astro diagnostics and build
@@ -251,6 +253,8 @@ The final media pass will:
 - Responsive review
 - Performance and bundle review
 - Privacy and metadata checks
+
+On 2026-09-23, `npm test` passed: 111 unit tests, Astro diagnostics with 0 errors/0 warnings/0 hints, 21 static pages, 230 configured Playwright tests, and the unconfigured-contact test. Representative screenshots of eight routes at 320×568, 390×844, 768×1024, and 1440×900 showed no horizontal overflow or clipped headings; keyboard focus and responsive layout also have automated coverage. The broad source/output text scan matched numeric literals and two comments inside bundled PixiJS. Authored source and generated HTML had no unfinished markers or private contact details. See the [detailed release record](./2026-09-21-darkroom-portfolio-redesign-design.md#release-verification) for scope and caveats.
 
 ### Phase 7: Final media and launch
 
@@ -263,7 +267,7 @@ The final media pass will:
 ## Open owner inputs
 
 - [ ] Exact LinkedIn URL
-- [ ] SoundCloud profile URL for Baha
+- [ ] Confirm the current SoundCloud profile URL for Baha
 - [ ] Spotify profile URL for Baha
 - [ ] Apple Music profile URL for Baha
 - [ ] Final private contact endpoint
@@ -272,7 +276,7 @@ The final media pass will:
 - [ ] Final track artwork and optional track descriptions
 - [ ] Optional custom domain
 
-These inputs do not block the initial implementation because the design includes honest placeholders and fallbacks.
+These inputs do not block the verified static implementation because the design includes honest placeholders and fallbacks. They remain launch inputs; do not mark them complete without Amir's confirmation.
 
 ## Verification requirements
 
@@ -311,6 +315,7 @@ The detailed test matrix lives in the Darkroom Portfolio Redesign specification.
 | 2026-09-21 | Move Cellular Automata to Experiments | It belongs with Amir's other generative video studies |
 | 2026-09-21 | Credit Person Is a Data Structure as collaborative | The source proposal documents divided group responsibilities |
 | 2026-09-21 | Release music under Baha | This is Amir's approved artist alias |
+| 2026-09-23 | Release-verify the Darkroom static implementation | The full test gate, output audit, and four-width visual review passed for current content; owner media and profile inputs remain |
 
 ## Documentation maintenance
 
