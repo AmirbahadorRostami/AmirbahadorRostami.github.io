@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import config from '../../astro.config.mjs';
 
 const repositoryRoot = resolve(import.meta.dirname, '../..');
 const workflowPath = resolve(repositoryRoot, '.github/workflows/deploy.yml');
@@ -9,6 +10,12 @@ const packagePath = resolve(repositoryRoot, 'package.json');
 const packageLockPath = resolve(repositoryRoot, 'package-lock.json');
 
 describe('GitHub Pages deployment', () => {
+  it('keeps output static with directory routes for GitHub Pages', () => {
+    expect(config.output).toBe('static');
+    expect(config.site).toBe('https://amirbahadorrostami.github.io');
+    expect(config.trailingSlash).toBe('always');
+    expect(config.adapter).toBeUndefined();
+  });
   it('publishes the static user site from main through separate build and deploy jobs', () => {
     expect(existsSync(workflowPath)).toBe(true);
 

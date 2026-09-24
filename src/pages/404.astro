@@ -4,17 +4,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Page not found | Amir Rostami"
-  description="This page could not be found. Explore Amir Rostami's work, music, about page, or contact page."
+  description="That signal went somewhere else. Explore Amir Rostami's work, experiments, music, or contact page."
   canonicalPath="/404.html"
+  robots="noindex, follow"
 >
   <section class="not-found container" aria-labelledby="not-found-title">
     <p class="eyebrow">Signal lost</p>
-    <h1 id="not-found-title">Page not found.</h1>
+    <h1 id="not-found-title">That signal went somewhere else.</h1>
     <p class="not-found__message">That path has gone quiet. Pick up the signal from one of these familiar places.</p>
     <nav class="not-found__links" aria-label="Portfolio sections">
       <a href="/work/">Work</a>
       <a href="/music/">Music</a>
-      <a href="/about/">About</a>
+      <a href="/experiments/">Experiments</a>
       <a href="/contact/">Contact</a>
     </nav>
   </section>

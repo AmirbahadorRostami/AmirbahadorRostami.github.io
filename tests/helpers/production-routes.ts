@@ -1,0 +1,1 @@
+export const productionRoutes = ['/', '/work/', '/work/encounters/', '/work/luminous-trails/', '/work/ephemeral-pulses-of-a-finite-scroll/', '/work/biowords/', '/work/person-is-a-data-structure/', '/experiments/', '/music/', '/about/', '/contact/'];
