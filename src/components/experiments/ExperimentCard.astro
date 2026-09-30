@@ -8,7 +8,7 @@ export interface Props {
 }
 
 const { experiment } = Astro.props;
-const { title, order, state, year, description, technique, tools, processNotes, sourceUrl, sourceLabel, poster, sources } = experiment.data;
+const { title, order, state, description, processNotes, sourceUrl, sourceLabel, poster, sources } = experiment.data;
 const accessibleTitle = title ?? `Untitled video study ${order} of 7`;
 const anchor = experimentAnchor(title ?? experiment.id.replace(/^\d+-/, ''));
 const playableSources = sources.filter(({ src, type }) => hasPlayableSources([{ src, type }]));
@@ -44,13 +44,6 @@ const placeholder = state === 'placeholder';
       {!placeholder && playableSources.length > 0 && <a class="text-link" href={playableSources[0].src} aria-label={title ? undefined : `Open ${accessibleTitle}`}>Open video</a>}
       {!placeholder && description && <p class="experiment-card__description" data-experiment-description>{description}</p>}
       {!placeholder && processNotes && <p class="experiment-card__description">{processNotes}</p>}
-      {!placeholder && (year || technique || tools.length > 0) && (
-        <dl class="experiment-card__facts">
-          {year && <div data-experiment-year><dt>Year</dt><dd>{year}</dd></div>}
-          {technique && <div data-experiment-technique><dt>Technique</dt><dd>{technique}</dd></div>}
-          {tools.length > 0 && <div data-experiment-tools><dt>Tools</dt><dd>{tools.join(' / ')}</dd></div>}
-        </dl>
-      )}
       {!placeholder && sourceUrl && <a class="text-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">{sourceLabel ?? 'View source'} ↗</a>}
     </div>
   </div>
@@ -71,9 +64,6 @@ const placeholder = state === 'placeholder';
   .experiment-card__detail { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: 1rem; }
   h2 { font-size: clamp(1.5rem, 2.8vw, 3rem); font-weight: 500; letter-spacing: -.045em; line-height: 1.05; margin: 0; }
   .experiment-card__description { color: var(--muted); font-size: clamp(.95rem, 1.4vw, 1.1rem); margin: .85rem 0 0; max-width: 48ch; }
-  .experiment-card__facts { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin: 1.25rem 0 0; }
-  .experiment-card__facts dt { color: var(--muted); font-family: var(--font-mono); font-size: .625rem; letter-spacing: .08em; text-transform: uppercase; }
-  .experiment-card__facts dd { font-size: .8125rem; margin: .2rem 0 0; }
   .text-link { margin-top: 1rem; }
   .text-link + .text-link { margin-left: clamp(1rem, 2.5vw, 1.5rem); }
 

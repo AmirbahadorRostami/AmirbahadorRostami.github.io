@@ -6,7 +6,7 @@ import ExperimentCard from '../../src/components/experiments/ExperimentCard.astr
 it('keeps a local video fallback visible outside the experiment player', async () => {
   const container = await AstroContainer.create();
   const html = await container.renderToString(ExperimentCard, { props: { experiment: {
-    data: { title: 'Synthetic study', order: 1, state: 'ready', tools: [], sources: [
+    data: { title: 'Synthetic study', order: 1, state: 'ready', sources: [
       { src: '/media/synthetic.webm', type: 'video/webm' },
       { src: '//unsafe.test/video.mp4', type: 'video/mp4' },
     ] },
@@ -21,7 +21,7 @@ it('keeps unnamed video cards visually title-free but identifiable to assistive 
   const container = await AstroContainer.create();
   const html = await container.renderToString(ExperimentCard, { props: { experiment: {
     id: '02-experiment-02',
-    data: { order: 3, state: 'ready', tools: [], sources: [
+    data: { order: 3, state: 'ready', sources: [
       { src: '/media/untitled.mp4', type: 'video/mp4' },
     ] },
   } } });
@@ -30,6 +30,19 @@ it('keeps unnamed video cards visually title-free but identifiable to assistive 
   expect(html).toContain('Open video');
   expect(html).not.toContain('data-experiment-sequence');
   expect(html).not.toContain('Experiment 02');
+});
+
+it('does not render retired technique, tools, or year facts on experiment cards', async () => {
+  const container = await AstroContainer.create();
+  const html = await container.renderToString(ExperimentCard, { props: { experiment: {
+    id: '01-cellular-automata',
+    data: { title: 'Cellular Automata', order: 1, state: 'ready', year: '2022', technique: 'Cellular automata', tools: ['JavaScript'], sources: [] },
+  } } });
+
+  expect(html).not.toContain('data-experiment-year');
+  expect(html).not.toContain('data-experiment-technique');
+  expect(html).not.toContain('data-experiment-tools');
+  expect(html).not.toContain('experiment-card__facts');
 });
 
 describe('experiment archive helpers', () => {

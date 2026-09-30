@@ -1,7 +1,6 @@
 {
   "order": 7,
   "state": "ready",
-  "tools": [],
   "poster": "../../assets/experiments/07-experiment-poster.webp",
   "sources": [{ "src": "/media/experiments/07-experiment.mp4", "type": "video/mp4" }]
 }
