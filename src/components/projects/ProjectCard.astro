@@ -5,27 +5,28 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props {
   project: CollectionEntry<'projects'>;
   index: number;
+  variant?: 'default' | 'home';
 }
 
-const { project, index } = Astro.props;
+const { project, index, variant = 'default' } = Astro.props;
 const { data, id } = project;
 const projectUrl = `/work/${id}/`;
 const projectIndex = String(index).padStart(2, '0');
 ---
 
-<article class="project-card" data-project-card data-depth={data.depth}>
+<article class="project-card" data-project-card data-depth={data.depth} data-variant={variant}>
   <a class="project-card__image-link" href={projectUrl} aria-label={`View ${data.title} project`}>
     <Image src={data.hero} alt={data.heroAlt} layout="constrained" />
   </a>
   <div class="project-card__body">
     <p class="project-card__meta">
-      <span data-project-index>{projectIndex}</span>
+      {variant !== 'home' && <span data-project-index>{projectIndex}</span>}
       <span data-project-year>{data.year ?? 'Selected work'}</span>
     </p>
     <h2><a href={projectUrl}>{data.title}</a></h2>
     <p>{data.cardSummary}</p>
     <p class="project-card__role" data-project-role>{data.roles[0]}</p>
-    <a class="project-card__link" data-case-study-link href={projectUrl}>View case study</a>
+    {variant !== 'home' && <a class="project-card__link" data-case-study-link href={projectUrl}>View case study</a>}
   </div>
 </article>
 
@@ -43,6 +44,7 @@ const projectIndex = String(index).padStart(2, '0');
   .project-card__image-link :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }
   .project-card__body { display: grid; gap: 1rem; padding: 1.25rem; }
   .project-card__meta { color: var(--signal-text); display: flex; font-family: var(--font-mono); font-size: .75rem; justify-content: space-between; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+  [data-variant='home'] .project-card__meta { justify-content: end; }
   h2 { font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -.04em; line-height: 1.05; margin: 0; }
   [data-depth='flagship'] h2 { font-size: clamp(1.6rem, 3.5vw, 2.35rem); }
   h2 a { text-decoration: none; }

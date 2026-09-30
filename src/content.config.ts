@@ -50,6 +50,9 @@ const projects = defineCollection({
     tools: z.array(nonemptyString).min(1),
     hero: image(),
     heroAlt: nonemptyString,
+    detailHero: image().optional(),
+    detailHeroAlt: nonemptyString.optional(),
+    detailHeroMark: image().optional(),
     context: nonemptyString.optional(),
     collaborators: z.array(nonemptyString).default([]),
     credits: z.array(nonemptyString).default([]),
@@ -64,7 +67,7 @@ const projects = defineCollection({
 const experiments = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/experiments' }),
   schema: ({ image }) => z.object({
-    title: nonemptyString,
+    title: nonemptyString.optional(),
     order: positiveOrder,
     state: z.enum(['ready', 'placeholder']),
     year: nonemptyString.optional(),
@@ -73,6 +76,7 @@ const experiments = defineCollection({
     tools: z.array(nonemptyString).default([]),
     processNotes: nonemptyString.optional(),
     sourceUrl: httpsUrl.optional(),
+    sourceLabel: nonemptyString.optional(),
     poster: image().optional(),
     sources: z.array(mediaSource).default([]),
   }),

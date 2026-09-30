@@ -34,7 +34,10 @@ test('presents the approved archive introduction and editorial card metadata', a
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-depth')))).toEqual([
     'flagship', 'flagship', 'flagship', 'short', 'short',
   ]);
-  await expect(cards.locator('[data-project-index]')).toHaveText(['01', '02', '03', '04', '05']);
+  expect(await cards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-variant')))).toEqual([
+    'home', 'home', 'home', 'home', 'home',
+  ]);
+  await expect(cards.locator('[data-project-index]')).toHaveCount(0);
   await expect(cards.locator('[data-project-year]')).toHaveText(['2023', '2022', '2020', '2019', '2018']);
   await expect(cards.locator('[data-project-role]')).toHaveText([
     'Co-creator',
@@ -43,15 +46,17 @@ test('presents the approved archive introduction and editorial card metadata', a
     'Solo creator',
     'Technical artist',
   ]);
-  expect(await cards.locator('[data-case-study-link]').evaluateAll((nodes) => (
-    nodes.map((node) => node.getAttribute('href'))
-  ))).toEqual([
-    '/work/encounters/',
-    '/work/luminous-trails/',
-    '/work/ephemeral-pulses-of-a-finite-scroll/',
-    '/work/biowords/',
-    '/work/person-is-a-data-structure/',
-  ]);
+  await expect(cards.locator('[data-case-study-link]')).toHaveCount(0);
+  for (const [index, slug] of [
+    'encounters',
+    'luminous-trails',
+    'ephemeral-pulses-of-a-finite-scroll',
+    'biowords',
+    'person-is-a-data-structure',
+  ].entries()) {
+    await expect(cards.nth(index).locator('.project-card__image-link')).toHaveAttribute('href', `/work/${slug}/`);
+    await expect(cards.nth(index).getByRole('heading').getByRole('link')).toHaveAttribute('href', `/work/${slug}/`);
+  }
 
   await expect(page.getByRole('list', { name: 'Projects' }).getByRole('listitem')).toHaveCount(5);
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).borderRadius))).toEqual([

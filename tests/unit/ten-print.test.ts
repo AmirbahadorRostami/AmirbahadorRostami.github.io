@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createTenPrintCells, mulberry32 } from '../../src/lib/ten-print';
+import * as tenPrint from '../../src/lib/ten-print';
+
+const { createTenPrintCells, mulberry32 } = tenPrint;
 
 describe('10 PRINT geometry', () => {
   it('creates deterministic cells that cover the viewport', () => {
@@ -30,5 +32,31 @@ describe('10 PRINT geometry', () => {
     const sequence = Array.from({ length: 8 }, () => first());
     expect(sequence).toEqual(Array.from({ length: 8 }, () => second()));
     expect(sequence.every((value) => value >= 0 && value < 1)).toBe(true);
+  });
+
+  it('reveals cells once from zero to the complete field without overshooting', () => {
+    const reveal = (tenPrint as typeof tenPrint & { getTenPrintRevealCount?: (total: number, elapsed: number, duration: number) => number }).getTenPrintRevealCount;
+    expect(reveal).toBeTypeOf('function');
+    if (!reveal) return;
+    expect(reveal(100, 0, 5000)).toBe(0);
+    expect(reveal(100, 2000, 5000)).toBe(40);
+    expect(reveal(100, 5000, 5000)).toBe(100);
+    expect(reveal(100, 8000, 5000)).toBe(100);
+    expect(reveal(100, -100, 5000)).toBe(0);
+  });
+
+  it('maps row-major progress to a compact two-rectangle reveal', () => {
+    const reveal = (tenPrint as typeof tenPrint & {
+      getTenPrintRevealGeometry?: (count: number, columns: number, cellSize: number) => {
+        fullRowsHeight: number;
+        partialRowY: number;
+        partialRowWidth: number;
+      };
+    }).getTenPrintRevealGeometry;
+    expect(reveal).toBeTypeOf('function');
+    if (!reveal) return;
+    expect(reveal(0, 4, 40)).toEqual({ fullRowsHeight: 0, partialRowY: 0, partialRowWidth: 0 });
+    expect(reveal(6, 4, 40)).toEqual({ fullRowsHeight: 40, partialRowY: 40, partialRowWidth: 80 });
+    expect(reveal(8, 4, 40)).toEqual({ fullRowsHeight: 80, partialRowY: 80, partialRowWidth: 0 });
   });
 });

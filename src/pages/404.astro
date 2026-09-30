@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SubpageBackdrop from '../components/layout/SubpageBackdrop.astro';
 ---
 
 <BaseLayout
@@ -8,7 +9,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   canonicalPath="/404.html"
   robots="noindex, follow"
 >
-  <section class="not-found container" aria-labelledby="not-found-title">
+  <section class="not-found container subpage-hero" aria-labelledby="not-found-title">
+    <SubpageBackdrop />
     <p class="eyebrow">Signal lost</p>
     <h1 id="not-found-title">That signal went somewhere else.</h1>
     <p class="not-found__message">That path has gone quiet. Pick up the signal from one of these familiar places.</p>

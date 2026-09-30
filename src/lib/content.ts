@@ -8,14 +8,14 @@ export const EXPECTED_PROJECT_SLUGS = [
   'person-is-a-data-structure',
 ] as const;
 
-export const EXPECTED_EXPERIMENT_TITLES = [
-  'Cellular Automata',
-  'Experiment 02',
-  'Experiment 03',
-  'Experiment 04',
-  'Experiment 05',
-  'Experiment 06',
-  'Experiment 07',
+export const EXPECTED_EXPERIMENT_IDS = [
+  '01-cellular-automata',
+  '02-experiment-02',
+  '03-experiment-03',
+  '04-experiment-04',
+  '05-experiment-05',
+  '06-experiment-06',
+  '07-experiment-07',
 ] as const;
 
 type ProjectEntry = CollectionEntry<'projects'>;
@@ -83,8 +83,8 @@ export async function getPublishedExperiments(): Promise<ExperimentEntry[]> {
 
   assertExpectedInventory(
     'Experiment',
-    experiments.map(({ data }) => data.title),
-    EXPECTED_EXPERIMENT_TITLES,
+    experiments.map(({ id }) => id),
+    EXPECTED_EXPERIMENT_IDS,
   );
 
   return sortByOrder(experiments);

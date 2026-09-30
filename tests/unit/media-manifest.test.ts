@@ -39,6 +39,36 @@ describe('media manifest', () => {
     );
   });
 
+  it('prepares the supplied Encounters title mark for the project hero', () => {
+    expect(MEDIA_JOBS).toContainEqual(expect.objectContaining({
+      source: 'Media/final/projects/encounters/hero.png',
+      destination: 'src/assets/projects/encounters/encounters-wordmark.webp',
+    }));
+  });
+
+  it('publishes the BioWords hero, four isolated letters, four alphabet studies, and LOVE example', () => {
+    const jobs = MEDIA_JOBS.filter((job) => job.project === 'biowords');
+    expect(jobs).toContainEqual(expect.objectContaining({
+      source: 'Media/final/projects/biowords/hero.png',
+      destination: 'src/assets/projects/biowords/biowords-hero.webp',
+    }));
+    for (const letter of ['L', 'O', 'V', 'E']) {
+      expect(jobs).toContainEqual(expect.objectContaining({
+        source: `Media/final/projects/biowords/Single/${letter}.png`,
+        destination: `src/assets/projects/biowords/single-${letter.toLowerCase()}.webp`,
+      }));
+      expect(jobs).toContainEqual(expect.objectContaining({
+        source: `Media/final/projects/biowords/Layerd/${letter}.png`,
+        destination: `src/assets/projects/biowords/layered-${letter.toLowerCase()}.webp`,
+      }));
+    }
+    expect(jobs).toContainEqual(expect.objectContaining({
+      destination: 'src/assets/projects/biowords/love-example.webp',
+      operation: 'compose-letters',
+      letters: ['L', 'O', 'V', 'E'],
+    }));
+  });
+
   it('keeps sources and generated outputs inside their approved repository roots', async () => {
     await Promise.all(MEDIA_JOBS.map(async (job) => {
       const source = resolve(repositoryRoot, job.source);
@@ -50,7 +80,10 @@ describe('media manifest', () => {
       expect(destinationRelative).not.toMatch(/^\.\.(?:[\\/]|$)/);
       expect(job.source).not.toMatch(/(?:^|[\\/])\.\.(?:[\\/]|$)/);
       expect(job.destination).not.toMatch(/(?:^|[\\/])\.\.(?:[\\/]|$)/);
-      await expect(access(source)).resolves.toBeUndefined();
+      // Owner-supplied masters are local-only; CI verifies their published derivatives.
+      if (!job.source.startsWith('Media/final/')) {
+        await expect(access(source)).resolves.toBeUndefined();
+      }
       await expect(access(destination)).resolves.toBeUndefined();
     }));
   });
@@ -71,15 +104,15 @@ describe('media manifest', () => {
     }
   });
 
-  it('keeps every static generated output readable as WebP within 1920px bounds', async () => {
+  it('keeps every static generated output readable as WebP within its image bounds', async () => {
     const staticJobs = MEDIA_JOBS.filter((job) => job.destination.endsWith('.webp'));
 
     await Promise.all(staticJobs.map(async (job) => {
       const metadata = await sharp(resolve(repositoryRoot, job.destination)).metadata();
 
       expect(metadata.format, job.destination).toBe('webp');
-      expect(metadata.width, job.destination).toBeLessThanOrEqual(1920);
-      expect(metadata.height, job.destination).toBeLessThanOrEqual(1920);
+      expect(metadata.width, job.destination).toBeLessThanOrEqual(job.maxWidth ?? 1920);
+      expect(metadata.height, job.destination).toBeLessThanOrEqual(job.maxHeight ?? 1920);
     }));
   });
 
@@ -130,17 +163,15 @@ describe('media manifest', () => {
     expect(stillMetadata.pages ?? 1).toBe(1);
   });
 
-  it('keeps the selected Luminous Trails detail sources available for project pages', () => {
-    expect(MEDIA_JOBS.filter((job) => job.project === 'luminous-trails').map((job) => job.source)).toEqual([
-      'Media/img-tester/Luminous.png',
-      'Media/img-tester/LimnousTrails_0508.JPG',
-      'Media/img-tester/Luminous_Trails_0509.JPG',
-      'Media/img-tester/Luminous_Trails_1796.PNG',
-      'Media/img-tester/Luminous_Trails_1799.PNG',
-      'Media/img-tester/Luminous_Trails_1801.PNG',
-      'Media/img-tester/Luminous_Trails_1844.PNG',
-      'Media/img-tester/luminous_trails-nov12a.PNG',
-      'Media/img-tester/luminous_trails-nov12b.PNG',
+  it('regenerates the published Luminous Trails images from the selected final masters', () => {
+    expect(MEDIA_JOBS.filter((job) => job.project === 'luminous-trails').map(({ source, destination }) => ({ source, destination }))).toEqual([
+      { source: 'Media/final/projects/luminous-trails/hero.png', destination: 'src/assets/projects/luminous-trails/luminous-trails-card.webp' },
+      { source: 'Media/final/projects/luminous-trails/nuit-blanche-booth.jpg', destination: 'src/assets/projects/luminous-trails/event-booth.webp' },
+      { source: 'Media/final/projects/luminous-trails/participants-documentation-1.jpg', destination: 'src/assets/projects/luminous-trails/participant-documentation.webp' },
+      { source: 'Media/final/projects/luminous-trails/participant-trail-3.PNG', destination: 'src/assets/projects/luminous-trails/ar-trails-intersections.webp' },
+      { source: 'Media/final/projects/luminous-trails/participant-trail-2.PNG', destination: 'src/assets/projects/luminous-trails/ar-avatar.webp' },
+      { source: 'Media/final/projects/luminous-trails/UI.jpg', destination: 'src/assets/projects/luminous-trails/app-journey.webp' },
+      { source: 'Media/final/projects/luminous-trails/UI_1.jpg', destination: 'src/assets/projects/luminous-trails/app-avatar.webp' },
     ]);
   });
 });

@@ -1,25 +1,45 @@
+---
+import { Image } from 'astro:assets';
+import cellularAutomata from '../../assets/projects/cellular-automata/cellular-automata-preview-poster.webp';
+---
+
 <section id="experiments-invitation" class="experiments-invitation">
   <div class="container experiments-invitation__inner">
-    <p class="eyebrow">Experiments</p>
-    <h2>Small systems making big, strange pictures.</h2>
-    <p>
-      A collection of generative video studies built from cellular automata, simulations, procedural rules,
-      and other algorithms left alone long enough to become interesting.
-    </p>
-    <a href="/experiments/">Enter the experiments <span aria-hidden="true">→</span></a>
+    <div class="experiments-invitation__copy">
+      <p class="eyebrow">Experiments</p>
+      <h2>Small systems. Strange pictures.</h2>
+      <p>Generative studies where simple rules make unexpected worlds.</p>
+      <a href="/experiments/">Enter the experiments <span aria-hidden="true">→</span></a>
+    </div>
+    <a class="experiments-invitation__preview" href="/experiments/#cellular-automata" aria-label="Explore Cellular Automata in Experiments">
+      <video autoplay muted loop playsinline preload="none" poster={cellularAutomata.src} aria-hidden="true">
+        <source src="/media/experiments/01-cellular-automata-preview.mp4" type="video/mp4" />
+      </video>
+      <Image class="experiments-invitation__still" src={cellularAutomata} alt="" layout="constrained" loading="lazy" />
+      <span>Preview / Cellular Automata <span aria-hidden="true">↗</span></span>
+    </a>
   </div>
 </section>
 
 <style>
   .experiments-invitation { border-bottom: 1px solid var(--line); padding-block: clamp(4rem, 10vw, 8rem); }
-  .experiments-invitation__inner { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1.2fr) minmax(16rem, .8fr); }
-  .eyebrow { grid-column: 1 / -1; margin: 0; }
-  h2 { font-size: clamp(2.6rem, 7vw, 6.5rem); letter-spacing: -.07em; line-height: .9; margin: 0; max-width: 10ch; }
-  .experiments-invitation__inner > p:not(.eyebrow) { align-self: end; color: var(--muted); margin: 0; max-width: 34rem; }
-  a { color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .6rem; grid-column: 2; justify-self: start; min-height: 44px; padding-block: .65rem; text-underline-offset: .3em; }
+  .experiments-invitation__inner { align-items: end; display: grid; gap: clamp(2rem, 6vw, 6rem); grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  .eyebrow { margin: 0 0 1.5rem; }
+  h2 { font-size: clamp(2.6rem, 6vw, 5.5rem); letter-spacing: -.07em; line-height: .92; margin: 0; max-width: 10ch; }
+  .experiments-invitation__copy > p:not(.eyebrow) { color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.2rem); margin: 1.5rem 0 0; max-width: 30ch; }
+  .experiments-invitation__copy > a { color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .6rem; min-height: 44px; margin-top: 1.5rem; padding-block: .65rem; text-underline-offset: .3em; }
+  .experiments-invitation__preview { border: 1px solid var(--line); color: var(--paper); display: block; min-width: 0; overflow: hidden; text-decoration: none; }
+  .experiments-invitation__preview video, .experiments-invitation__preview :global(img) { aspect-ratio: 16 / 9; display: block; height: auto; object-fit: cover; width: 100%; }
+  .experiments-invitation__preview :global(.experiments-invitation__still) { display: none; }
+  .experiments-invitation__preview > span { align-items: center; display: flex; font-family: var(--font-mono); font-size: .7rem; justify-content: space-between; letter-spacing: .06em; min-height: 44px; padding: .75rem 1rem; text-transform: uppercase; }
+  .experiments-invitation__preview:hover { border-color: var(--signal); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experiments-invitation__preview video { display: none; }
+    .experiments-invitation__preview :global(.experiments-invitation__still) { display: block; }
+  }
 
   @media (max-width: 42rem) {
     .experiments-invitation__inner { grid-template-columns: minmax(0, 1fr); }
-    a { grid-column: auto; }
   }
 </style>

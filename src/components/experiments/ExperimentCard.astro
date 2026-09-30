@@ -8,18 +8,18 @@ export interface Props {
 }
 
 const { experiment } = Astro.props;
-const { title, order, state, year, description, technique, tools, processNotes, sourceUrl, poster, sources } = experiment.data;
-const sequence = String(order).padStart(2, '0');
+const { title, order, state, year, description, technique, tools, processNotes, sourceUrl, sourceLabel, poster, sources } = experiment.data;
+const accessibleTitle = title ?? `Untitled video study ${order} of 7`;
+const anchor = experimentAnchor(title ?? experiment.id.replace(/^\d+-/, ''));
 const playableSources = sources.filter(({ src, type }) => hasPlayableSources([{ src, type }]));
 const placeholder = state === 'placeholder';
 ---
 
-<article class="experiment-card" id={experimentAnchor(title)} data-experiment-card data-experiment-state={placeholder ? 'placeholder' : 'ready'}>
+<article class="experiment-card" id={anchor} aria-label={title ? undefined : accessibleTitle} data-experiment-card data-experiment-state={placeholder ? 'placeholder' : 'ready'}>
   <div class="experiment-card__frame" style="aspect-ratio: 16 / 9">
     {placeholder ? (
       <div class="experiment-card__pending">
-        <span class="experiment-card__corner" aria-hidden="true">DARKROOM / {sequence}</span>
-        <span class="experiment-card__pending-mark" aria-hidden="true">{sequence}</span>
+        <span class="experiment-card__corner" aria-hidden="true">DARKROOM</span>
         <div class="experiment-card__pending-copy">
           <span>Video study</span>
           <span>16 / 9</span>
@@ -28,10 +28,10 @@ const placeholder = state === 'placeholder';
       </div>
     ) : (
       <div class="experiment-card__ready">
-        {poster && <Image src={poster} alt={`${title} generative study poster`} layout="constrained" loading="lazy" />}
+        {poster && <Image src={poster} alt={title ? `${title} generative study poster` : 'Still from an untitled generative video study'} layout="constrained" loading="lazy" />}
         {!poster && <div class="experiment-card__pending"><span>Media pending</span></div>}
         {playableSources.length > 0 && (
-          <video controls preload="none" playsinline poster={poster?.src} aria-label={`${title} video study`}>
+          <video controls preload="none" playsinline poster={poster?.src} aria-label={title ? `${title} video study` : accessibleTitle}>
             {playableSources.map((source) => <source src={source.src} type={source.type} />)}
           </video>
         )}
@@ -39,10 +39,9 @@ const placeholder = state === 'placeholder';
     )}
   </div>
   <div class="experiment-card__detail">
-    <p class="experiment-card__number" data-experiment-sequence>{sequence}</p>
     <div>
-      <h2>{title}</h2>
-      {!placeholder && playableSources.length > 0 && <a class="text-link" href={playableSources[0].src}>Open {title} video</a>}
+      {title && <h2>{title}</h2>}
+      {!placeholder && playableSources.length > 0 && <a class="text-link" href={playableSources[0].src} aria-label={title ? undefined : `Open ${accessibleTitle}`}>Open video</a>}
       {!placeholder && description && <p class="experiment-card__description" data-experiment-description>{description}</p>}
       {!placeholder && processNotes && <p class="experiment-card__description">{processNotes}</p>}
       {!placeholder && (year || technique || tools.length > 0) && (
@@ -52,7 +51,7 @@ const placeholder = state === 'placeholder';
           {tools.length > 0 && <div data-experiment-tools><dt>Tools</dt><dd>{tools.join(' / ')}</dd></div>}
         </dl>
       )}
-      {!placeholder && sourceUrl && <a class="text-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">View source ↗</a>}
+      {!placeholder && sourceUrl && <a class="text-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">{sourceLabel ?? 'View source'} ↗</a>}
     </div>
   </div>
 </article>
@@ -63,24 +62,22 @@ const placeholder = state === 'placeholder';
   .experiment-card__pending, .experiment-card__ready { height: 100%; position: relative; width: 100%; }
   .experiment-card__pending { background: repeating-linear-gradient(90deg, transparent 0, transparent calc(25% - 1px), var(--line) calc(25% - 1px), var(--line) 25%), var(--surface); display: flex; flex-direction: column; justify-content: space-between; padding: clamp(1rem, 2.5vw, 2rem); }
   .experiment-card__corner { color: var(--muted); font-family: var(--font-mono); font-size: .625rem; letter-spacing: .12em; }
-  .experiment-card__pending-mark { align-self: center; color: var(--line); font-family: var(--font-mono); font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 500; line-height: 1; }
   .experiment-card__pending-copy { align-items: end; display: flex; flex-wrap: wrap; gap: .5rem 1rem; }
   .experiment-card__pending-copy span, .experiment-card__pending-copy strong { background: var(--surface); font-family: var(--font-mono); font-size: .625rem; font-weight: 400; letter-spacing: .06em; padding: .15rem .3rem; text-transform: uppercase; }
   .experiment-card__pending-copy span { color: var(--muted); }
   .experiment-card__pending-copy strong { color: var(--paper); margin-left: auto; }
   .experiment-card__ready :global(img) { height: 100%; object-fit: cover; width: 100%; }
   .experiment-card__ready video { background: var(--ink); height: 100%; inset: 0; object-fit: contain; position: absolute; width: 100%; }
-  .experiment-card__detail { border-top: 1px solid var(--line); display: grid; gap: 1rem; grid-template-columns: 4rem minmax(0, 1fr); margin-top: 1rem; padding-top: 1rem; }
-  .experiment-card__number { color: var(--signal-text); font-family: var(--font-mono); font-size: .6875rem; margin: .5rem 0 0; white-space: nowrap; }
+  .experiment-card__detail { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: 1rem; }
   h2 { font-size: clamp(1.5rem, 2.8vw, 3rem); font-weight: 500; letter-spacing: -.045em; line-height: 1.05; margin: 0; }
   .experiment-card__description { color: var(--muted); font-size: clamp(.95rem, 1.4vw, 1.1rem); margin: .85rem 0 0; max-width: 48ch; }
   .experiment-card__facts { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin: 1.25rem 0 0; }
   .experiment-card__facts dt { color: var(--muted); font-family: var(--font-mono); font-size: .625rem; letter-spacing: .08em; text-transform: uppercase; }
   .experiment-card__facts dd { font-size: .8125rem; margin: .2rem 0 0; }
   .text-link { margin-top: 1rem; }
+  .text-link + .text-link { margin-left: clamp(1rem, 2.5vw, 1.5rem); }
 
   @media (max-width: 34rem) {
-    .experiment-card__detail { grid-template-columns: 2.5rem minmax(0, 1fr); }
     .experiment-card__pending-copy { align-items: start; flex-direction: column; gap: .2rem; }
     .experiment-card__pending-copy strong { margin-left: 0; }
   }

@@ -4,14 +4,15 @@ import ProjectCard from './ProjectCard.astro';
 
 export interface Props {
   projects: CollectionEntry<'projects'>[];
+  variant?: 'default' | 'home';
 }
 
-const { projects } = Astro.props;
+const { projects, variant = 'default' } = Astro.props;
 ---
 
 <ul class="project-grid" aria-label="Projects">
   {projects.map((project, index) => (
-    <li><ProjectCard project={project} index={index + 1} /></li>
+    <li><ProjectCard project={project} index={index + 1} variant={variant} /></li>
   ))}
 </ul>
 

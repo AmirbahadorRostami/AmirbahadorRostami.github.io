@@ -29,7 +29,7 @@ const requiredContent = [
 
 const requiredProjectImageAlts = [
   'A luminous letter E floating above layered blue lines in the Encounters artwork',
-  'A person holding a phone at night among luminous trails near the CN Tower',
+  'A luminous figure surrounded by neon-colored wireframe terrain and glowing sculptural forms',
   'A visitor beside a suspended translucent installation in a blue-lit gallery',
 ];
 

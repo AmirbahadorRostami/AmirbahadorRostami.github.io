@@ -38,8 +38,10 @@ test('BioWords input stays in memory and causes no outbound requests', async ({ 
   await page.goto('/work/biowords/');
   await expect(page.locator('[data-biowords]')).toHaveAttribute('data-ready', 'true');
   await page.waitForLoadState('networkidle');
-  const requests: string[] = [];
-  page.on('request', request => requests.push(`${request.url()} ${request.postData() ?? ''}`));
+  const requests: { url: string; method: string; type: string; body: string }[] = [];
+  page.on('request', request => requests.push({
+    url: request.url(), method: request.method(), type: request.resourceType(), body: request.postData() ?? '',
+  }));
   await page.getByLabel('Words for the ecosystem').fill('private words stay here');
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
   await page.getByRole('button', { name: 'Skip to Result' }).click();
@@ -48,10 +50,15 @@ test('BioWords input stays in memory and causes no outbound requests', async ({ 
   // Allow completion callbacks and visibility lifecycle handlers to run before auditing.
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
   await page.waitForTimeout(500);
-  expect(requests).toEqual([]);
+  expect(requests.filter(({ url, method, type, body }) => {
+    const resource = new URL(url);
+    return resource.origin !== new URL(page.url()).origin
+      || !/^\/_astro\/(?:single-[love]|layered-[love]|love-example)\.[^/]+\.webp$/.test(resource.pathname)
+      || method !== 'GET' || type !== 'image' || body !== '';
+  })).toEqual([]);
   expect(await page.evaluate(() => [localStorage.length, sessionStorage.length])).toEqual([0, 0]);
   await page.reload();
   await expect(page.getByLabel('Words for the ecosystem')).not.toHaveValue('private words stay here');
   await page.waitForLoadState('networkidle');
-  expect(requests.join('\n')).not.toMatch(/private|words(?:%20|\+| )stay/i);
+  expect(requests.map(({ url, body }) => `${url} ${body}`).join('\n')).not.toMatch(/private|words(?:%20|\+| )stay/i);
 });

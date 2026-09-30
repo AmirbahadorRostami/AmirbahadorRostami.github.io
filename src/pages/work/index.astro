@@ -1,5 +1,6 @@
 ---
 import ProjectGrid from '../../components/projects/ProjectGrid.astro';
+import SubpageBackdrop from '../../components/layout/SubpageBackdrop.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedProjects } from '../../lib/content';
 
@@ -7,11 +8,12 @@ const projects = await getPublishedProjects();
 ---
 
 <BaseLayout title="Work | Amir Bahador Rostami" canonicalPath="/work/" description="Interactive installations, augmented worlds, living simulations, and the technical systems behind five selected projects by Amir Bahador Rostami.">
-  <section class="container work-archive" aria-labelledby="work-title">
+  <section class="container work-archive subpage-hero" aria-labelledby="work-title">
+    <SubpageBackdrop />
     <p class="eyebrow">Selected projects</p>
     <h1 id="work-title">Things to enter, follow, swing, listen to, and occasionally get lost inside.</h1>
     <p class="work-archive__intro">Interactive installations, augmented worlds, living simulations, and the technical systems that make them possible.</p>
-    <ProjectGrid projects={projects} />
+    <ProjectGrid projects={projects} variant="home" />
   </section>
 </BaseLayout>
 

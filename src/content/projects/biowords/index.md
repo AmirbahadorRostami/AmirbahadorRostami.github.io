@@ -11,15 +11,28 @@ roles: [Solo creator]
 tools: [Local sentiment analysis, PixiJS (production adaptation)]
 hero: ../../../assets/projects/biowords/biowords-card.webp
 heroAlt: Small line-drawn BioWord creatures arranged across a white field
+detailHero: ../../../assets/projects/biowords/biowords-hero.webp
+detailHeroAlt: Small line-drawn BioWord creatures arranged across a white field
 media:
   - id: opening-image
     type: image
     intention: BioWords opening image
-    aspectRatio: 16 / 9
+    aspectRatio: 125 / 72
     alt: Small line-drawn BioWord creatures arranged across a white field
     caption: BioWords transforms sentences into artificial creatures with word-shaped DNA.
     state: ready
-    image: ../../../assets/projects/biowords/biowords-card.webp
+    image: ../../../assets/projects/biowords/biowords-hero.webp
+  - id: original-simulation
+    type: video
+    intention: Original BioWords simulation
+    aspectRatio: 16 / 9
+    alt: Screen recording of small line-drawn BioWords creatures moving across a white field
+    caption: An excerpt from the original BioWords simulation, before the browser adaptation below.
+    state: ready
+    poster: ../../../assets/projects/biowords/simulation-poster.webp
+    sources:
+      - src: /media/projects/biowords/simulation.mp4
+        type: video/mp4
 context: York University final project and exhibition
 collaborators: []
 credits: [Solo project by Amir Bahador Rostami]

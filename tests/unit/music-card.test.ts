@@ -64,25 +64,15 @@ describe('MusicCard', () => {
     expect(html).not.toContain('<iframe');
   });
 
-  it.each(platformCases)('offers a deferred player only when $platform has a validated embed', async ({
-    platform,
-    url,
-    embedHost,
-  }) => {
+  it.each(platformCases)('offers no embedded player for $platform', async ({ platform, url }) => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(MusicCard, {
       props: { record: musicRecord(platform, url) },
     });
 
-    if (embedHost) {
-      expect(html).toContain('data-music-player-button');
-      expect(html).toContain(embedHost);
-      expect(html).not.toMatch(/autoplay/i);
-    } else {
-      expect(html).not.toContain('data-music-player-button');
-      expect(html).not.toContain('data-music-player');
-      expect(html).not.toContain('data-embed-url');
-    }
+    expect(html).not.toContain('data-music-player-button');
+    expect(html).not.toContain('data-music-player');
+    expect(html).not.toContain('data-embed-url');
   });
 
   it('renders a visible archive number when the grid supplies one', async () => {

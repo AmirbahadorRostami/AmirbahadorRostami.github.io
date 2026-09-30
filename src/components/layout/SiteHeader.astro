@@ -13,10 +13,9 @@ const isCurrentRoute = (href: string) => currentPath === href || (href !== '/' &
     </button>
     <nav id="primary-menu" class="primary-menu" aria-label="Primary" data-primary-menu>
       <ul>
-        {SITE.navigation.map(({ label, href }, index) => (
+        {SITE.navigation.map(({ label, href }) => (
           <li>
             <a href={href} aria-current={isCurrentRoute(href) ? 'page' : undefined}>
-              <span class="primary-menu__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
               <span>{label}</span>
             </a>
           </li>

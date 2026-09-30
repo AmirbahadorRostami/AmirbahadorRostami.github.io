@@ -6,8 +6,14 @@ test('accessible local lifecycle uses current input and original survivors', asy
   await expect(root).toHaveAttribute('data-ready', 'true');
   await root.scrollIntoViewIfNeeded();
   await page.waitForLoadState('networkidle');
-  const requests: string[] = [];
-  page.on('request', r => requests.push(r.url()));
+  const requests: { url: string; method: string; type: string }[] = [];
+  page.on('request', r => requests.push({ url: r.url(), method: r.method(), type: r.resourceType() }));
+  const unexpectedRequests = () => requests.filter(({ url, method, type }) => {
+    const resource = new URL(url);
+    return resource.origin !== new URL(page.url()).origin
+      || !/^\/_astro\/(?:single-[love]|layered-[love]|love-example)\.[^/]+\.webp$/.test(resource.pathname)
+      || method !== 'GET' || type !== 'image';
+  });
   await page.getByLabel('Words for the ecosystem').fill('bright little signals gather');
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
@@ -23,7 +29,7 @@ test('accessible local lifecycle uses current input and original survivors', asy
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
   await page.getByRole('button', { name: 'Skip to Result' }).click();
   expect((await page.locator('[data-biowords-result]').innerText()).split(/\s+/).every(w => ['new', 'original', 'words'].includes(w))).toBe(true);
-  expect(requests).toEqual([]);
+  expect(unexpectedRequests()).toEqual([]);
   const secondResult = await page.locator('[data-biowords-result]').innerText();
   await page.getByLabel('Words for the ecosystem').fill('different words');
   await page.getByRole('button', { name: 'Restart', exact: true }).click();
@@ -32,7 +38,7 @@ test('accessible local lifecycle uses current input and original survivors', asy
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
   await page.getByRole('button', { name: 'Skip to Result' }).click();
   expect((await page.locator('[data-biowords-result]').innerText()).split(' ').every(w => ['different', 'words'].includes(w))).toBe(true);
-  expect(requests).toEqual([]);
+  expect(unexpectedRequests()).toEqual([]);
 });
 
 test('running time stops offscreen and when explicitly paused', async ({ page }) => {
@@ -87,4 +93,44 @@ test('WebGL failure leaves HTML completion usable', async ({ page }) => {
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
   await page.getByRole('button', { name: 'Skip to Result' }).click();
   await expect(page.locator('[data-biowords-result]')).not.toBeEmpty();
+});
+
+test('live experiment keeps controls beside viewport and overlays the completed result', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/work/biowords/');
+  const root = page.locator('[data-biowords]');
+  await expect(root).toHaveAttribute('data-ready', 'true');
+  const controls = root.locator('[data-biowords-panel]');
+  const viewport = root.locator('[data-biowords-viewport]');
+  const left = await controls.boundingBox();
+  const right = await viewport.boundingBox();
+  expect(left && right && left.x + left.width <= right.x + 8).toBe(true);
+  await page.getByRole('button', { name: 'Begin', exact: true }).click();
+  await expect(root.locator('[data-biowords-creature-count]')).not.toHaveAttribute('data-biowords-creature-count', '0');
+  await page.getByRole('button', { name: 'Skip to Result' }).click();
+  await expect(root.locator('[data-biowords-overlay]')).toBeVisible();
+  await expect(root.locator('[data-biowords-result]')).not.toBeEmpty();
+  await root.locator('[data-biowords-overlay] button').click();
+  await expect(root.locator('[data-biowords-overlay]')).toBeHidden();
+  await expect(root.locator('[data-biowords-creature-count]')).toHaveAttribute('data-biowords-creature-count', '0');
+});
+
+test('long results remain scrollable and Reset stays reachable on a narrow screen', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.goto('/work/biowords/');
+  const root = page.locator('[data-biowords]');
+  await expect(root).toHaveAttribute('data-ready', 'true');
+  await page.getByLabel('Words for the ecosystem').fill('constellation '.repeat(19).trim());
+  await page.getByRole('button', { name: 'Begin', exact: true }).click();
+  await page.getByRole('button', { name: 'Skip to Result' }).click();
+  const overlay = root.locator('[data-biowords-overlay]');
+  await expect(overlay).toBeVisible();
+  await expect(root.locator('[data-biowords-word-list] li')).toHaveCount(19);
+  expect(await overlay.evaluate(element => getComputedStyle(element).overflowY)).toBe('auto');
+  const reset = overlay.getByRole('button', { name: /Reset experiment/ });
+  await reset.scrollIntoViewIfNeeded();
+  await reset.click();
+  await expect(overlay).toBeHidden();
+  await expect(root.locator('[data-biowords-creature-count]')).toHaveAttribute('data-biowords-creature-count', '0');
+  await expect(root.locator('[data-biowords-word-list] li')).toHaveCount(0);
 });

@@ -7,3 +7,6 @@ playwright-report/
 test-results/
 .env
 .DS_Store
+# Owner-supplied camera masters stay local; only optimized site media is versioned.
+/Media/final/
+/Media/experiments/

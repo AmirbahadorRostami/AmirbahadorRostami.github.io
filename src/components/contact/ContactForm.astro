@@ -1,12 +1,14 @@
 ---
 import { SITE } from '../../config/site';
+import SubpageBackdrop from '../layout/SubpageBackdrop.astro';
 
 const endpoint = import.meta.env.PUBLIC_CONTACT_FORM_ENDPOINT?.trim() ?? '';
 const linkedInUrl = SITE.linkedInUrl.trim();
 const configured = endpoint.length > 0;
 ---
 
-<section class="contact-form" aria-labelledby="contact-form-title">
+<section class="contact-form subpage-hero" aria-labelledby="contact-form-title">
+  <SubpageBackdrop />
   <div class="container contact-form__inner">
     <p class="eyebrow">Start a conversation</p>
     <h1 id="contact-form-title">Have a role, a commission, or a strange problem worth solving?</h1>

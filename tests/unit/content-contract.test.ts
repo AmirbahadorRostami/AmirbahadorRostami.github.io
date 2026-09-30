@@ -17,12 +17,12 @@ const expectedProjects = [
 
 const expectedExperiments = [
   'Cellular Automata',
-  'Experiment 02',
-  'Experiment 03',
-  'Experiment 04',
-  'Experiment 05',
-  'Experiment 06',
-  'Experiment 07',
+  'Agent Trails',
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
 ];
 
 function readJsonCollection<T = Record<string, unknown>>(collection: string): T[] {
@@ -65,8 +65,10 @@ describe('launch inventory', () => {
       roles: ['Lead Technical Architect'],
       tools: ['Unity', 'AR Foundation', 'ARKit', 'ARCore', 'Node.js', 'AWS'],
       credits: [
-        'Artifacts Studio Ltd.', 'Roozbeh Moayyedian', 'Elahe Rostami',
-        'Amir Bahador Rostami', 'Can Baris Candan', 'Emad Moradian',
+        'Lead Technical Architect: Amir Bahador Rostami',
+        'Artifacts Studio Ltd.',
+        'Nuit Blanche Toronto 2022',
+        'City of Toronto',
       ],
     });
     expect(JSON.stringify(byId['luminous-trails'])).not.toMatch(/mysql|postgres|mongodb/i);
@@ -107,14 +109,17 @@ describe('launch inventory', () => {
       [...expectedProjects].sort(),
     );
     const experiments = sortByOrder(readJsonCollection<{
-      title: string;
+      title?: string;
       order: number;
       state: string;
     }>('experiments').map((data) => ({ data })));
     expect(experiments.map(({ data }) => data.title)).toEqual(expectedExperiments);
-    expect(experiments.map(({ data }) => data.state)).toEqual([
-      'ready', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder', 'placeholder',
-    ]);
+    expect(experiments.map(({ data }) => data.state)).toEqual(Array(7).fill('ready'));
+    expect(experiments[1].data).toMatchObject({
+      title: 'Agent Trails',
+      sourceUrl: 'https://codepen.io/amirbahadorrostami/pen/aXqebP',
+      sourceLabel: 'View source',
+    });
   });
 
   it('requires every project media record to describe its fallback', async () => {
@@ -260,7 +265,7 @@ describe('launch inventory', () => {
     );
   });
 
-  it('seeds the five known SoundCloud works and two resolved Spotify tracks', () => {
+  it('seeds the five known SoundCloud works and three resolved Spotify tracks', () => {
     const records = readJsonCollection('music').sort(
       (left, right) => Number(left.order) - Number(right.order),
     );
@@ -273,6 +278,7 @@ describe('launch inventory', () => {
       'Googoosh - Lalai (Bahador Remake)',
       'Try',
       'Into the Daylight',
+      'COMOTION',
     ]);
     expect(records.filter(({ featured }) => featured).map(({ title }) => title)).toEqual([
       'La Paloma',

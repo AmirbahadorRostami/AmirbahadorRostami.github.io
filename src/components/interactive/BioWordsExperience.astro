@@ -1,32 +1,56 @@
 <div data-biowords data-status="ready" data-render-state="fallback">
-  <p>Your text stays in this browser and is never stored or sent. Only surviving original words return, ordered by survival time, then remaining energy.</p>
-  <label for="biowords-input">Words for the ecosystem</label>
-  <textarea id="biowords-input" maxlength="280" aria-describedby="biowords-help biowords-count">signals gather softly</textarea>
-  <p id="biowords-count" data-biowords-count aria-live="polite">21 / 280 characters</p>
-  <div class="controls">
-    <button type="button" data-action="begin">Begin</button>
-    <button type="button" data-action="pause" disabled>Pause</button>
-    <button type="button" data-action="resume" disabled>Resume</button>
-    <button type="button" data-action="restart" disabled>Restart</button>
-    <button type="button" data-action="skip" disabled>Skip to Result</button>
+  <div class="biowords-panel" data-biowords-panel>
+    <p class="biowords-info">Your text stays in this browser. Only surviving original words return, ordered by survival time.</p>
+    <label for="biowords-input">Words for the ecosystem</label>
+    <textarea id="biowords-input" maxlength="280" aria-describedby="biowords-help biowords-count">signals gather softly</textarea>
+    <p id="biowords-count" data-biowords-count aria-live="polite">21 / 280 characters</p>
+    <div class="controls">
+      <button type="button" data-action="begin">Begin</button>
+      <button type="button" data-action="pause" disabled>Pause</button>
+      <button type="button" data-action="resume" disabled>Resume</button>
+      <button type="button" data-action="restart" disabled>Restart</button>
+      <button type="button" data-action="skip" disabled>Skip to result</button>
+    </div>
+    <p data-biowords-status role="status" aria-live="polite" aria-atomic="true">Ready. Enter words and choose Begin.</p>
+    <p class="fallback" id="biowords-help">Words become creatures, gather into communities, and compete for energy. Hover or tap a creature to reveal its word. The controls and written result work even when the visual ecosystem is unavailable. With reduced motion, Begin and Resume advance half a second at a time.</p>
   </div>
-  <p data-biowords-status role="status" aria-live="polite" aria-atomic="true">Ready. Enter words and choose Begin.</p>
-  <p class="fallback" id="biowords-help">Words become creatures, gather into communities, and compete for energy. The controls and written result work even when the visual ecosystem is unavailable. With reduced motion, Begin and Resume advance half a second at a time.</p>
-  <div data-biowords-mount aria-hidden="true"></div>
-  <h3>Surviving words</h3>
-  <p data-biowords-result aria-live="polite" aria-atomic="true"></p>
+  <div class="biowords-viewport" data-biowords-viewport>
+    <div data-biowords-mount data-biowords-creature-count="0" aria-hidden="true"></div>
+    <ol class="sr-only" data-biowords-word-list aria-label="Creature words"></ol>
+    <div class="biowords-result" data-biowords-overlay hidden>
+      <p class="eyebrow">Experiment complete</p>
+      <h3>Surviving words</h3>
+      <p data-biowords-result aria-live="polite" aria-atomic="true"></p>
+      <button type="button" data-action="reset">Reset experiment <span aria-hidden="true">↺</span></button>
+    </div>
+  </div>
   <noscript><p>Enable JavaScript to run this local experiment. The project story and ecosystem description remain available above.</p></noscript>
 </div>
 <style>
-  [data-biowords] { min-width: 0; }
-  textarea { display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-height: 6rem; margin-top: .5rem; background: var(--ink); color: var(--paper); border: 1px solid var(--muted); padding: .75rem; font: inherit; }
+  [data-biowords] { display: grid; gap: clamp(1.5rem, 4vw, 4rem); grid-template-columns: minmax(16rem, .65fr) minmax(0, 1.35fr); min-width: 0; }
+  .biowords-panel, .biowords-viewport { min-width: 0; }
+  .biowords-panel { align-content: start; display: grid; }
+  .biowords-info { color: var(--paper); font-size: 1.1rem; margin: 0 0 2rem; }
+  label { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+  textarea { display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-height: 7rem; margin-top: .65rem; background: var(--surface); color: var(--paper); border: 1px solid var(--control-border); padding: .75rem; font: inherit; resize: vertical; }
+  [data-biowords-count] { color: var(--muted); font-family: var(--font-mono); font-size: .7rem; margin: .5rem 0 1.5rem; }
   .controls { display: flex; flex-wrap: wrap; gap: .5rem; }
-  button { min-width: 44px; min-height: 44px; padding: .7rem 1rem; background: var(--paper); color: var(--ink); border: 1px solid var(--paper); font: inherit; cursor: pointer; }
+  button { min-width: 44px; min-height: 44px; padding: .55rem .75rem; background: transparent; color: var(--paper); border: 1px solid var(--control-border); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .03em; text-transform: uppercase; cursor: pointer; }
+  button[data-action='begin'], button[data-action='reset'] { border-color: var(--signal); color: var(--signal-text); }
+  button:hover:not(:disabled) { background: var(--surface-raised); border-color: var(--signal-text); }
   button:disabled { opacity: .5; cursor: default; }
   button:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 4px; }
-  [data-biowords-mount] { height: 320px; width: 100%; overflow: hidden; border-block: 1px solid var(--line); }
+  [data-biowords-status] { font-family: var(--font-mono); font-size: .75rem; margin: 1.25rem 0 0; }
+  .fallback { color: var(--muted); font-size: .85rem; margin: 1.5rem 0 0; }
+  .biowords-viewport { background: var(--surface); border: 1px solid var(--line); min-height: 29rem; overflow: hidden; position: relative; }
+  [data-biowords-mount] { height: 100%; inset: 0; position: absolute; width: 100%; }
   [data-biowords-mount] :global(canvas) { display: block; width: 100%; height: 100%; }
-  [data-biowords-result] { overflow-wrap: anywhere; font-size: 1.5rem; }
+  .biowords-result { align-content: safe center; background: rgb(7 7 7 / .92); display: grid; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: clamp(1.5rem, 5vw, 3rem); position: absolute; z-index: 1; }
+  .biowords-result[hidden] { display: none; }
+  .biowords-result h3 { font-size: clamp(2rem, 4vw, 4rem); letter-spacing: -.06em; line-height: 1; margin: .75rem 0; }
+  [data-biowords-result] { font-size: clamp(1.25rem, 2.5vw, 2.25rem); margin: 1rem 0 2rem; overflow-wrap: anywhere; }
+  .biowords-result button { justify-self: start; }
+  @media (max-width: 48rem) { [data-biowords] { grid-template-columns: minmax(0, 1fr); } .biowords-viewport { min-height: 23rem; } }
 </style>
 <script>
   const root = document.querySelector<HTMLElement>('[data-biowords]');

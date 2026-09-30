@@ -113,7 +113,7 @@ test('Encounters publishes its record-specific social preview instead of the sit
   );
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     'content',
-    new RegExp(`^${origin.replace('.', '\\.')}/_astro/.*encounters-card`),
+    new RegExp(`^${origin.replace('.', '\\.')}/_astro/.*encounters-header`),
   );
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
   await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
@@ -126,7 +126,7 @@ test('Encounters publishes its record-specific social preview instead of the sit
   );
   await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
     'content',
-    new RegExp(`^${origin.replace('.', '\\.')}/_astro/.*encounters-card`),
+    new RegExp(`^${origin.replace('.', '\\.')}/_astro/.*encounters-header`),
   );
 });
 

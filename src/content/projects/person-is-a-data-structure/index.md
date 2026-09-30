@@ -20,6 +20,33 @@ media:
     caption: The installation connects mirror, camera, voice, and screen spaces to examine surveillance and identity.
     state: ready
     image: ../../../assets/projects/person-is-a-data-structure/person-is-a-data-structure-card.webp
+  - id: gallery-installation
+    type: image
+    intention: Gallery installation
+    aspectRatio: 16 / 9
+    alt: Visitors among stacked monitors showing fragmented faces in a dark gallery
+    caption: A wider view of the installation at Eleanor Winters Art Gallery.
+    state: ready
+    image: ../../../assets/projects/person-is-a-data-structure/gallery-installation.webp
+  - id: system-overview
+    type: diagram
+    intention: Physical system overview
+    aspectRatio: 4 / 3
+    alt: Project diagram connecting cameras, displays, sensors, and physical systems
+    caption: The supplied diagram documents the installation's interconnected physical components.
+    state: ready
+    image: ../../../assets/projects/person-is-a-data-structure/system-overview.webp
+  - id: installation-trailer
+    type: video
+    intention: Installation trailer
+    aspectRatio: 16 / 9
+    alt: Trailer showing face imagery across monitors in the gallery installation
+    caption: A short trailer documenting the installation in motion.
+    state: ready
+    poster: ../../../assets/projects/person-is-a-data-structure/trailer-poster.webp
+    sources:
+      - src: /media/projects/person-is-a-data-structure/trailer.mp4
+        type: video/mp4
 context: Collaborative university installation — Eleanor Winters Art Gallery, York University
 collaborators: []
 credits:

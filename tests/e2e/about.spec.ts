@@ -50,6 +50,21 @@ test('about page renders all experience records in content order as a semantic t
     Array.from({ length: 13 }, (_, index) => String(index + 1).padStart(2, '0')),
   );
   await expect(entries.locator('[data-timeline-organization]')).toHaveText(organizations);
+  await expect(entries.locator('[data-timeline-period]')).toContainText([
+    'November 2025 - June 2026',
+    'March 2025 - January 2026',
+    'January 2020 - August 2025',
+    'February 2024 - February 2025',
+    'January 2023 - February 2025',
+    'March 2023 - November 2023',
+    'July 2022 - December 2022',
+    'April 2022 - August 2022',
+    'April 2022 - July 2022',
+    'January 2020 - September 2020',
+    'September 2019 - January 2020',
+    'January 2018 - May 2018',
+    'September 2015 - April 2016',
+  ]);
 
   for (const entry of await entries.all()) {
     await expect(entry.locator('time, [data-timeline-period]')).toHaveCount(1);
@@ -60,7 +75,7 @@ test('about page renders all experience records in content order as a semantic t
   }
 });
 
-test('about page provides education, contextual skills, and a private-safe resume download', async ({ page }) => {
+test('about page provides education, contextual skills, and LinkedIn instead of a resume action', async ({ page }) => {
   await page.goto('/about/');
 
   const education = page.getByRole('region', { name: 'Education' });
@@ -83,9 +98,11 @@ test('about page provides education, contextual skills, and a private-safe resum
     ));
   expect(siblingLandmarks).toBe(true);
 
-  const resume = page.getByRole('link', { name: /download.*résumé.*pdf/i });
-  await expect(resume).toHaveAttribute('href', '/documents/Amir-Rostami-Resume.pdf');
-  await expect(resume).toHaveAttribute('download', 'Amir-Rostami-Resume.pdf');
+  await expect(page.getByRole('link', { name: /download.*résumé.*pdf/i })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /linkedin/i }).first()).toHaveAttribute(
+    'href',
+    'https://www.linkedin.com/in/amir-rostami-942455115/',
+  );
 
   const html = await page.content();
   expect(emailPattern.test(html), 'About HTML must not expose an email address').toBe(false);

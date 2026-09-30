@@ -2,9 +2,11 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Timeline from '../components/timeline/Timeline.astro';
+import SubpageBackdrop from '../components/layout/SubpageBackdrop.astro';
 import portrait from '../assets/profile/amir-rostami.webp';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { sortByOrder } from '../lib/content';
+import { SITE } from '../config/site';
 
 const experience = sortByOrder(await getCollection('experience'));
 
@@ -19,7 +21,8 @@ if (experience.length !== 13) {
   canonicalPath="/about/"
 >
   <article class="about">
-    <section class="container about-hero" aria-labelledby="about-title">
+    <section class="container about-hero subpage-hero" aria-labelledby="about-title">
+      <SubpageBackdrop />
       <div class="about-hero__copy">
         <p class="eyebrow">About Amir</p>
         <h1 id="about-title">I build systems with a pulse: software that remembers where people have walked, sculptures that listen to movement, and small virtual organisms born from language.</h1>
@@ -29,11 +32,12 @@ if (experience.length !== 13) {
           </p>
         </div>
         <a
-          class="about-hero__resume"
-          href="/documents/Amir-Rostami-Resume.pdf"
-          download="Amir-Rostami-Resume.pdf"
+          class="about-hero__profile"
+          href={SITE.linkedInUrl}
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          Download my résumé (PDF) <span aria-hidden="true">↓</span>
+          Find me on LinkedIn <span aria-hidden="true">↗</span>
         </a>
       </div>
       <figure class="about-hero__portrait">
@@ -97,14 +101,14 @@ if (experience.length !== 13) {
 </BaseLayout>
 
 <style>
-  .about { margin-block: calc(clamp(3rem, 10vw, 8rem) * -1); }
+  .about { margin-bottom: calc(clamp(3rem, 10vw, 8rem) * -1); }
   .about-hero { align-items: center; display: grid; gap: clamp(2.5rem, 7vw, 6rem); grid-template-columns: minmax(0, 1.12fr) minmax(18rem, .7fr); min-height: min(48rem, calc(100svh - 4.5rem)); padding-block: clamp(4rem, 10vw, 8rem); }
   .about-hero__copy, .about-hero__portrait { min-width: 0; }
   .about-hero h1 { font-size: clamp(2.25rem, 4vw, 3.75rem); max-width: 26ch; }
   .about-hero__biography { color: var(--muted); font-size: clamp(1.05rem, 1.8vw, 1.25rem); margin-top: 2rem; max-width: 58ch; }
   .about-hero__biography p { margin: 0; }
   .about-hero__biography p + p { margin-top: 1rem; }
-  .about-hero__resume { align-items: center; border: 1px solid var(--control-border); color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .65rem; margin-top: 2rem; padding: .8rem 1rem; text-underline-offset: .25em; }
+  .about-hero__profile { align-items: center; border: 1px solid var(--control-border); color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); gap: .65rem; margin-top: 2rem; padding: .8rem 1rem; text-underline-offset: .25em; }
   .about-hero__portrait { margin: 0; }
   .about-hero__portrait-frame { aspect-ratio: 4 / 5; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; width: 100%; }
   .about-hero__portrait-frame :global(img) { display: block; height: 100%; object-fit: cover; width: 100%; }

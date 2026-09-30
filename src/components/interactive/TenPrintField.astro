@@ -1,4 +1,4 @@
-<div class="ten-print" data-ten-print data-render-state="fallback" data-motion="full" aria-hidden="true">
+<div class="ten-print" data-ten-print data-render-state="fallback" data-animation-state="fallback" data-motion="full" aria-hidden="true">
   <img src="/media/ten-print-fallback.svg" alt="" aria-hidden="true" />
   <div class="ten-print__mount" data-ten-print-mount></div>
 </div>
@@ -9,6 +9,7 @@
   .ten-print__mount { height: 100%; inset: 0; position: absolute; width: 100%; }
   .ten-print img { object-fit: cover; }
   .ten-print__mount { opacity: 0; }
+  :global(html[data-js='enabled']) .ten-print[data-render-state='fallback'] img { visibility: hidden; }
   .ten-print[data-render-state='ready'] img,
   .ten-print[data-render-state='paused'] img { visibility: hidden; }
   .ten-print[data-render-state='ready'] .ten-print__mount,
@@ -17,7 +18,7 @@
 </style>
 
 <script>
-  import { createTenPrintCells } from '../../lib/ten-print';
+  import { createTenPrintCells, getTenPrintRevealCount, getTenPrintRevealGeometry, type TenPrintCell } from '../../lib/ten-print';
 
   const field = document.querySelector<HTMLElement>('[data-ten-print]');
   const mount = field?.querySelector<HTMLElement>('[data-ten-print-mount]');
@@ -31,18 +32,62 @@
     let intersecting = false;
     let dirty = true;
     let resizeTimer: number | undefined;
+    let animationFrame: number | undefined;
+    let lastFrame: number | null = null;
+    let elapsedMs = 0;
+    let cells: TenPrintCell[] = [];
+    let revealed = 0;
+    let drawnWidth = 0;
+    let drawnHeight = 0;
+    const durationMs = 4000;
 
     const isActive = () => intersecting && document.visibilityState === 'visible';
 
-    const draw = () => {
-      if (!application || !drawing || !isActive()) return;
-      const width = Math.max(1, Math.ceil(mount.clientWidth));
-      const height = Math.max(1, Math.ceil(mount.clientHeight));
-      application.renderer.resize(width, height);
-      drawing.clear();
+    const stopAnimation = () => {
+      if (animationFrame !== undefined) window.cancelAnimationFrame(animationFrame);
+      animationFrame = undefined;
+      lastFrame = null;
+    };
 
-      for (const cell of createTenPrintCells({ width, height, cellSize: 40, seed: 1982 })) {
-        const { x, y, size, direction, alpha, tone } = cell;
+    const paintThrough = (target: number) => {
+      if (!application || target <= revealed) return;
+      const { fullRowsHeight, partialRowY, partialRowWidth } = getTenPrintRevealGeometry(
+        target,
+        Math.ceil(drawnWidth / 40),
+        40,
+      );
+      const partialRowBottom = Math.min(drawnHeight, partialRowY + 40);
+      application.canvas.style.clipPath = target === cells.length
+        ? 'none'
+        : `polygon(0 0, ${drawnWidth}px 0, ${drawnWidth}px ${fullRowsHeight}px, ${partialRowWidth}px ${fullRowsHeight}px, ${partialRowWidth}px ${partialRowBottom}px, 0 ${partialRowBottom}px)`;
+      revealed = target;
+      if (revealed === cells.length) field.dataset.animationState = 'complete';
+    };
+
+    const tick = (timestamp: number) => {
+      animationFrame = undefined;
+      if (!isActive() || motion.matches || !application) return;
+      if (lastFrame !== null) elapsedMs += Math.max(0, timestamp - lastFrame);
+      lastFrame = timestamp;
+      paintThrough(getTenPrintRevealCount(cells.length, elapsedMs, durationMs));
+      if (revealed < cells.length) animationFrame = window.requestAnimationFrame(tick);
+    };
+
+    const startAnimation = () => {
+      if (animationFrame !== undefined || revealed >= cells.length) return;
+      field.dataset.animationState = 'drawing';
+      animationFrame = window.requestAnimationFrame(tick);
+    };
+
+    const resetField = () => {
+      if (!application || !drawing || !isActive()) return;
+      stopAnimation();
+      drawnWidth = Math.max(1, Math.ceil(mount.clientWidth));
+      drawnHeight = Math.max(1, Math.ceil(mount.clientHeight));
+      application.renderer.resize(drawnWidth, drawnHeight);
+      drawing.clear();
+      cells = createTenPrintCells({ width: drawnWidth, height: drawnHeight, cellSize: 40, seed: 1982 });
+      for (const { x, y, size, direction, alpha, tone } of cells) {
         const startX = direction === 'forward' ? x : x + size;
         const endX = direction === 'forward' ? x + size : x;
         drawing.moveTo(startX, y).lineTo(endX, y + size).stroke({
@@ -51,10 +96,15 @@
           alpha,
         });
       }
-
-      application.renderer.render(application.stage);
+      revealed = 0;
+      elapsedMs = 0;
       dirty = false;
+      // Render once; the browser reveals the finished canvas without rebuilding Pixi geometry.
+      application.canvas.style.clipPath = 'polygon(0 0, 0 0, 0 0)';
+      application.renderer.render(application.stage);
       field.dataset.renderState = 'ready';
+      if (motion.matches) paintThrough(cells.length);
+      else startAnimation();
     };
 
     const initialize = async () => {
@@ -81,9 +131,10 @@
         nextApplication.ticker.stop();
         drawing = new Graphics();
         nextApplication.stage.addChild(drawing);
+        nextApplication.canvas.style.clipPath = 'polygon(0 0, 0 0, 0 0)';
         mount.appendChild(nextApplication.canvas);
         application = nextApplication;
-        if (isActive()) draw();
+        updateState();
       } catch {
         try {
           nextApplication?.destroy(true);
@@ -93,7 +144,10 @@
         application = null;
         drawing = null;
         mount.replaceChildren();
-        if (!disposed) field.dataset.renderState = 'error';
+        if (!disposed) {
+          field.dataset.renderState = 'error';
+          field.dataset.animationState = 'fallback';
+        }
       } finally {
         initializing = false;
       }
@@ -102,15 +156,28 @@
     const updateState = () => {
       field.dataset.motion = motion.matches ? 'reduced' : 'full';
       if (!isActive()) {
-        if (application) field.dataset.renderState = 'paused';
+        stopAnimation();
+        if (application) {
+          field.dataset.renderState = 'paused';
+          if (revealed < cells.length && !motion.matches) field.dataset.animationState = 'paused';
+        }
         return;
       }
       if (!application) {
         if (field.dataset.renderState !== 'error') void initialize();
         return;
       }
-      if (dirty) draw();
-      else field.dataset.renderState = 'ready';
+      if (dirty) {
+        resetField();
+        return;
+      }
+      field.dataset.renderState = 'ready';
+      if (motion.matches) {
+        stopAnimation();
+        if (revealed < cells.length) paintThrough(cells.length);
+      } else if (revealed < cells.length) {
+        startAnimation();
+      }
     };
 
     const observer = new IntersectionObserver(([entry]) => {
@@ -118,12 +185,16 @@
       updateState();
     });
     const resizeObserver = new ResizeObserver(() => {
+      const width = Math.max(1, Math.ceil(mount.clientWidth));
+      const height = Math.max(1, Math.ceil(mount.clientHeight));
+      if (width === drawnWidth && height === drawnHeight) return;
       dirty = true;
       window.clearTimeout(resizeTimer);
-      if (isActive()) resizeTimer = window.setTimeout(draw, 120);
+      if (isActive()) resizeTimer = window.setTimeout(updateState, 120);
     });
     const dispose = () => {
       disposed = true;
+      stopAnimation();
       observer.disconnect();
       resizeObserver.disconnect();
       window.clearTimeout(resizeTimer);
@@ -132,6 +203,7 @@
       motion.removeEventListener('change', updateState);
       application?.destroy(true);
       application = null;
+      drawing = null;
     };
 
     observer.observe(field);

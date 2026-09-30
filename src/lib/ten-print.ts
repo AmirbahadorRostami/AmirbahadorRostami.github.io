@@ -18,6 +18,19 @@ export function mulberry32(seed: number): () => number {
   };
 }
 
+export function getTenPrintRevealCount(total: number, elapsedMs: number, durationMs: number): number {
+  return Math.min(total, Math.max(0, Math.floor(total * elapsedMs / durationMs)));
+}
+
+export function getTenPrintRevealGeometry(count: number, columns: number, cellSize: number) {
+  const fullRows = Math.floor(count / columns);
+  return {
+    fullRowsHeight: fullRows * cellSize,
+    partialRowY: fullRows * cellSize,
+    partialRowWidth: (count % columns) * cellSize,
+  };
+}
+
 export function createTenPrintCells({
   width,
   height,

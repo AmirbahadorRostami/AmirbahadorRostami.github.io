@@ -1,6 +1,6 @@
 # Amir Rostami portfolio
 
-The Darkroom Cinema portfolio for Amir Rostami: creative technologist, software engineer, XR developer, artist, and musician. Astro builds static pages for GitHub Pages; PixiJS progressively enhances the homepage artwork and BioWords.
+The Darkroom Cinema portfolio for Amir Rostami: creative technologist, software engineer, XR developer, artist, and musician. Astro builds static pages for GitHub Pages; PixiJS progressively enhances the 10 PRINT hero artwork across production pages and the BioWords experiment.
 
 ## Requirements and local development
 
@@ -18,6 +18,7 @@ Useful commands:
 
 ```bash
 npm run media:prepare  # regenerate optimized images from approved source media
+npm run media:prepare:videos  # regenerate web video and posters from local masters (requires FFmpeg)
 npm run build          # type check and create dist/
 npm test               # complete release gate
 ```
@@ -26,14 +27,18 @@ Use `npm ci` for a clean, lockfile-based install in CI or when reproducing a bui
 
 ## Production pages and content
 
-The static routes are `/`, `/work/`, five project case studies, `/experiments/`, `/music/`, `/about/`, `/contact/`, and `/404.html`. Work has five entries: Encounters, Luminous Trails, Ephemeral Pulses of a Finite Scroll, BioWords, and Person Is a Data Structure. Experiments has seven entries, including Cellular Automata and six intentionally unnamed video studies. Music presents seven tracks under Amir's alias Baha; About has thirteen timeline entries. The old `/work/remote-realities/` and `/work/cellular-automata/` URLs are compatibility redirects.
+The static routes are `/`, `/work/`, five project case studies, `/experiments/`, `/music/`, `/about/`, `/contact/`, and `/404.html`. Work has five entries: Encounters, Luminous Trails, Ephemeral Pulses of a Finite Scroll, BioWords, and Person Is a Data Structure. Experiments has seven entries: Cellular Automata, Agent Trails, and five intentionally untitled video studies. Music presents eight tracks under Amir's alias Baha in one compact archive list; About has thirteen timeline entries. The old `/work/remote-realities/` and `/work/cellular-automata/` URLs are compatibility redirects.
 
 - Projects: `src/content/projects/<slug>/index.md`; project media records are in each file's frontmatter.
-- Experiments: `src/content/experiments/*.json`; `state: "placeholder"` keeps unknown studies labelled honestly until their media and metadata arrive.
+- Experiments: `src/content/experiments/*.json`; all seven supplied videos are connected. Agent Trails is second with an external CodePen source link, and five videos have no public title or card number.
 - Music: `src/content/music/*.json`; timeline: `src/content/experience/*.json`.
 - Collection schemas: `src/content.config.ts`; public profile URLs and the site origin: `src/config/site.ts`.
 
-The homepage art and BioWords use PixiJS only on their respective routes. The hero has pre-rendered art if JavaScript or graphics initialization fails. BioWords keeps its project story, controls, and result in HTML, while its simulation and PixiJS renderer stay separate; input remains in the browser.
+The homepage and production subpage heroes share the same PixiJS 10 PRINT field and horizontal/vertical shading. PixiJS draws each composition once; a lightweight canvas clipping mask reveals its lines over four seconds and then holds. The full-pattern SVG is hidden during JavaScript startup to avoid a flash, but remains available without JavaScript or when graphics initialization fails. Reduced-motion visitors see the completed field immediately. The artwork fades to the site's black background at the bottom of each hero. BioWords keeps its project story, controls, and result in HTML, while its simulation and PixiJS renderer stay separate and load only on its project page; input remains in the browser.
+
+The homepage Experiments invitation previews a short Cellular Automata excerpt that starts after its near-black opening, with a still for reduced-motion visitors. The full film remains in Experiments. BioWords places its controls beside the viewport and displays survivors over the drawing at completion. Music tracks link directly to listening platforms without embedded-player loaders.
+
+The five cards on `/work/` share the homepage's unnumbered, no-extra-CTA treatment; artwork and title still open each case study. Encounters includes the owner-supplied `onboarding-1` screen. Its portrait stills use frames matched to their source dimensions; the duplicate opening artwork and social-gathering video card have been removed at Amir's request. The Encounters title mark is centered over its underwater case-study hero.
 
 ## Design lab
 
@@ -57,11 +62,17 @@ The lab remains separate from production navigation and templates.
 - Timeline/experience records live in `src/content/experience/*.json`.
 - Their schemas live in `src/content.config.ts`; a build validates every record.
 
-Project fields such as `alternateTitle`, `year`, and `context` are optional. Empty optional lists are hidden by the project layout, so leave them empty rather than writing placeholder headings.
+Project fields such as `alternateTitle`, `year`, and `context` are optional. Empty optional lists are hidden by the project layout, so leave them empty rather than writing placeholder headings. `detailHero` and `detailHeroAlt` can override a case study's header image without changing its card image; `detailHeroMark` can layer a small decorative title mark over that header.
 
 Each `media` item has an `id`, `type` (`image`, `video`, or `diagram`), `intention`, `aspectRatio` (for example `16 / 9`), `alt`, `caption`, and `state` (`ready` or `placeholder`). A ready image or diagram needs `image`; video playback requires typed MP4/WebM `sources` or an HTTPS `externalUrl`. A `poster` is optional and does not make a video playable by itself. For missing media, keep `state: placeholder` and provide a useful intention, alt text, and caption. The frame then shows the project, expected content, media type, preferred ratio, and status without changing the page template.
 
-For the final media pass, add approved source images to `Media/`, add deterministic source-to-output entries to `MEDIA_JOBS` in `scripts/prepare-media.mjs`, and run `npm run media:prepare`. Reference the optimized files from `src/assets/`, set the relevant `image` or `poster`, and switch that media record to `state: ready`. Use meaningful alt text and captions, then check the asset for private information. For video, prepare a poster and compressed MP4/WebM sources or an approved external URL. Do not use filenames as alt text. Confirm the final LinkedIn and Baha platform URLs in `src/config/site.ts`, the six unknown experiment titles and metadata, and any remaining project or track media with Amir before launch. The current SoundCloud profile value also needs owner confirmation.
+Selected owner-supplied images are mapped in `scripts/prepare-media.mjs`; video clips and matching poster frames are mapped in `scripts/prepare-videos.mjs`. Their source folders, `Media/final/` and `Media/experiments/`, are local-only and Git-ignored because they contain multi-gigabyte masters (including a duplicate installation file). Back up those originals separately. Only optimized `src/assets/` images/posters and `public/media/` MP4 files are versioned and needed to build or deploy the site. Regenerating requires the local masters plus FFmpeg and Sharp. Video exports strip source metadata and stay under 25 MB each; the video script uses excerpts for longer project recordings. Do not treat an excerpt as the full documentation.
+
+Most planned project media is now connected. Luminous Trails uses six selected stills from `Media/final/projects/luminous-trails/` plus the existing prototype clip. Its former App Store and client/backend diagram placeholders were removed at Amir's request; no diagram or App Store claim is inferred from the supplied images. Diagram captions elsewhere link to a full-size asset. Review alt text, captions, and identifiable event attendees before publication. LinkedIn and Spotify URLs are configured in `src/config/site.ts`; the five untitled experiments can receive names and metadata later if Amir supplies them. The current SoundCloud profile value still needs owner confirmation.
+
+The September 29 case-study pass removes duplicate personal names from the Luminous Trails credits, adds Nuit Blanche Toronto and City of Toronto as text credits (no logos), and refines four Ephemeral Pulses media frames and widths so the portrait photo and hardware montage are fully visible.
+
+The BioWords case study uses its supplied final hero artwork while retaining the original work-card image. Its nine-image letter dictionary contains four isolated LOVE marks, four clearly labelled cumulative alphabet studies, and a LOVE example composited from the source marks. The published simulation excerpt has no audio stream; the original recording stays in `Media/final/`, and `scripts/prepare-videos.mjs` preserves the silent export on regeneration.
 
 ## Contact endpoint
 
@@ -83,7 +94,9 @@ This is the username site `amirbahadorrostami.github.io`, so Astro has no `base`
 
 ## Project documents
 
-Final-review verification (2026-09-23, Node 24): 115 unit tests, 0 Astro errors/warnings/hints across 116 files, 21 static pages, 233 configured browser tests, and one unconfigured-contact test passed. The 320px homepage review confirmed 44px CTA and track-link targets with visible focus and no horizontal overflow.
+Media-pass verification (2026-09-29, Node 24): 128 unit tests, 0 Astro errors/warnings/hints across 118 files, 21 static pages, 251 configured browser tests, and one unconfigured-contact test passed. All 14 published MP4s are below 25 MB each; desktop and mobile browser checks confirm the updated portrait image layout without horizontal overflow. The Encounters, Luminous Trails, and Ephemeral Pulses adjustments are documented in the [Darkroom Cinema specification](docs/superpowers/specs/2026-09-21-darkroom-portfolio-redesign-design.md).
+
+Experiments update verification (2026-09-29, Node 24): 131 unit tests, 254 configured browser tests, the unconfigured-contact browser test, and the static build passed. The reordered archive was visually checked at 320, 390, and 1440 pixels with no horizontal overflow.
 
 - [Living design specification](docs/superpowers/specs/2026-08-31-personal-portfolio-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-08-31-core-portfolio-implementation.md)

@@ -13,6 +13,9 @@ test('an empty contact endpoint disables delivery controls and presents the fall
   await expect(page.getByRole('button', { name: 'Form unavailable' })).toBeDisabled();
   await expect(page.locator('[data-contact-fallback]')).toBeVisible();
   await expect(page.locator('[data-contact-fallback]')).toContainText('The direct form is being connected.');
-  await expect(page.getByRole('link', { name: 'Find me on LinkedIn' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Find me on LinkedIn' })).toHaveAttribute(
+    'href',
+    'https://www.linkedin.com/in/amir-rostami-942455115/',
+  );
   await expect(page.getByRole('status')).toContainText('The direct form is being connected.');
 });

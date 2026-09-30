@@ -13,8 +13,23 @@ it('keeps a local video fallback visible outside the experiment player', async (
   } } });
   const outsideVideo = html.replace(/<video\b[\s\S]*?<\/video>/g, '');
   expect(outsideVideo).toContain('href="/media/synthetic.webm"');
-  expect(outsideVideo).toContain('Open Synthetic study video');
+  expect(outsideVideo).toContain('>Open video</a>');
   expect(html).not.toContain('unsafe.test');
+});
+
+it('keeps unnamed video cards visually title-free but identifiable to assistive technology', async () => {
+  const container = await AstroContainer.create();
+  const html = await container.renderToString(ExperimentCard, { props: { experiment: {
+    id: '02-experiment-02',
+    data: { order: 3, state: 'ready', tools: [], sources: [
+      { src: '/media/untitled.mp4', type: 'video/mp4' },
+    ] },
+  } } });
+
+  expect(html).toContain('Untitled video study 3 of 7');
+  expect(html).toContain('Open video');
+  expect(html).not.toContain('data-experiment-sequence');
+  expect(html).not.toContain('Experiment 02');
 });
 
 describe('experiment archive helpers', () => {

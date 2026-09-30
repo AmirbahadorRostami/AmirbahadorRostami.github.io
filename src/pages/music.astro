@@ -1,13 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import MusicGrid from '../components/music/MusicGrid.astro';
+import MusicList from '../components/music/MusicList.astro';
+import SubpageBackdrop from '../components/layout/SubpageBackdrop.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../config/site';
 import { sortByOrder } from '../lib/content';
 
 const music = sortByOrder((await getCollection('music')).filter(({ data }) => !data.draft));
-const featuredMusic = music.filter(({ data }) => data.featured);
-const catalogMusic = music.filter(({ data }) => !data.featured);
 const profiles = [
   { label: 'SoundCloud', url: SITE.soundCloudUrl },
   { label: 'Spotify', url: SITE.spotifyUrl },
@@ -16,7 +15,8 @@ const profiles = [
 ---
 
 <BaseLayout title="Music by Baha | Amir Bahador Rostami" canonicalPath="/music/" description="Listen to Baha, the musical project of Amir Bahador Rostami, where electronic and acoustic instruments meet in spacey textures and expansive harmonies.">
-  <section class="container music-archive" aria-labelledby="music-title">
+  <section class="container music-archive subpage-hero" aria-labelledby="music-title">
+    <SubpageBackdrop />
     <p class="eyebrow">Baha / Listening archive</p>
     <h1 id="music-title">Music by Baha</h1>
     <p class="music-archive__intro">Baha is the musical project of Amir Bahador Rostami—a place where electronic and acoustic instruments drift into the same orbit, forming spacey textures, vibrant colours, and sweet harmonies across big landscapes.</p>
@@ -28,15 +28,9 @@ const profiles = [
       </nav>
     )}
 
-    <section class="music-archive__group" data-music-group="featured" aria-labelledby="featured-tracks-title">
-      <h2 id="featured-tracks-title">Featured tracks</h2>
-      <MusicGrid records={featuredMusic} />
-    </section>
-
-    <section class="music-archive__group" data-music-group="catalog" aria-labelledby="catalog-tracks-title">
-      <h2 id="catalog-tracks-title">More music</h2>
-      <MusicGrid records={catalogMusic} startIndex={featuredMusic.length + 1} />
-    </section>
+    <div class="music-archive__group">
+      <MusicList records={music} />
+    </div>
   </section>
 </BaseLayout>
 
@@ -48,5 +42,4 @@ const profiles = [
   .music-archive__profiles a { align-items: center; border: 1px solid var(--line); color: var(--signal-text); display: inline-flex; font-family: var(--font-mono); font-size: .75rem; letter-spacing: .08em; min-height: 44px; padding: .7rem 1rem; text-decoration: none; text-transform: uppercase; }
   .music-archive__profiles a:hover { border-color: var(--signal); }
   .music-archive__group { margin-top: clamp(4rem, 9vw, 7rem); }
-  .music-archive__group h2 { border-top: 1px solid var(--line); font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -.04em; margin: 0; padding-top: 1rem; }
 </style>

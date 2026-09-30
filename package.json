@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "media:prepare": "node scripts/prepare-media.mjs",
+    "media:prepare:videos": "node scripts/prepare-videos.mjs",
     "resume:build": "node scripts/build-public-resume.mjs",
     "test": "npm run test:unit && npm run build && npm run test:e2e && npm run test:e2e:contact-fallback",
     "test:unit": "vitest run",

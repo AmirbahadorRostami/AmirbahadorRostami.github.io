@@ -14,7 +14,7 @@ type ProjectFixture = {
 type ExperimentFixture = {
   id: string;
   data: {
-    title: string;
+    title?: string;
     order: number;
     state: 'ready' | 'placeholder';
   };
@@ -30,13 +30,13 @@ const projectEntries: ProjectFixture[] = [
 ] as const;
 
 const experimentEntries: ExperimentFixture[] = [
-  { id: '03-experiment-03', data: { title: 'Experiment 03', order: 3, state: 'placeholder' } },
+  { id: '03-experiment-03', data: { order: 4, state: 'placeholder' } },
   { id: '01-cellular-automata', data: { title: 'Cellular Automata', order: 1, state: 'ready' } },
-  { id: '07-experiment-07', data: { title: 'Experiment 07', order: 7, state: 'placeholder' } },
-  { id: '02-experiment-02', data: { title: 'Experiment 02', order: 2, state: 'placeholder' } },
-  { id: '06-experiment-06', data: { title: 'Experiment 06', order: 6, state: 'placeholder' } },
-  { id: '04-experiment-04', data: { title: 'Experiment 04', order: 4, state: 'placeholder' } },
-  { id: '05-experiment-05', data: { title: 'Experiment 05', order: 5, state: 'placeholder' } },
+  { id: '07-experiment-07', data: { order: 7, state: 'placeholder' } },
+  { id: '02-experiment-02', data: { order: 3, state: 'placeholder' } },
+  { id: '06-experiment-06', data: { order: 6, state: 'placeholder' } },
+  { id: '04-experiment-04', data: { order: 5, state: 'placeholder' } },
+  { id: '05-experiment-05', data: { title: 'Agent Trails', order: 2, state: 'placeholder' } },
 ] as const;
 
 let mockedProjectEntries = projectEntries;
@@ -102,14 +102,17 @@ describe('project query layer', () => {
   it('returns the approved experiments in ascending order', async () => {
     const experiments = await getPublishedExperiments();
 
+    expect(experiments.map(({ id }) => id)).toEqual([
+      '01-cellular-automata',
+      '05-experiment-05',
+      '02-experiment-02',
+      '03-experiment-03',
+      '04-experiment-04',
+      '06-experiment-06',
+      '07-experiment-07',
+    ]);
     expect(experiments.map(({ data }) => data.title)).toEqual([
-      'Cellular Automata',
-      'Experiment 02',
-      'Experiment 03',
-      'Experiment 04',
-      'Experiment 05',
-      'Experiment 06',
-      'Experiment 07',
+      'Cellular Automata', 'Agent Trails', undefined, undefined, undefined, undefined, undefined,
     ]);
   });
 
@@ -126,23 +129,23 @@ describe('project query layer', () => {
 
   it('names missing and unexpected experiment records in inventory errors', async () => {
     mockedExperimentEntries = [
-      ...experimentEntries.filter(({ data }) => data.title !== 'Experiment 07'),
+      ...experimentEntries.filter(({ id }) => id !== '07-experiment-07'),
       { id: '08-unapproved', data: { title: 'Unapproved Experiment', order: 8, state: 'placeholder' } },
     ];
 
     await expect(getPublishedExperiments()).rejects.toThrow(
-      'Experiment inventory mismatch. Missing: Experiment 07. Unexpected: Unapproved Experiment.',
+      'Experiment inventory mismatch. Missing: 07-experiment-07. Unexpected: 08-unapproved.',
     );
   });
 
-  it('rejects a duplicate approved experiment title as an unexpected record', async () => {
+  it('rejects a duplicate approved experiment ID as an unexpected record', async () => {
     mockedExperimentEntries = [
       ...experimentEntries,
-      { id: '08-duplicate', data: { title: 'Experiment 07', order: 8, state: 'placeholder' } },
+      { id: '07-experiment-07', data: { order: 8, state: 'placeholder' } },
     ];
 
     await expect(getPublishedExperiments()).rejects.toThrow(
-      'Experiment inventory mismatch. Missing: none. Unexpected: Experiment 07.',
+      'Experiment inventory mismatch. Missing: none. Unexpected: 07-experiment-07.',
     );
   });
 

@@ -20,6 +20,7 @@
   --radius-sm: var(--radius);
   --radius-md: var(--radius);
   --coral: var(--signal);
+  --hero-art-scrim: linear-gradient(180deg, transparent 48%, var(--ink) 100%), linear-gradient(90deg, var(--ink) 12%, transparent 78%);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -107,15 +108,20 @@ button { min-width: 44px; }
 .primary-menu { margin-left: auto; }
 .primary-menu ul { display: flex; gap: clamp(.75rem, 2vw, 2rem); list-style: none; margin: 0; padding: 0; }
 .primary-menu a { align-items: center; color: var(--muted); display: flex; font-family: var(--font-mono); font-size: .6875rem; gap: .45rem; min-height: 44px; min-width: 44px; padding-block: .75rem; position: relative; text-decoration: none; text-transform: uppercase; }
-.primary-menu__number { font-size: .625rem; }
 .primary-menu a::after { background: var(--signal); bottom: 0; content: ''; height: 2px; left: 0; opacity: 0; position: absolute; right: 0; }
 .primary-menu a:hover, .primary-menu a[aria-current='page'] { color: var(--paper); }
 .primary-menu a[aria-current='page']::after { opacity: 1; }
-.primary-menu a[aria-current='page'] .primary-menu__number { color: var(--signal-text); }
 
 main { padding-block: clamp(3rem, 10vw, 8rem); }
 main.main--flush { padding-block: 0; }
+main:has(.subpage-hero) { padding-top: 0; }
+.subpage-hero { padding-top: clamp(4rem, 10vw, 8rem); position: relative; }
+.subpage-hero > :not(.subpage-backdrop) { position: relative; z-index: 1; }
 h1 { font-size: clamp(3rem, 9vw, 9rem); font-weight: 500; letter-spacing: -.065em; line-height: .95; margin: .75rem 0 0; max-width: 13ch; }
+
+@media (max-width: 42rem) {
+  :root { --hero-art-scrim: linear-gradient(180deg, transparent 48%, var(--ink) 100%), linear-gradient(90deg, var(--ink) 25%, rgb(8 9 11 / .48)); }
+}
 
 .site-footer { border-top: 1px solid var(--line); color: var(--muted); font-family: var(--font-mono); font-size: .6875rem; padding-block: clamp(2rem, 4vw, 4rem); }
 .site-footer__inner { align-items: center; display: flex; flex-wrap: wrap; gap: 1.5rem 3rem; }

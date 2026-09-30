@@ -11,7 +11,7 @@ export interface Props {
 const { project } = Astro.props;
 ---
 
-<div class="project-media" data-project-media>
+<div class="project-media" data-project-media data-project={project.id}>
   {project.data.media.map((media, index) => {
     const youtube = media.externalUrl ? parseYouTubeUrl(media.externalUrl) : undefined;
     const sources = media.sources.filter(source => hasPlayableSources([source]));
@@ -20,7 +20,7 @@ const { project } = Astro.props;
     const placeholder = media.state === 'placeholder' || (!hasImage && !hasVideo);
 
     return (
-      <figure id={`media-${media.id}`} data-media-id={media.id} data-media-state={placeholder ? 'placeholder' : 'ready'}>
+      <figure id={`media-${media.id}`} data-media-id={media.id} data-media-type={media.type} data-media-state={placeholder ? 'placeholder' : 'ready'}>
         <div class="project-media__frame" style={`aspect-ratio: ${media.aspectRatio}`}>
           {placeholder ? (
             <div class="project-media__placeholder">
@@ -58,6 +58,9 @@ const { project } = Astro.props;
         <figcaption id={`caption-${media.id}`}>
           <span class="project-media__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
           <span>{media.caption}</span>
+          {!placeholder && media.type === 'diagram' && media.image && (
+            <a href={media.image.src} rel="noopener noreferrer" target="_blank">Open full-size diagram</a>
+          )}
           {!placeholder && hasVideo && sources.length > 0 && (
             <a href={sources[0].src}>Open {media.intention}</a>
           )}
@@ -72,10 +75,27 @@ const { project } = Astro.props;
 
 <style>
   .project-media { display: grid; gap: clamp(2.5rem, 6vw, 6rem) 2rem; grid-template-columns: repeat(12, minmax(0, 1fr)); }
-  figure { grid-column: 1 / -1; margin: 0; min-width: 0; scroll-margin-top: 2rem; }
+  figure { align-self: start; grid-column: 1 / -1; margin: 0; min-width: 0; scroll-margin-top: 2rem; }
   figure:nth-child(4n + 2) { grid-column: 1 / span 7; }
   figure:nth-child(4n + 3) { grid-column: 9 / span 4; }
   figure:nth-child(4n) { grid-column: 3 / span 10; }
+  .project-media[data-project='encounters'] > [data-media-id='invitation-pairing-interface'] { grid-column: 2 / span 4; }
+  .project-media[data-project='encounters'] > [data-media-id='onboarding-1'] { grid-column: 8 / span 4; }
+  .project-media[data-project='encounters'] > [data-media-id='pairing-demo'] { grid-column: 2 / span 4; }
+  .project-media[data-project='encounters'] > [data-media-id='ar-wayfinding-avatar'] { grid-column: 8 / span 4; }
+  .project-media[data-project='encounters'] > [data-media-id='virtual-water-underwater-environment'] { grid-column: 5 / span 4; }
+  .project-media[data-project='encounters'] > [data-media-id='system-architecture'] { grid-column: 1 / -1; justify-self: center; width: min(calc(100vw - 3rem), 116rem); }
+  .project-media[data-project='luminous-trails'] > [data-media-id='event-booth'],
+  .project-media[data-project='luminous-trails'] > [data-media-id='ar-trails-intersections'],
+  .project-media[data-project='luminous-trails'] > [data-media-id='app-journey'] { grid-column: 2 / span 4; }
+  .project-media[data-project='luminous-trails'] > [data-media-id='participant-documentation'],
+  .project-media[data-project='luminous-trails'] > [data-media-id='ar-avatar'],
+  .project-media[data-project='luminous-trails'] > [data-media-id='app-avatar'] { grid-column: 8 / span 4; }
+  .project-media[data-project='luminous-trails'] > [data-media-id='map-prototype-testing'] { grid-column: 5 / span 4; }
+  .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='participant-interaction'] { grid-column: 2 / span 4; }
+  .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='sculpture-floor-layout-renders'] { grid-column: 8 / span 5; }
+  .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='sound-synthesis-unit-architecture'] { grid-column: 4 / span 6; }
+  .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='hardware-components'] { grid-column: 3 / span 8; }
   .project-media__frame { background: var(--surface); border: 1px solid var(--line); display: grid; overflow: hidden; }
   /* The ratio is preferred; documentary text must be able to grow the frame. */
   [data-media-state='placeholder'] .project-media__frame { overflow: visible; }
@@ -106,6 +126,15 @@ const { project } = Astro.props;
   @media (max-width: 44rem) {
     .project-media { grid-template-columns: minmax(0, 1fr); }
     figure:nth-child(n) { grid-column: 1 / -1; }
+    .project-media[data-project='encounters'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: stretch; width: 100%; }
+    .project-media[data-project='encounters'] > [data-media-id='pairing-demo'],
+    .project-media[data-project='encounters'] > [data-media-id='ar-wayfinding-avatar'],
+    .project-media[data-project='encounters'] > [data-media-id='invitation-pairing-interface'],
+    .project-media[data-project='encounters'] > [data-media-id='onboarding-1'],
+    .project-media[data-project='encounters'] > [data-media-id='virtual-water-underwater-environment'] { justify-self: center; max-width: 24rem; }
+    .project-media[data-project='luminous-trails'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: center; max-width: 24rem; width: 100%; }
+    .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: center; width: 100%; }
+    .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='participant-interaction'] { max-width: 24rem; }
   }
 </style>
 

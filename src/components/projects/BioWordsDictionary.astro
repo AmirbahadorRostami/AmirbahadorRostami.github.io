@@ -1,0 +1,90 @@
+---
+import { Image } from 'astro:assets';
+import singleL from '../../assets/projects/biowords/single-l.webp';
+import singleO from '../../assets/projects/biowords/single-o.webp';
+import singleV from '../../assets/projects/biowords/single-v.webp';
+import singleE from '../../assets/projects/biowords/single-e.webp';
+import layeredL from '../../assets/projects/biowords/layered-l.webp';
+import layeredO from '../../assets/projects/biowords/layered-o.webp';
+import layeredV from '../../assets/projects/biowords/layered-v.webp';
+import layeredE from '../../assets/projects/biowords/layered-e.webp';
+import loveExample from '../../assets/projects/biowords/love-example.webp';
+
+const letters = [
+  { letter: 'L', single: singleL, layered: layeredL },
+  { letter: 'O', single: singleO, layered: layeredO },
+  { letter: 'V', single: singleV, layered: layeredV },
+  { letter: 'E', single: singleE, layered: layeredE },
+];
+---
+
+<section class="bio-dictionary" data-biowords-dictionary aria-labelledby="bio-dictionary-title">
+  <div class="bio-dictionary__intro">
+    <div>
+      <p class="eyebrow">A word, taken apart</p>
+      <h2 id="bio-dictionary-title">A small dictionary</h2>
+    </div>
+    <p>Letters become marks in a creature's visual DNA. Here is LOVE, read one letter at a time. The original layered drawings are cumulative alphabet studies, not stages of spelling the word.</p>
+  </div>
+
+  <div class="bio-dictionary__group">
+    <h3>01 / Isolated marks</h3>
+    <div class="bio-dictionary__grid">
+      {letters.map(({ letter, single }) => (
+        <figure data-letter-single={letter}>
+          <div class="bio-dictionary__art"><Image src={single} alt={`The isolated BioWords mark assigned to ${letter}`} loading="lazy" layout="constrained" /></div>
+          <figcaption><span>{letter}</span><span>Single letter</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <div class="bio-dictionary__group">
+    <h3>02 / Cumulative alphabet studies</h3>
+    <div class="bio-dictionary__grid">
+      {letters.map(({ letter, layered }) => (
+        <figure data-letter-layered={letter}>
+          <div class="bio-dictionary__art"><Image src={layered} alt={`Original cumulative BioWords alphabet study from A through ${letter}`} loading="lazy" layout="constrained" /></div>
+          <figcaption><span>A–{letter}</span><span>Layered study</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <figure class="bio-dictionary__word" data-word-example="LOVE">
+    <div class="bio-dictionary__art"><Image src={loveExample} alt="LOVE rendered as four overlaid BioWords letter marks on a circular body" loading="lazy" layout="constrained" /></div>
+    <figcaption>
+      <span class="bio-dictionary__word-label">L + O + V + E</span>
+      <strong>One word, one creature.</strong>
+      <span>The four isolated marks are assembled on the original circular body.</span>
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .bio-dictionary { border-top: 1px solid var(--line); display: grid; gap: clamp(2rem, 5vw, 4rem); padding-top: 1.5rem; }
+  .bio-dictionary__intro { display: grid; gap: 2rem; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); }
+  .bio-dictionary__intro .eyebrow { margin: 0 0 1rem; }
+  .bio-dictionary h2 { font-size: clamp(2rem, 4.5vw, 4rem); letter-spacing: -.05em; line-height: 1; margin: 0; max-width: 11ch; }
+  .bio-dictionary__intro > p { align-self: end; color: var(--paper); font-size: clamp(1.05rem, 1.8vw, 1.3rem); line-height: 1.5; margin: 0; max-width: 40rem; }
+  .bio-dictionary__group { display: grid; gap: 1rem; }
+  .bio-dictionary h3 { color: var(--muted); font-family: var(--font-mono); font-size: .75rem; font-weight: 400; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+  .bio-dictionary__grid { display: grid; gap: clamp(.5rem, 1.5vw, 1.5rem); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  figure { margin: 0; min-width: 0; }
+  .bio-dictionary__art { background: #fff; border: 1px solid var(--line); overflow: hidden; }
+  .bio-dictionary__grid .bio-dictionary__art { aspect-ratio: 1; }
+  .bio-dictionary__art :global(img) { display: block; height: 100%; object-fit: contain; width: 100%; }
+  .bio-dictionary__grid figcaption { color: var(--muted); display: flex; flex-wrap: wrap; font-family: var(--font-mono); font-size: .6875rem; gap: .35rem 1rem; justify-content: space-between; line-height: 1.5; padding-top: .75rem; }
+  .bio-dictionary__grid figcaption span:first-child { color: var(--signal-text); }
+  .bio-dictionary__word { border-top: 1px solid var(--line); display: grid; gap: clamp(1.5rem, 5vw, 4rem); grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); padding-top: 1.5rem; }
+  .bio-dictionary__word .bio-dictionary__art { aspect-ratio: 1; }
+  .bio-dictionary__word figcaption { align-content: center; display: grid; gap: 1rem; }
+  .bio-dictionary__word-label { color: var(--signal-text); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .1em; }
+  .bio-dictionary__word strong { font-size: clamp(1.75rem, 4vw, 3.5rem); font-weight: 400; letter-spacing: -.05em; line-height: 1.08; }
+  .bio-dictionary__word figcaption span:last-child { color: var(--muted); font-size: 1rem; max-width: 28ch; }
+  @media (max-width: 44rem) {
+    .bio-dictionary__intro, .bio-dictionary__word { grid-template-columns: minmax(0, 1fr); }
+    .bio-dictionary__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bio-dictionary__word .bio-dictionary__art { max-width: 24rem; width: 100%; }
+  }
+</style>

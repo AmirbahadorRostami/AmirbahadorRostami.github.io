@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 const projects = [
   {
-    slug: 'encounters', title: 'Encounters', depth: 'flagship', heroStem: 'encounters-card',
-    heroAlt: 'A luminous letter E floating above layered blue lines in the Encounters artwork',
+    slug: 'encounters', title: 'Encounters', depth: 'flagship', heroStem: 'encounters-header',
+    heroAlt: 'An underwater world of luminous blue light and a floating white figure in Encounters',
     premise: 'An augmented-reality social experience that guides Congress participants through public space toward shared virtual bodies of water.',
     narrative: 'I implemented the complete client application and its AR experience.',
     chapters: ['01 Premise', '02 Experience', '03 My contribution', '04 Technical system', '05 Process', '06 Credits', '07 Documentation'],
@@ -11,7 +11,7 @@ const projects = [
   },
   {
     slug: 'luminous-trails', title: 'Luminous Trails', depth: 'flagship', heroStem: 'luminous-trails-card',
-    heroAlt: 'A person holding a phone at night among luminous trails near the CN Tower',
+    heroAlt: 'A luminous figure surrounded by neon-colored wireframe terrain and glowing sculptural forms',
     premise: "An augmented-reality experience that translates participants' movement through Toronto into visible geolocated trails.",
     narrative: 'I architected the backend; another team member implemented it.',
     chapters: ['01 Premise', '02 Experience', '03 My contribution', '04 Technical system', '05 Process', '06 Credits', '07 Documentation'],
@@ -23,15 +23,15 @@ const projects = [
     premise: 'A sound installation in which wireless swing units complete a chord when their movement reaches rhythmic and harmonic synchronization.',
     narrative: 'Remote Realities names the program; the artwork is Ephemeral Pulses of a Finite Scroll.',
     chapters: ['01 Premise', '02 Experience', '03 My contribution', '04 Technical system', '05 Process', '06 Credits', '07 Documentation'],
-    media: 7,
+    media: 8,
   },
   {
-    slug: 'biowords', title: 'BioWords', depth: 'short', heroStem: 'biowords-card',
+    slug: 'biowords', title: 'BioWords', depth: 'short', heroStem: 'biowords-hero',
     heroAlt: 'Small line-drawn BioWord creatures arranged across a white field',
     premise: "An artificial-life work that turns words from participants' sentences into biomorphs whose sentiment and DNA shape flocking, community, and survival.",
     narrative: 'The result contains only original surviving words, ordered by survival time, longest-lived first, then by remaining energy.',
     chapters: ['01 Premise', '02 Experience', '04 Technical system', '06 Credits', '07 Documentation'],
-    media: 1,
+    media: 2,
   },
   {
     slug: 'person-is-a-data-structure', title: 'Person Is a Data Structure', depth: 'short', heroStem: 'person-is-a-data-structure-card',
@@ -39,7 +39,7 @@ const projects = [
     premise: 'A collaborative university installation connecting facial data, cameras, displays, sensors, and physical systems.',
     narrative: 'I shared the integration of cameras, displays, sensors, networked components, and physical systems with the team.',
     chapters: ['01 Premise', '02 Experience', '03 My contribution', '06 Credits', '07 Documentation'],
-    media: 1,
+    media: 4,
   },
 ] as const;
 
@@ -51,7 +51,7 @@ for (const project of projects) {
     await expect(page.getByRole('heading', { level: 1, name: project.title, exact: true })).toBeVisible();
     await expect(page.locator('[data-project-detail]')).toHaveAttribute('data-depth', project.depth);
     await expect(page.locator('.project-hero__premise')).toHaveText(project.premise);
-    const hero = page.locator('.project-hero__image img');
+    const hero = page.locator('.project-hero__image [data-hero-art]');
     await expect(hero).toHaveAttribute('src', /\/(?:_image|_astro)\//);
     await expect(hero).toHaveAttribute('srcset', /\S/);
     await expect(hero).toHaveAttribute('alt', project.heroAlt);
@@ -69,21 +69,239 @@ for (const project of projects) {
   });
 }
 
-test('flagship chapters expose intentional media placeholders with all requirements', async ({ page }) => {
-  for (const project of projects.filter(({ depth }) => depth === 'flagship')) {
-    await page.goto(`/work/${project.slug}/`);
-    await expect(page.locator('[data-case-study-chapter]')).toHaveCount(7);
-    const placeholder = page.locator('[data-media-state="placeholder"]').first();
-    await expect(placeholder).toContainText(project.title);
-    await expect(placeholder).toContainText('Preferred ratio');
-    await expect(placeholder).toContainText('Alt text');
-    await expect(placeholder).toContainText('Placeholder');
-    await expect(placeholder.locator('figcaption')).not.toBeEmpty();
-    await expect(placeholder.locator('img')).toHaveCount(0);
-    const processLink = page.locator('[data-case-study-chapter="05"] a').first();
-    const target = await processLink.getAttribute('href');
-    expect(target).toMatch(/^#media-/);
-    await expect(page.locator(target!)).toHaveAttribute('data-media-state', 'placeholder');
+test('Encounters uses the supplied title mark over its underwater hero while retaining its card art', async ({ page }) => {
+  await page.goto('/work/encounters/');
+  const hero = page.locator('.project-hero__image');
+  await expect(hero.locator('[data-hero-art]')).toHaveAttribute('src', /encounters-header/);
+  await expect(hero.locator('[data-hero-mark]')).toHaveAttribute('src', /encounters-wordmark/);
+  await expect(hero.locator('[data-hero-mark]')).toHaveAttribute('alt', '');
+  await page.goto('/');
+  await expect(page.locator('#selected-work [data-project-card]').first().locator('img')).toHaveAttribute('src', /encounters-card/);
+});
+
+test('BioWords uses the supplied full-width artwork for its hero and opening document, keeping its work card', async ({ page }) => {
+  await page.goto('/work/biowords/');
+  await expect(page.locator('[data-hero-art]')).toHaveAttribute('src', /biowords-hero/);
+  await expect(page.locator('[data-media-id="opening-image"] img')).toHaveAttribute('src', /biowords-hero/);
+  await page.goto('/work/');
+  await expect(page.locator('[data-project-card] a[href="/work/biowords/"] img')).toHaveAttribute('src', /biowords-card/);
+});
+
+test('BioWords dictionary shows the isolated LOVE letters, honest alphabet studies, and assembled word', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/biowords/');
+    const dictionary = page.locator('[data-biowords-dictionary]');
+    await expect(dictionary.getByRole('heading', { name: /dictionary/i })).toBeVisible();
+    const tiles = dictionary.locator('figure');
+    await expect(tiles).toHaveCount(9);
+    for (const letter of ['L', 'O', 'V', 'E']) {
+      await expect(dictionary.locator(`[data-letter-single="${letter}"] img`)).toHaveCount(1);
+      await expect(dictionary.locator(`[data-letter-layered="${letter}"] img`)).toHaveCount(1);
+    }
+    await expect(dictionary.locator('[data-word-example="LOVE"] img')).toHaveCount(1);
+    await expect(dictionary).toContainText('cumulative alphabet');
+    for (const image of await dictionary.locator('img').all()) {
+      await image.scrollIntoViewIfNeeded();
+      await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
+test('Encounters title mark is prominent and centered over the hero art', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/encounters/');
+    const geometry = await page.locator('.project-hero__image').evaluate((figure) => {
+      const hero = figure.getBoundingClientRect();
+      const mark = figure.querySelector('[data-hero-mark]')!.getBoundingClientRect();
+      return {
+        widthFraction: mark.width / hero.width,
+        horizontalOffset: Math.abs(mark.left + mark.width / 2 - (hero.left + hero.width / 2)) / hero.width,
+        verticalOffset: Math.abs(mark.top + mark.height / 2 - (hero.top + hero.height / 2)) / hero.height,
+      };
+    });
+    expect(geometry.widthFraction).toBeGreaterThan(0.28);
+    expect(geometry.horizontalOffset).toBeLessThan(0.04);
+    expect(geometry.verticalOffset).toBeLessThan(0.08);
+  }
+});
+
+test('Encounters documentation starts with the real interaction rather than repeated card artwork', async ({ page }) => {
+  await page.goto('/work/encounters/');
+  await expect(page.locator('[data-media-id="opening-image"]')).toHaveCount(0);
+  await expect(page.locator('[data-project-media] > figure').first()).toHaveAttribute('data-media-id', 'pair-using-app');
+});
+
+test('Luminous Trails has no unsupported App Store or system-diagram placeholders', async ({ page }) => {
+  await page.goto('/work/luminous-trails/');
+  await expect(page.locator('[data-case-study-chapter]')).toHaveCount(7);
+  await expect(page.locator('[data-media-state="placeholder"]')).toHaveCount(0);
+  await expect(page.locator('[data-media-id="app-store-material"], [data-media-id="client-backend-architecture"]')).toHaveCount(0);
+});
+
+test('owner-supplied media fills matching case-study slots and detailed diagrams open full-size', async ({ page }) => {
+  const cases = [
+    { slug: 'encounters', ids: ['onboarding-1', 'invitation-pairing-interface', 'pairing-demo', 'ar-wayfinding-avatar', 'system-architecture', 'campus-map-process'] },
+    { slug: 'luminous-trails', ids: ['event-booth', 'participant-documentation', 'ar-trails-intersections', 'ar-avatar', 'app-journey', 'app-avatar', 'map-prototype-testing'] },
+    { slug: 'ephemeral-pulses-of-a-finite-scroll', ids: ['participant-interaction', 'sound-synthesis-unit-architecture', 'hardware-components', 'fourteen-note-directional-mapping'] },
+    { slug: 'biowords', ids: ['original-simulation'] },
+    { slug: 'person-is-a-data-structure', ids: ['gallery-installation', 'system-overview', 'installation-trailer'] },
+  ];
+
+  for (const item of cases) {
+    await page.goto(`/work/${item.slug}/`);
+    for (const id of item.ids) {
+      const figure = page.locator(`[data-media-id="${id}"]`);
+      await expect(figure).toHaveAttribute('data-media-state', 'ready');
+      await expect(figure.locator('img, video')).toHaveCount(1);
+    }
+  }
+
+  await page.goto('/work/encounters/');
+  const diagram = page.locator('[data-media-id="system-architecture"]');
+  const fullSizeLink = diagram.getByRole('link', { name: 'Open full-size diagram' });
+  await expect(fullSizeLink).toHaveAttribute('href', /\/_(?:astro|image)\//);
+});
+
+test('Encounters documentary media has a deliberate desktop scale', async ({ page }) => {
+  await page.setViewportSize({ width: 2118, height: 900 });
+  await page.goto('/work/encounters/');
+  const widths = await page.locator('[data-project-media]').evaluate((gallery) => {
+    const measure = (id: string) => {
+      const figure = gallery.querySelector(`[data-media-id="${id}"]`);
+      if (!figure) throw new Error(`Missing media ${id}`);
+      const rect = figure.getBoundingClientRect();
+      return { width: rect.width, top: rect.top, center: rect.left + rect.width / 2 };
+    };
+    return {
+      gallery: gallery.getBoundingClientRect().width,
+      galleryCenter: gallery.getBoundingClientRect().left + gallery.getBoundingClientRect().width / 2,
+      pairing: measure('pairing-demo'),
+      wayfinding: measure('ar-wayfinding-avatar'),
+      water: measure('virtual-water-underwater-environment'),
+      onboarding: measure('onboarding-1'),
+      flowchart: measure('system-architecture'),
+    };
+  });
+  expect(widths.pairing.width).toBeLessThan(widths.gallery * 0.45);
+  expect(widths.wayfinding.width).toBeLessThan(widths.gallery * 0.45);
+  expect(Math.abs(widths.pairing.top - widths.wayfinding.top)).toBeLessThan(4);
+  expect(widths.water.width).toBeLessThan(widths.gallery * 0.5);
+  expect(Math.abs(widths.water.center - widths.galleryCenter)).toBeLessThan(widths.gallery * 0.08);
+  expect(widths.onboarding.width).toBeLessThan(widths.gallery * 0.5);
+  expect(widths.flowchart.width).toBeGreaterThan(widths.gallery * 1.15);
+});
+
+test('Encounters portrait stills retain their full image without oversized mobile frames', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/encounters/');
+    for (const id of ['onboarding-1', 'virtual-water-underwater-environment']) {
+      const figure = page.locator(`[data-media-id="${id}"]`);
+      await figure.scrollIntoViewIfNeeded();
+      await expect(figure.locator('img')).toBeVisible();
+      await expect.poll(() => figure.locator('img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+      const geometry = await figure.evaluate((element) => {
+        const frame = element.querySelector('.project-media__frame')!;
+        const image = frame.querySelector('img')!;
+        return {
+          figureWidth: element.getBoundingClientRect().width,
+          frameWidth: frame.getBoundingClientRect().width,
+          imageWidth: image.getBoundingClientRect().width,
+          imageHeight: image.getBoundingClientRect().height,
+          naturalWidth: image.naturalWidth,
+          naturalHeight: image.naturalHeight,
+        };
+      });
+      expect(geometry.naturalWidth).toBeGreaterThan(0);
+      expect(geometry.naturalHeight).toBeGreaterThan(0);
+      expect(Math.abs(geometry.imageWidth - geometry.frameWidth)).toBeLessThanOrEqual(2.1);
+      expect(Math.abs((geometry.imageWidth / geometry.imageHeight) - (geometry.naturalWidth / geometry.naturalHeight))).toBeLessThan(0.015);
+      if (width < 500) expect(geometry.figureWidth).toBeLessThanOrEqual(384);
+      expect(geometry.imageHeight).toBeGreaterThan(geometry.imageWidth);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+});
+
+test('each project has one clear link to its public presentation', async ({ page }) => {
+  for (const { slug, url } of [
+    { slug: 'encounters', url: 'https://www.yorku.ca/yfile/2023/05/30/encounters-brings-augmented-reality-to-congress-2023/' },
+    { slug: 'ephemeral-pulses-of-a-finite-scroll', url: 'https://remoterealities.jenniefaber.com/project/ephemeral-pulses-of-a-finite-scroll/' },
+  ]) {
+    await page.goto(`/work/${slug}/`);
+    const link = page.locator(`a[href="${url}"]`);
+    await expect(link).toHaveCount(1);
+    await expect(page.locator('.project-documentation').locator(`a[href="${url}"]`)).toBeVisible();
+  }
+});
+
+test('Luminous Trails portrait images stay paired and uncropped across desktop and mobile', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/luminous-trails/');
+    const gallery = page.locator('[data-project-media]');
+    const galleryWidth = await gallery.evaluate((element) => element.getBoundingClientRect().width);
+    for (const id of ['event-booth', 'participant-documentation', 'ar-trails-intersections', 'ar-avatar', 'app-journey', 'app-avatar']) {
+      const figure = page.locator(`[data-media-id="${id}"]`);
+      await figure.scrollIntoViewIfNeeded();
+      await expect.poll(() => figure.locator('img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+      const geometry = await figure.evaluate((element) => {
+        const frame = element.querySelector('.project-media__frame')!.getBoundingClientRect();
+        const image = element.querySelector('img')!;
+        return {
+          width: element.getBoundingClientRect().width,
+          frameRatio: frame.width / frame.height,
+          imageRatio: image.naturalWidth / image.naturalHeight,
+        };
+      });
+      expect(Math.abs(geometry.frameRatio - geometry.imageRatio)).toBeLessThan(0.02);
+      expect(geometry.width).toBeLessThanOrEqual(width < 500 ? 384 : galleryWidth * 0.5);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
+test('Luminous Trails credits name each collaborator once and identify the event partners', async ({ page }) => {
+  await page.goto('/work/luminous-trails/');
+  const credits = page.locator('[data-case-study-chapter="06"]');
+  const copy = await credits.innerText();
+  for (const name of ['Roozbeh Moayyedian', 'Elahe Rostami', 'Amir Bahador Rostami', 'Can Baris Candan', 'Emad Moradian']) {
+    expect(copy.split(name)).toHaveLength(2);
+  }
+  await expect(credits).toContainText('Nuit Blanche Toronto 2022');
+  await expect(credits).toContainText('City of Toronto');
+});
+
+test('Ephemeral Pulses documentation images keep their full composition at deliberate sizes', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/ephemeral-pulses-of-a-finite-scroll/');
+    const galleryWidth = await page.locator('[data-project-media]').evaluate((element) => element.getBoundingClientRect().width);
+    for (const id of ['participant-interaction', 'sculpture-floor-layout-renders', 'sound-synthesis-unit-architecture', 'hardware-components']) {
+      const figure = page.locator(`[data-media-id="${id}"]`);
+      await figure.scrollIntoViewIfNeeded();
+      await expect.poll(() => figure.locator('img').evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+      const geometry = await figure.evaluate((element) => {
+        const frame = element.querySelector('.project-media__frame')!.getBoundingClientRect();
+        const image = element.querySelector('img')!;
+        return {
+          figureWidth: element.getBoundingClientRect().width,
+          frameRatio: frame.width / frame.height,
+          imageRatio: image.naturalWidth / image.naturalHeight,
+        };
+      });
+      expect(Math.abs(geometry.frameRatio - geometry.imageRatio)).toBeLessThan(0.025);
+      if (width > 500) {
+        if (id === 'participant-interaction') expect(geometry.figureWidth).toBeLessThan(galleryWidth * 0.45);
+        if (id === 'sculpture-floor-layout-renders') expect(geometry.figureWidth).toBeGreaterThan(galleryWidth * 0.38);
+        if (id === 'sound-synthesis-unit-architecture') expect(geometry.figureWidth).toBeLessThan(galleryWidth * 0.63);
+        if (id === 'hardware-components') expect(geometry.figureWidth).toBeLessThan(galleryWidth * 0.8);
+      }
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
 });
 
@@ -104,37 +322,11 @@ test('BioWords reserves its live experiment after the narrative and before relat
   expect(order.slice(-3)).toEqual(['chapter', 'experiment', 'related']);
 });
 
-test('loads privacy-enhanced Encounters video only after explicit activation', async ({ page }) => {
-  const youtubeRequests: string[] = [];
-  await page.route('https://www.youtube-nocookie.com/**', (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<p>Video provider</p>' }));
-  page.on('request', (request) => {
-    if (/youtube(?:-nocookie)?\.com|ytimg\.com/.test(request.url())) youtubeRequests.push(request.url());
-  });
+test('Encounters omits the social-gathering video while keeping the local documentary clips', async ({ page }) => {
   await page.goto('/work/encounters/');
-  await expect(page.locator('iframe')).toHaveCount(0);
-  expect(youtubeRequests).toEqual([]);
-  const caption = 'A demonstration of the wayfinding cues used during the shared walk.';
-  const playButton = page.locator('[data-media-id="ar-wayfinding-avatar"]').getByRole('button', { name: `Play ${caption}` });
-  await expect(playButton).toHaveAttribute('aria-pressed', 'false');
-  await playButton.click();
-  const video = page.locator('iframe');
-  await expect(video).toHaveCount(1);
-  await expect(video).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/eJJue_cGV3E');
-  await expect(video).toHaveAttribute('title', caption);
-  await expect(video).toHaveAttribute('loading', 'lazy');
-  await expect(video).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-  await expect(video).toHaveAttribute('allowfullscreen', '');
-  await expect(video).toHaveAttribute('allow', 'encrypted-media');
-  expect(youtubeRequests.some((url) => url.startsWith('https://www.youtube-nocookie.com/'))).toBe(true);
-});
-
-test('project-media hover borders retain deep red while labels use accessible text red', async ({ page }) => {
-  await page.goto('/work/encounters/');
-  const playButton = page.locator('[data-video-facade][data-video-id="eJJue_cGV3E"] button');
-  await playButton.hover();
-  await expect(playButton).toHaveCSS('border-top-color', 'rgb(167, 20, 20)');
-  await expect(playButton).toHaveCSS('color', 'rgb(207, 98, 90)');
-  await expect(playButton.locator('[aria-hidden="true"]')).toHaveCSS('color', 'rgb(167, 20, 20)');
+  await expect(page.locator('[data-media-id="social-gathering"]')).toHaveCount(0);
+  await expect(page.locator('[data-media-id="pairing-demo"] video')).toHaveCount(1);
+  await expect(page.locator('[data-media-id="ar-wayfinding-avatar"] video')).toHaveCount(1);
 });
 
 test('keeps all five narratives, facts, placeholders, and video links usable without JavaScript', async ({ browser }) => {
@@ -148,8 +340,8 @@ test('keeps all five narratives, facts, placeholders, and video links usable wit
   }
   await page.goto('/work/encounters/');
   await expect(page.locator('iframe')).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Watch A demonstration of the wayfinding cues used during the shared walk. on YouTube' }))
-    .toHaveAttribute('href', 'https://www.youtube.com/watch?v=eJJue_cGV3E');
+  await expect(page.locator('[data-media-id="social-gathering"]')).toHaveCount(0);
+  await expect(page.locator('[data-media-id="pairing-demo"] video')).toHaveCount(1);
   await context.close();
 });
 
@@ -172,7 +364,7 @@ test('stacks the media and chapters without overflow on a narrow screen', async 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/work/ephemeral-pulses-of-a-finite-scroll/');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await expect(page.locator('[data-media-id="hardware-components"] .project-media__frame')).toHaveCSS('aspect-ratio', '4 / 3');
+  await expect(page.locator('[data-media-id="hardware-components"] .project-media__frame')).toHaveCSS('aspect-ratio', '1920 / 1484');
 });
 
 test('keeps every placeholder requirement inside its visible frame at desktop and mobile sizes', async ({ page }) => {

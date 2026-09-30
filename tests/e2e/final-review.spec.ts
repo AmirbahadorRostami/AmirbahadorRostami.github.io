@@ -37,6 +37,8 @@ test('BioWords clears invalid-input status on valid Begin and Restart', async ({
   await input.fill('');
   await begin.click();
   await expect(status).toHaveText('Enter at least one word.');
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await expect(status).toHaveText('Enter at least one word.');
   await input.fill('small bright worlds');
   await begin.click();
   await expect(status).toHaveText('The ecosystem is running.');

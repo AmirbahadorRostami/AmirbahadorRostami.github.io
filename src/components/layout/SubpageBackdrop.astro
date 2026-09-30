@@ -1,0 +1,12 @@
+---
+import TenPrintField from '../interactive/TenPrintField.astro';
+---
+
+<div class="subpage-backdrop" aria-hidden="true">
+  <TenPrintField />
+</div>
+
+<style>
+  .subpage-backdrop { height: min(100%, calc(100svh - 4.5rem)); left: 50%; overflow: hidden; pointer-events: none; position: absolute; top: 0; transform: translateX(-50%); width: 100vw; z-index: 0; }
+  .subpage-backdrop::after { background: var(--hero-art-scrim); content: ''; inset: 0; position: absolute; }
+</style>

@@ -1,7 +1,11 @@
 {
-  "title": "Experiment 05",
-  "order": 5,
-  "state": "placeholder",
+  "title": "Agent Trails",
+  "order": 2,
+  "state": "ready",
+  "description": "Invisible agents follow one another’s paths, leaving only their accumulating trails to reveal the choreography of this artificial-life simulation.",
   "tools": [],
-  "sources": []
+  "sourceUrl": "https://codepen.io/amirbahadorrostami/pen/aXqebP",
+  "sourceLabel": "View source",
+  "poster": "../../assets/experiments/05-experiment-poster.webp",
+  "sources": [{ "src": "/media/experiments/05-experiment.mp4", "type": "video/mp4" }]
 }

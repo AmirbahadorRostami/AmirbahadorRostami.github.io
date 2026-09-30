@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import LiveExperimentSlot from '../components/interactive/LiveExperimentSlot.astro';
+import BioWordsDictionary from '../components/projects/BioWordsDictionary.astro';
+import SubpageBackdrop from '../components/layout/SubpageBackdrop.astro';
 import NextProject from '../components/projects/NextProject.astro';
 import ProjectFacts from '../components/projects/ProjectFacts.astro';
 import ProjectMedia from '../components/projects/ProjectMedia.astro';
@@ -16,6 +18,8 @@ export interface Props {
 
 const { project, previous, next } = Astro.props;
 const { data } = project;
+const detailHero = data.detailHero ?? data.hero;
+const detailHeroAlt = data.detailHeroAlt ?? data.heroAlt;
 const narrative = projectChapters(await Astro.slots.render('default'));
 const chapters = [
   { number: '02', title: 'Experience', body: narrative.experience },
@@ -25,9 +29,10 @@ const chapters = [
 ];
 ---
 
-<BaseLayout title={`${data.title} | Amir Bahador Rostami`} description={data.summary} canonicalPath={`/work/${project.id}/`} image={data.hero.src}>
+<BaseLayout title={`${data.title} | Amir Bahador Rostami`} description={data.summary} canonicalPath={`/work/${project.id}/`} image={detailHero.src}>
   <article class="project-detail container" data-project-detail data-depth={data.depth}>
-    <header class="project-hero">
+    <header class="project-hero subpage-hero">
+      <SubpageBackdrop />
       <a class="text-link project-hero__back" href="/work/">← Selected work</a>
       <p class="eyebrow">{String(data.order).padStart(2, '0')} / {data.year ?? 'Project study'}</p>
       <h1>{data.title}</h1>
@@ -36,7 +41,8 @@ const chapters = [
         <p class="project-hero__premise">{data.summary}</p>
       </section>
       <figure class="project-hero__image">
-        <Image src={data.hero} alt={data.heroAlt} layout="constrained" loading="eager" fetchpriority="high" />
+        <Image src={detailHero} alt={detailHeroAlt} data-hero-art layout="constrained" loading="eager" fetchpriority="high" />
+        {data.detailHeroMark && <Image class="project-hero__mark" src={data.detailHeroMark} alt="" data-hero-mark layout="constrained" loading="eager" />}
       </figure>
       <ProjectFacts project={project} />
     </header>
@@ -66,6 +72,7 @@ const chapters = [
       <ProjectMedia project={project} />
     </section>
 
+    {project.id === 'biowords' && <BioWordsDictionary />}
     <LiveExperimentSlot enabled={data.liveExperiment} title={data.title}>
       <slot name="live-experiment" />
     </LiveExperimentSlot>
@@ -82,8 +89,9 @@ const chapters = [
   .project-premise { display: grid; gap: 1.5rem; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); margin-top: clamp(1rem, 3vw, 3rem); }
   .chapter-label { align-self: start; margin: 0; }
   .project-hero__premise { font-size: clamp(1.35rem, 3vw, 2.5rem); font-weight: 400; letter-spacing: -.025em; line-height: 1.35; margin: 0; max-width: 36ch; }
-  .project-hero__image { background: var(--surface); border: 1px solid var(--line); margin: clamp(1rem, 3vw, 3rem) 0 0; overflow: hidden; }
-  .project-hero__image :global(img) { height: auto; max-height: 48rem; object-fit: cover; width: 100%; }
+  .project-hero__image { background: var(--surface); border: 1px solid var(--line); margin: clamp(1rem, 3vw, 3rem) 0 0; overflow: hidden; position: relative; }
+  .project-hero__image :global([data-hero-art]) { height: auto; max-height: 48rem; object-fit: cover; width: 100%; }
+  .project-hero__image :global(.project-hero__mark) { height: auto; left: 50%; max-width: 42%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 38%; }
   .project-detail[data-depth='short'] .project-hero__image { max-width: 64rem; width: 100%; }
   .project-chapter { border-top: 1px solid var(--line); display: grid; gap: 2rem; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); padding-top: 1.5rem; }
   .project-chapter:nth-of-type(even) .project-story__body { max-width: 42rem; }

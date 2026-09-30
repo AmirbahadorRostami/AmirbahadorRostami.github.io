@@ -1,7 +1,11 @@
 import { access, copyFile, mkdir } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
 import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import sharp from 'sharp';
+
+const execFileAsync = promisify(execFile);
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const assetRoot = resolve(repositoryRoot, 'src/assets');
@@ -23,6 +27,11 @@ export const MEDIA_JOBS = [
   },
   {
     project: 'encounters',
+    source: 'Media/final/projects/encounters/hero.png',
+    destination: 'src/assets/projects/encounters/encounters-wordmark.webp',
+  },
+  {
+    project: 'encounters',
     source: 'Media/img-tester/EncounterInteraction.jpg',
     destination: 'src/assets/projects/encounters/encounters-interaction.webp',
   },
@@ -33,48 +42,38 @@ export const MEDIA_JOBS = [
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous.png',
+    source: 'Media/final/projects/luminous-trails/hero.png',
     destination: 'src/assets/projects/luminous-trails/luminous-trails-card.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/LimnousTrails_0508.JPG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-0508.webp',
+    source: 'Media/final/projects/luminous-trails/nuit-blanche-booth.jpg',
+    destination: 'src/assets/projects/luminous-trails/event-booth.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous_Trails_0509.JPG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-0509.webp',
+    source: 'Media/final/projects/luminous-trails/participants-documentation-1.jpg',
+    destination: 'src/assets/projects/luminous-trails/participant-documentation.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous_Trails_1796.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-1796.webp',
+    source: 'Media/final/projects/luminous-trails/participant-trail-3.PNG',
+    destination: 'src/assets/projects/luminous-trails/ar-trails-intersections.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous_Trails_1799.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-1799.webp',
+    source: 'Media/final/projects/luminous-trails/participant-trail-2.PNG',
+    destination: 'src/assets/projects/luminous-trails/ar-avatar.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous_Trails_1801.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-1801.webp',
+    source: 'Media/final/projects/luminous-trails/UI.jpg',
+    destination: 'src/assets/projects/luminous-trails/app-journey.webp',
   },
   {
     project: 'luminous-trails',
-    source: 'Media/img-tester/Luminous_Trails_1844.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-1844.webp',
-  },
-  {
-    project: 'luminous-trails',
-    source: 'Media/img-tester/luminous_trails-nov12a.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-nov12a.webp',
-  },
-  {
-    project: 'luminous-trails',
-    source: 'Media/img-tester/luminous_trails-nov12b.PNG',
-    destination: 'src/assets/projects/luminous-trails/luminous-trails-nov12b.webp',
+    source: 'Media/final/projects/luminous-trails/UI_1.jpg',
+    destination: 'src/assets/projects/luminous-trails/app-avatar.webp',
   },
   {
     project: 'remote-realities',
@@ -94,6 +93,39 @@ export const MEDIA_JOBS = [
     operation: 'first-frame',
   },
   {
+    project: 'biowords',
+    source: 'Media/final/projects/biowords/hero.png',
+    destination: 'src/assets/projects/biowords/biowords-hero.webp',
+  },
+  ...['L', 'O', 'V', 'E'].flatMap((letter) => [
+    {
+      project: 'biowords',
+      source: `Media/final/projects/biowords/Single/${letter}.png`,
+      destination: `src/assets/projects/biowords/single-${letter.toLowerCase()}.webp`,
+      crop: { left: 240, top: 240, width: 320, height: 320 },
+      maxWidth: 320,
+      maxHeight: 320,
+    },
+    {
+      project: 'biowords',
+      source: `Media/final/projects/biowords/Layerd/${letter}.png`,
+      destination: `src/assets/projects/biowords/layered-${letter.toLowerCase()}.webp`,
+      crop: { left: 240, top: 240, width: 320, height: 320 },
+      maxWidth: 320,
+      maxHeight: 320,
+    },
+  ]),
+  {
+    project: 'biowords',
+    source: 'Media/final/projects/biowords/Layerd/A.png',
+    destination: 'src/assets/projects/biowords/love-example.webp',
+    operation: 'compose-letters',
+    letters: ['L', 'O', 'V', 'E'],
+    crop: { left: 240, top: 240, width: 320, height: 320 },
+    maxWidth: 320,
+    maxHeight: 320,
+  },
+  {
     project: 'person-is-a-data-structure',
     source: 'Media/img-tester/Data.jpg',
     destination:
@@ -108,6 +140,68 @@ export const MEDIA_JOBS = [
     project: 'profile',
     source: 'Media/ProfilePics/Bahador.png',
     destination: 'src/assets/profile/amir-rostami.webp',
+  },
+  {
+    project: 'encounters',
+    source: 'Media/final/projects/encounters/invitation-pairing-interface.PNG',
+    destination: 'src/assets/projects/encounters/invitation-pairing-interface.webp',
+  },
+  {
+    project: 'encounters',
+    source: 'Media/final/projects/encounters/onboarding-1.PNG',
+    destination: 'src/assets/projects/encounters/onboarding-1.webp',
+  },
+  {
+    project: 'encounters',
+    source: 'Media/final/projects/encounters/encounters-system-diagram.png',
+    destination: 'src/assets/projects/encounters/interaction-flowchart.webp',
+    maxWidth: 8000,
+    maxHeight: 3000,
+  },
+  {
+    project: 'encounters',
+    source: 'Media/final/projects/encounters/campus-map-process.png',
+    destination: 'src/assets/projects/encounters/campus-map-process.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/IMG_1036.JPG',
+    destination: 'src/assets/projects/remote-realities/participant-interaction.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/IMG_0968.JPG',
+    destination: 'src/assets/projects/remote-realities/sculptural-overview.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/Pendulum Synth SystemDiagram .jpg',
+    destination: 'src/assets/projects/remote-realities/sound-unit-architecture.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/hardware-components.jpg',
+    destination: 'src/assets/projects/remote-realities/hardware-components.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/floor-plan.jpg',
+    destination: 'src/assets/projects/remote-realities/directional-key-mapping.webp',
+  },
+  {
+    project: 'remote-realities',
+    source: 'Media/final/projects/ephemeral-pulses-of-a-finite-scroll/IMG_0951.JPG',
+    destination: 'src/assets/projects/remote-realities/installed-swing-detail.webp',
+  },
+  {
+    project: 'person-is-a-data-structure',
+    source: 'Media/final/projects/person-is-a-data-structure/IMG_4637.JPG',
+    destination: 'src/assets/projects/person-is-a-data-structure/gallery-installation.webp',
+  },
+  {
+    project: 'person-is-a-data-structure',
+    source: 'Media/final/projects/person-is-a-data-structure/hardware-diagram.png',
+    destination: 'src/assets/projects/person-is-a-data-structure/system-overview.webp',
   },
 ];
 
@@ -139,7 +233,7 @@ function assertManifest() {
     }
 
     const operation = job.operation ?? 'optimize';
-    if (!['optimize', 'copy', 'first-frame'].includes(operation)) {
+    if (!['optimize', 'copy', 'first-frame', 'heic', 'compose-letters'].includes(operation)) {
       throw new Error(`Unknown media operation "${operation}": ${job.destination}`);
     }
 
@@ -159,6 +253,16 @@ function assertManifest() {
       && job.source !== 'Media/img-tester/BioWords.gif'
     ) {
       throw new Error(`First-frame extraction is reserved for BioWords: ${job.source}`);
+    }
+
+    if (operation === 'heic' && !/\.heic$/i.test(job.source)) {
+      throw new Error(`HEIC decoding requires a HEIC source: ${job.source}`);
+    }
+    if (operation === 'compose-letters' && (
+      job.source !== 'Media/final/projects/biowords/Layerd/A.png'
+      || job.letters?.join('') !== 'LOVE'
+    )) {
+      throw new Error(`Letter composition requires the BioWords LOVE sources: ${job.source}`);
     }
   }
 }
@@ -182,14 +286,27 @@ export async function prepareMedia() {
 
     if (operation === 'copy') {
       await copyFile(source, destination);
+    } else if (operation === 'compose-letters') {
+      const layers = job.letters.map((letter) => ({
+        input: resolve(repositoryRoot, `Media/final/projects/biowords/Single/${letter}.png`),
+        blend: 'multiply',
+      }));
+      await Promise.all(layers.map(({ input }) => access(input)));
+      const composed = await sharp(source).composite(layers).png().toBuffer();
+      await sharp(composed).extract(job.crop).webp({ quality: 90 }).toFile(destination);
     } else {
       const inputOptions = operation === 'first-frame' ? { page: 0, pages: 1 } : undefined;
+      const input = operation === 'heic'
+        ? (await execFileAsync('ffmpeg', [
+          '-loglevel', 'error', '-i', source, '-frames:v', '1',
+          '-f', 'image2pipe', '-vcodec', 'png', '-',
+        ], { encoding: 'buffer', maxBuffer: 100_000_000 })).stdout
+        : source;
 
-      await sharp(source, inputOptions)
-        .rotate()
-        .resize({ width: 1920, height: 1920, fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 82 })
-        .toFile(destination);
+      let image = sharp(input, inputOptions).rotate();
+      if (job.crop) image = image.extract(job.crop);
+      await image.resize({ width: job.maxWidth ?? 1920, height: job.maxHeight ?? 1920, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 82 }).toFile(destination);
     }
 
     console.log(`${job.source} -> ${job.destination}`);

@@ -23,7 +23,8 @@ test('homepage presents the approved Darkroom narrative', async ({ page }) => {
     'I design and build interactive systems, immersive artworks, and digital experiences that explore how technology can change the way people connect.',
   );
   await expect(page.locator('#hero')).toContainText('Toronto, Canada');
-  await expect(page.locator('#hero')).toContainText('Open to employment and freelance work.');
+  await expect(page.locator('#hero .hero__facts li')).toHaveText(['Toronto, Canada']);
+  await expect(page.locator('#hero')).not.toContainText('Open to employment and freelance work.');
   await expect(page.locator('#hero').getByRole('link', { name: "See what I've been building" })).toHaveAttribute(
     'href',
     '#selected-work',
@@ -116,6 +117,18 @@ test('homepage renders the exact selected work and music inventories', async ({ 
   await expect(page.locator('#selected-music [data-music-grid] [data-music-gateway]')).toHaveCount(0);
 });
 
+test('selected work cards stay navigable without ordering numbers or redundant case-study links', async ({ page }) => {
+  await page.goto('/');
+  const cards = page.locator('#selected-work [data-project-card]');
+  await expect(cards).toHaveCount(3);
+  await expect(cards.locator('[data-project-index]')).toHaveCount(0);
+  await expect(cards.locator('[data-case-study-link]')).toHaveCount(0);
+  for (const [index, slug] of ['encounters', 'luminous-trails', 'ephemeral-pulses-of-a-finite-scroll'].entries()) {
+    await expect(cards.nth(index).locator('.project-card__image-link')).toHaveAttribute('href', `/work/${slug}/`);
+    await expect(cards.nth(index).getByRole('heading').getByRole('link')).toHaveAttribute('href', `/work/${slug}/`);
+  }
+});
+
 test('selected work and music use wrapping grid layouts instead of horizontal strips', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
@@ -187,12 +200,18 @@ test('experience preview and closing invitations preserve the approved content a
 
   const experiments = page.locator('#experiments-invitation');
   await expect(experiments.getByRole('heading', { level: 2 })).toHaveText(
-    'Small systems making big, strange pictures.',
+    'Small systems. Strange pictures.',
   );
   await expect(experiments).toContainText(
-    'A collection of generative video studies built from cellular automata, simulations, procedural rules, and other algorithms left alone long enough to become interesting.',
+    'Generative studies where simple rules make unexpected worlds.',
   );
-  await expect(experiments.getByRole('link')).toHaveAttribute('href', '/experiments/');
+  await expect(experiments.getByRole('link', { name: /Enter the experiments/ })).toHaveAttribute('href', '/experiments/');
+  const preview = experiments.locator('.experiments-invitation__preview video');
+  await expect(preview).toHaveCount(1);
+  await expect(preview).toHaveAttribute('muted', '');
+  await expect(preview).toHaveAttribute('autoplay', '');
+  await expect(preview).toHaveAttribute('loop', '');
+  await expect(preview.locator('source[type="video/mp4"]')).toHaveAttribute('src', '/media/experiments/01-cellular-automata-preview.mp4');
 
   const contact = page.locator('#contact-invitation');
   await expect(contact.getByRole('heading', { level: 2 })).toHaveText(
@@ -221,6 +240,33 @@ test('10 PRINT retains its static art without JavaScript', async ({ browser }) =
   await context.close();
 });
 
+test('10 PRINT does not flash the finished fallback while JavaScript loads', async ({ page }) => {
+  let resumeScripts!: () => void;
+  const scriptsPaused = new Promise<void>((resolve) => { resumeScripts = resolve; });
+  await page.route('**/*.js', async (route) => {
+    await scriptsPaused;
+    await route.continue();
+  });
+
+  try {
+    await page.goto('/work/', { waitUntil: 'commit' });
+    const field = page.locator('[data-ten-print]');
+    await expect(field).toHaveAttribute('data-render-state', 'fallback');
+    await expect(field.locator('img')).toBeHidden();
+  } finally {
+    resumeScripts();
+  }
+});
+
+test('10 PRINT finishes its one-time reveal in about four seconds', async ({ page }) => {
+  await page.goto('/');
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-animation-state', 'drawing', { timeout: 10_000 });
+  const start = Date.now();
+  await expect(field).toHaveAttribute('data-animation-state', 'complete', { timeout: 7000 });
+  expect(Date.now() - start).toBeLessThan(4600);
+});
+
 test('10 PRINT renders a complete still field under reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
@@ -228,8 +274,38 @@ test('10 PRINT renders a complete still field under reduced motion', async ({ pa
   const field = page.locator('[data-ten-print]');
   await expect(field).toHaveAttribute('data-motion', 'reduced');
   await expect(field).toHaveAttribute('data-render-state', 'ready');
+  await expect(field).toHaveAttribute('data-animation-state', 'complete');
   await expect(field.locator('canvas')).toBeVisible();
   await expect(field.locator('img')).toBeHidden();
+});
+
+test('10 PRINT draws progressively once on Home and a subpage, then holds the final frame', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  for (const route of ['/', '/work/']) {
+    await page.goto(route);
+    const field = page.locator('[data-ten-print]');
+    await expect(field, route).toHaveAttribute('data-animation-state', 'drawing', { timeout: 10_000 });
+    const canvas = field.locator('canvas');
+    const earlyFrame = await canvas.screenshot();
+    await page.waitForTimeout(650);
+    const laterFrame = await canvas.screenshot();
+    expect(laterFrame.equals(earlyFrame), `${route} should reveal new lines`).toBe(false);
+
+    await expect(field, route).toHaveAttribute('data-animation-state', 'complete', { timeout: 12_000 });
+    const finishedFrame = await canvas.screenshot();
+    await page.waitForTimeout(250);
+    expect((await canvas.screenshot()).equals(finishedFrame), `${route} should stop after one pass`).toBe(true);
+  }
+});
+
+test('10 PRINT pauses its drawing pass while the hero is offscreen', async ({ page }) => {
+  await page.goto('/');
+  const field = page.locator('[data-ten-print]');
+  await expect(field).toHaveAttribute('data-animation-state', 'drawing', { timeout: 10_000 });
+  await page.locator('#contact-invitation').scrollIntoViewIfNeeded();
+  await expect(field).toHaveAttribute('data-animation-state', 'paused');
+  await field.scrollIntoViewIfNeeded();
+  await expect(field).toHaveAttribute('data-animation-state', 'drawing');
 });
 
 test('10 PRINT preserves the static image when graphics initialization fails', async ({ page }) => {

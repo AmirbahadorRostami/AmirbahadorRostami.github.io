@@ -62,7 +62,7 @@ test('primary navigation exposes the five approved destinations in order', async
   for (const [index, label] of ['Work', 'Experiments', 'Music', 'About', 'Contact'].entries()) {
     await expect(links.nth(index)).toHaveAccessibleName(label);
   }
-  await expect(links.locator('[aria-hidden="true"]')).toHaveText(['01', '02', '03', '04', '05']);
+  await expect(navigation.locator('.primary-menu__number')).toHaveCount(0);
   expect(await navigation.getByRole('link').evaluateAll((links) => (
     links.map((link) => link.getAttribute('href'))
   ))).toEqual([
@@ -128,12 +128,54 @@ test('current section navigation includes a visible signal line on detail pages'
   expect(line.opacity).toBe('1');
 });
 
-test('10 PRINT art loads only on the homepage', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('[data-ten-print]')).toHaveCount(1);
+test('the homepage 10 PRINT field also renders in production subpage heroes', async ({ page }) => {
+  for (const route of ['/', '/work/', '/experiments/', '/music/', '/about/', '/contact/', '/work/encounters/']) {
+    await page.goto(route);
+    const field = page.locator('[data-ten-print]');
+    await expect(field, route).toHaveCount(1);
+    await expect(field, route).toHaveAttribute('data-render-state', 'ready');
+    await expect(field.locator('canvas'), route).toHaveCount(1);
+  }
+});
+
+test('Home and subpage hero artwork fades vertically into black without a hard edge', async ({ page }) => {
+  for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    const backgrounds: string[] = [];
+    for (const [route, selector] of [['/', '#hero'], ['/about/', '.subpage-backdrop']]) {
+      await page.goto(route);
+      const appearance = await page.locator(selector).evaluate((element) => ({
+        background: getComputedStyle(element, '::after').backgroundImage,
+        border: getComputedStyle(element).borderBottomWidth,
+      }));
+      expect(appearance.background, `${route} at ${viewport.width}px`).toMatch(/linear-gradient\(rgba\(0, 0, 0, 0\) 48%, rgb\(7, 7, 7\) 100%\)/);
+      if (route === '/') expect(appearance.border).toBe('0px');
+      backgrounds.push(appearance.background);
+    }
+    expect(backgrounds[0]).toBe(backgrounds[1]);
+  }
+});
+
+test('About header allows pointer navigation home and to Work', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/about/');
-  await expect(page.locator('[data-ten-print]')).toHaveCount(0);
-  await expect(page.locator('canvas')).toHaveCount(0);
+  const brand = page.getByRole('banner').getByRole('link', { name: 'Amir Bahador Rostami — Home' });
+  await brand.click({ timeout: 2_000 });
+  await expect(page).toHaveURL('http://127.0.0.1:4321/');
+  await page.goto('/about/');
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Work' }).click({ timeout: 2_000 });
+  await expect(page).toHaveURL('http://127.0.0.1:4321/work/');
+});
+
+test('About mobile header allows opening the menu and leaving the page', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/about/');
+
+  const menuButton = page.getByRole('button', { name: 'Menu' });
+  await menuButton.click({ timeout: 2_000 });
+  await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Music' }).click({ timeout: 2_000 });
+  await expect(page).toHaveURL('http://127.0.0.1:4321/music/');
 });
 
 test('foundation primitives keep asymmetric columns and square accessible controls', async ({ page }) => {

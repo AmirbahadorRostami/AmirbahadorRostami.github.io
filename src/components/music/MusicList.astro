@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MusicCard from './MusicCard.astro';
+
+export interface Props {
+  records: CollectionEntry<'music'>[];
+  startIndex?: number;
+}
+
+const { records, startIndex = 1 } = Astro.props;
+---
+
+<ol class="music-list" role="list" aria-label="Music releases" data-music-list>
+  {records.map((record, index) => (
+    <li><MusicCard record={record} number={startIndex + index} /></li>
+  ))}
+</ol>
+
+<style>
+  .music-list { border-top: 1px solid var(--line); list-style: none; margin: 0; padding: 0; }
+  .music-list > li { border-bottom: 1px solid var(--line); min-width: 0; }
+</style>

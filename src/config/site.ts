@@ -12,8 +12,8 @@ export const SITE = {
     { label: 'About', href: '/about/' },
     { label: 'Contact', href: '/contact/' },
   ],
-  linkedInUrl: '',
-  spotifyUrl: '',
+  linkedInUrl: 'https://www.linkedin.com/in/amir-rostami-942455115/',
+  spotifyUrl: 'https://open.spotify.com/artist/6854BmgZPcYRCZ6ZUluBuo',
   soundCloudUrl: 'https://soundcloud.com/amir-bahador-rostami',
   appleMusicUrl: '',
 } as const;
