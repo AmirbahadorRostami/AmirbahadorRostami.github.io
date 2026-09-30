@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync, readdirSync } from 'node:fs';
-import { auditPdf } from '../helpers/pdf-audit';
 
 const email = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const phone = /(?<!\d)(?:\+?1[\s.()-]*)?\(?\d{3}\)?[\s.-]+\d{3}[\s.-]+\d{4}(?!\d)/;
@@ -11,7 +10,7 @@ test('built HTML and scripts do not persist visitor input', () => {
   }
 });
 
-test('built HTML and public PDF expose no private contact details', async ({ browser }) => {
+test('built HTML exposes no private contact details', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   for (const name of readdirSync('dist', { recursive: true }).map(String).filter(name => name.endsWith('.html'))) {
@@ -28,10 +27,6 @@ test('built HTML and public PDF expose no private contact details', async ({ bro
     expect(await page.locator('a[href^="mailto:"], a[href^="tel:"]').count(), name).toBe(0);
   }
   await context.close();
-  const pdf = await auditPdf(new Uint8Array(readFileSync('dist/documents/Amir-Rostami-Resume.pdf')));
-  const text = [pdf.searchableText, pdf.metadataText, pdf.parserExposedText].join('\n');
-  expect(text).not.toMatch(email);
-  expect(text).not.toMatch(phone);
 });
 
 test('BioWords input stays in memory and causes no outbound requests', async ({ page }) => {

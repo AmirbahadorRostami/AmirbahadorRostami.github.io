@@ -76,6 +76,8 @@ The BioWords case study uses its supplied final hero artwork while retaining the
 
 The September 30 cleanup retired the pre-Astro root site (`index.html`, `Pages/`, `CSS/`, `js/`, `slick/`, and its root scripts/styles), obsolete editor and macOS metadata, and the unused experiment year/technique/tools rendering path. Those historical files remain recoverable from Git history. Do not remove `Media/img-tester/`: some media regeneration jobs still use selected originals there.
 
+The public résumé PDF and its generator were retired; the About page points to LinkedIn instead. The release tests verify the PDF is absent from the built site. The retained tracked files under `Media/` are inputs to the current media-preparation script; unused historical media was removed from the repository. Ignored owner-supplied camera and video masters remain local so published media can be regenerated.
+
 ## Contact endpoint
 
 The site is static, so form delivery goes to a replaceable external endpoint. Create a local `.env` (which is ignored by Git) from `.env.example` and configure only the public endpoint value:

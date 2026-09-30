@@ -1,7 +1,6 @@
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
-import { auditPdf } from '../helpers/pdf-audit';
 
 const organizations = [
   'Product Madness',
@@ -75,7 +74,7 @@ test('about page renders all experience records in content order as a semantic t
   }
 });
 
-test('about page provides education, contextual skills, and LinkedIn instead of a resume action', async ({ page }) => {
+test('about page provides education, contextual skills, and LinkedIn without publishing a resume', async ({ page }) => {
   await page.goto('/about/');
 
   const education = page.getByRole('region', { name: 'Education' });
@@ -108,26 +107,7 @@ test('about page provides education, contextual skills, and LinkedIn instead of 
   expect(emailPattern.test(html), 'About HTML must not expose an email address').toBe(false);
   expect(phonePattern.test(html), 'About HTML must not expose a phone number').toBe(false);
 
-  const deployedResume = join(process.cwd(), 'dist/documents/Amir-Rostami-Resume.pdf');
-  expect(statSync(deployedResume).size).toBeGreaterThan(1_000);
-
-  const pdfAudit = await auditPdf(new Uint8Array(readFileSync(deployedResume)));
-  const parserVisibleContent = [
-    pdfAudit.searchableText,
-    pdfAudit.metadataText,
-    pdfAudit.parserExposedText,
-  ].join('\n');
-  expect(pdfAudit.searchableText).toContain('PROFESSIONAL EXPERIENCE');
-  expect(emailPattern.test(parserVisibleContent), 'Résumé must not expose an email address').toBe(false);
-  expect(phonePattern.test(parserVisibleContent), 'Résumé must not expose a phone number').toBe(false);
-  expect(pdfAudit.attachmentCount).toBe(0);
-  expect(pdfAudit.embeddedFileObjectCount).toBe(0);
-  expect(pdfAudit.fieldCount).toBe(0);
-  expect(pdfAudit.actionObjectCount).toBe(0);
-  expect(pdfAudit.externalUrlCount).toBe(0);
-  expect(pdfAudit.javascriptActionCount).toBe(0);
-  expect(pdfAudit.pages.every((pdfPage) => pdfPage.annotationCount === 0)).toBe(true);
-  expect(pdfAudit.unreadableStreamCount).toBe(0);
+  expect(existsSync(join(process.cwd(), 'dist/documents/Amir-Rostami-Resume.pdf'))).toBe(false);
 });
 
 test('about timeline remains readable without horizontal overflow', async ({ page }) => {
