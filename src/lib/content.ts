@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export const EXPECTED_PROJECT_SLUGS = [
   'encounters',
   'luminous-trails',
+  'oneshot',
   'ephemeral-pulses-of-a-finite-scroll',
   'biowords',
   'person-is-a-data-structure',

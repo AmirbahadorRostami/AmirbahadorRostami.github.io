@@ -18,6 +18,14 @@ const projects = [
     media: 7,
   },
   {
+    slug: 'oneshot', title: 'OneShot', depth: 'flagship', heroStem: 'oneshot-hero',
+    heroAlt: 'OneShot pixel artwork of a DJ running through a crowd toward a purple-lit concert stage',
+    premise: 'A browser-based augmented-reality runner that turns a Sapporo beer can into a game screen.',
+    narrative: 'I contributed to game development and AR implementation, focusing on the game mechanics and integration.',
+    chapters: ['01 Premise', '02 Experience', '03 My contribution', '04 Technical system', '05 Process', '06 Credits', '07 Documentation'],
+    media: 11,
+  },
+  {
     slug: 'ephemeral-pulses-of-a-finite-scroll', title: 'Ephemeral Pulses of a Finite Scroll', depth: 'flagship', heroStem: 'remote-realities-card',
     heroAlt: 'A visitor beside a suspended translucent installation in a blue-lit gallery',
     premise: 'A sound installation in which wireless swing units complete a chord when their movement reaches rhythmic and harmonic synchronization.',
@@ -145,6 +153,7 @@ test('owner-supplied media fills matching case-study slots and detailed diagrams
   const cases = [
     { slug: 'encounters', ids: ['onboarding-1', 'invitation-pairing-interface', 'pairing-demo', 'ar-wayfinding-avatar', 'system-architecture', 'campus-map-process'] },
     { slug: 'luminous-trails', ids: ['event-booth', 'participant-documentation', 'ar-trails-intersections', 'ar-avatar', 'app-journey', 'app-avatar', 'map-prototype-testing'] },
+    { slug: 'oneshot', ids: ['gameplay', 'campaign-packaging', 'can-tracking', 'campaign-introduction', 'start-screen', 'instructions-screen', 'gameplay-concept', 'story-animation', 'runner-animation', 'game-over-animation', 'level-progression'] },
     { slug: 'ephemeral-pulses-of-a-finite-scroll', ids: ['participant-interaction', 'sound-synthesis-unit-architecture', 'hardware-components', 'fourteen-note-directional-mapping'] },
     { slug: 'biowords', ids: ['original-simulation'] },
     { slug: 'person-is-a-data-structure', ids: ['gallery-installation', 'system-overview', 'installation-trailer'] },
@@ -329,7 +338,7 @@ test('Encounters omits the social-gathering video while keeping the local docume
   await expect(page.locator('[data-media-id="ar-wayfinding-avatar"] video')).toHaveCount(1);
 });
 
-test('keeps all five narratives, facts, placeholders, and video links usable without JavaScript', async ({ browser }) => {
+test('keeps all six narratives, facts, placeholders, and video links usable without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   for (const project of projects) {
@@ -345,7 +354,7 @@ test('keeps all five narratives, facts, placeholders, and video links usable wit
   await context.close();
 });
 
-test('wraps navigation through the five canonical projects', async ({ page }) => {
+test('wraps navigation through the six canonical projects', async ({ page }) => {
   await page.goto('/work/encounters/');
   await expect(page.getByRole('link', { name: 'Previous project: Person Is a Data Structure' }))
     .toHaveAttribute('href', '/work/person-is-a-data-structure/');

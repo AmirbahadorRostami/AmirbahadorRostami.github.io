@@ -10,6 +10,7 @@ const contentRoot = resolve(import.meta.dirname, '../../src/content');
 const expectedProjects = [
   'encounters',
   'luminous-trails',
+  'oneshot',
   'ephemeral-pulses-of-a-finite-scroll',
   'biowords',
   'person-is-a-data-structure',
@@ -100,7 +101,7 @@ describe('launch inventory', () => {
     });
     expect(byId['person-is-a-data-structure'].context).toContain('Collaborative university installation');
     expect(byId['person-is-a-data-structure'].context).toContain('Eleanor Winters Art Gallery, York University');
-    expect(readProjectCollection().filter(({ data }) => data.depth === 'flagship')).toHaveLength(3);
+    expect(readProjectCollection().filter(({ data }) => data.depth === 'flagship')).toHaveLength(4);
     expect(readProjectCollection().filter(({ data }) => data.depth === 'short')).toHaveLength(2);
   });
 
@@ -161,10 +162,11 @@ describe('launch inventory', () => {
       .toBe(false);
   });
 
-  it('contains the five approved project slugs', () => {
+  it('contains the six approved project slugs', () => {
     expect(EXPECTED_PROJECT_SLUGS).toEqual([
       'encounters',
       'luminous-trails',
+      'oneshot',
       'ephemeral-pulses-of-a-finite-scroll',
       'biowords',
       'person-is-a-data-structure',
@@ -208,15 +210,16 @@ describe('launch inventory', () => {
     const expected = {
       encounters: { title: 'Encounters', depth: 'flagship', order: 1, featured: true },
       'luminous-trails': { title: 'Luminous Trails', depth: 'flagship', order: 2, featured: true },
+      oneshot: { title: 'OneShot', depth: 'flagship', order: 3, featured: true },
       'ephemeral-pulses-of-a-finite-scroll': {
         title: 'Ephemeral Pulses of a Finite Scroll',
         alternateTitle: 'Remote Realities',
         depth: 'flagship',
-        order: 3,
-        featured: true,
+        order: 4,
+        featured: false,
       },
-      biowords: { title: 'BioWords', depth: 'short', order: 4, featured: false },
-      'person-is-a-data-structure': { title: 'Person Is a Data Structure', depth: 'short', order: 5, featured: false },
+      biowords: { title: 'BioWords', depth: 'short', order: 5, featured: false },
+      'person-is-a-data-structure': { title: 'Person Is a Data Structure', depth: 'short', order: 6, featured: false },
     } as const;
 
     for (const [slug, record] of Object.entries(expected)) {

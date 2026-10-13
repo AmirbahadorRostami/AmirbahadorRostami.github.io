@@ -7,11 +7,19 @@ import { MEDIA_JOBS, prepareMedia } from '../../scripts/prepare-media.mjs';
 const repositoryRoot = resolve(import.meta.dirname, '../..');
 
 describe('media manifest', () => {
+  it.each(['story-animation', 'runner-animation', 'game-over-animation'])('preserves the frames and timing of the OneShot %s animation', async (name) => {
+    const metadata = await sharp(resolve(repositoryRoot, `src/assets/projects/oneshot/${name}.webp`)).metadata();
+    expect(metadata.format).toBe('webp');
+    expect(metadata.pages).toBeGreaterThan(1);
+    expect(metadata.delay).toHaveLength(metadata.pages!);
+    expect(metadata.delay!.reduce((total, delay) => total + delay, 0)).toBeGreaterThan(0);
+  });
   it('has a hero image for every launch project', () => {
     expect(new Set(MEDIA_JOBS.map((job) => job.project))).toEqual(
       new Set([
         'encounters',
         'luminous-trails',
+        'oneshot',
         'remote-realities',
         'biowords',
         'person-is-a-data-structure',

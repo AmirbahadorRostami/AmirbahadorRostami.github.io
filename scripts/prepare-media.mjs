@@ -15,6 +15,19 @@ const assetRoot = resolve(repositoryRoot, 'src/assets');
  * so the source-to-destination mapping is reviewable and portable across checkouts.
  */
 export const MEDIA_JOBS = [
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/hero.png', destination: 'src/assets/projects/oneshot/oneshot-hero.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Screen Shot 2021-04-12 at 10.31.05 AM.png', destination: 'src/assets/projects/oneshot/gameplay-concept.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Screen Shot 2021-08-12 at 5.28.06 PM.png', destination: 'src/assets/projects/oneshot/level-progression.webp', maxWidth: 3000, maxHeight: 1600 },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Screen Shot 2022-01-27 at 2.26.35 PM.png', destination: 'src/assets/projects/oneshot/start-screen.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Screen Shot 2022-01-27 at 2.26.54 PM.png', destination: 'src/assets/projects/oneshot/instructions-screen.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Sapporo1.gif', destination: 'src/assets/projects/oneshot/story-animation.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Sapporo2.gif', destination: 'src/assets/projects/oneshot/runner-animation.webp' },
+  { project: 'oneshot', source: 'Media/final/projects/oneshot/Sapporo4.gif', destination: 'src/assets/projects/oneshot/game-over-animation.webp' },
+  {
+    project: 'oneshot',
+    source: 'Media/final/projects/oneshot/Sapporo 6pack skin.jpg',
+    destination: 'src/assets/projects/oneshot/oneshot-card.webp',
+  },
   {
     project: 'encounters',
     source: 'Media/img-tester/Encounter.png',
@@ -295,7 +308,9 @@ export async function prepareMedia() {
       const composed = await sharp(source).composite(layers).png().toBuffer();
       await sharp(composed).extract(job.crop).webp({ quality: 90 }).toFile(destination);
     } else {
-      const inputOptions = operation === 'first-frame' ? { page: 0, pages: 1 } : undefined;
+      const inputOptions = operation === 'first-frame'
+        ? { page: 0, pages: 1 }
+        : /\.gif$/i.test(job.source) ? { animated: true } : undefined;
       const input = operation === 'heic'
         ? (await execFileAsync('ffmpeg', [
           '-loglevel', 'error', '-i', source, '-frames:v', '1',

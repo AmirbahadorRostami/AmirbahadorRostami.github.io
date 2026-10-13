@@ -4,7 +4,7 @@ year: "2018"
 summary: A collaborative university installation connecting facial data, cameras, displays, sensors, and physical systems.
 cardSummary: Facial data connects cameras, displays, and physical systems.
 depth: short
-order: 5
+order: 6
 featured: false
 categories: [interactive-installation, surveillance, machine-learning]
 roles: [Technical artist, Systems developer]

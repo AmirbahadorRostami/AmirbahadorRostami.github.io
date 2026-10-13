@@ -12,6 +12,9 @@ const videoRoot = resolve(root, 'public/media');
 const posterRoot = resolve(root, 'src/assets');
 
 export const VIDEO_JOBS = [
+  { source: 'Media/final/projects/oneshot/Image from iOS (1).MP4', video: 'public/media/projects/oneshot/can-tracking.mp4', poster: 'src/assets/projects/oneshot/can-tracking-poster.webp', posterAt: 6 },
+  { source: 'Media/final/projects/oneshot/Image from iOS (2).MP4', video: 'public/media/projects/oneshot/gameplay.mp4', poster: 'src/assets/projects/oneshot/gameplay-poster.webp', posterAt: 11 },
+  { source: 'Media/final/projects/oneshot/Image from iOS (3).MP4', video: 'public/media/projects/oneshot/campaign-introduction.mp4', poster: 'src/assets/projects/oneshot/campaign-introduction-poster.webp', posterAt: 12 },
   { source: 'Media/experiments/CelluarAutomta.mov', video: 'public/media/experiments/01-cellular-automata.mp4', poster: 'src/assets/projects/cellular-automata/cellular-automata-poster.webp', posterAt: 40 },
   { source: 'Media/experiments/CelluarAutomta.mov', video: 'public/media/experiments/01-cellular-automata-preview.mp4', poster: 'src/assets/projects/cellular-automata/cellular-automata-preview-poster.webp', start: 35, duration: 15, posterAt: 40 },
   { source: 'Media/experiments/Choas_KKW_Edited.mp4', video: 'public/media/experiments/02-experiment.mp4', poster: 'src/assets/experiments/02-experiment-poster.webp', posterAt: 3 },

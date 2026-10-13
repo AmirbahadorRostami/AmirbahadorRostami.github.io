@@ -21,11 +21,12 @@ type ExperimentFixture = {
 };
 
 const projectEntries: ProjectFixture[] = [
-  { id: 'ephemeral-pulses-of-a-finite-scroll', data: { title: 'Ephemeral Pulses of a Finite Scroll', order: 3, featured: true, categories: ['technology-art', 'installation'], draft: false } },
+  { id: 'oneshot', data: { title: 'OneShot', order: 3, featured: true, categories: ['augmented-reality', 'game'], draft: false } },
+  { id: 'ephemeral-pulses-of-a-finite-scroll', data: { title: 'Ephemeral Pulses of a Finite Scroll', order: 4, featured: false, categories: ['technology-art', 'installation'], draft: false } },
   { id: 'draft-project', data: { title: 'Draft Project', order: 0, featured: true, categories: ['private'], draft: true } },
   { id: 'encounters', data: { title: 'Encounters', order: 1, featured: true, categories: ['augmented-reality', 'public-space'], draft: false } },
-  { id: 'biowords', data: { title: 'BioWords', order: 4, featured: false, categories: ['generative-art', 'web-experience'], draft: false } },
-  { id: 'person-is-a-data-structure', data: { title: 'Person Is a Data Structure', order: 5, featured: false, categories: ['interactive-installation', 'surveillance'], draft: false } },
+  { id: 'biowords', data: { title: 'BioWords', order: 5, featured: false, categories: ['generative-art', 'web-experience'], draft: false } },
+  { id: 'person-is-a-data-structure', data: { title: 'Person Is a Data Structure', order: 6, featured: false, categories: ['interactive-installation', 'surveillance'], draft: false } },
   { id: 'luminous-trails', data: { title: 'Luminous Trails', order: 2, featured: true, categories: ['augmented-reality', 'geolocation'], draft: false } },
 ] as const;
 
@@ -81,6 +82,7 @@ describe('project query layer', () => {
     expect(projects.map(({ id }) => id)).toEqual([
       'encounters',
       'luminous-trails',
+      'oneshot',
       'ephemeral-pulses-of-a-finite-scroll',
       'biowords',
       'person-is-a-data-structure',
@@ -95,7 +97,7 @@ describe('project query layer', () => {
     expect(projects.map(({ data }) => data.title)).toEqual([
       'Encounters',
       'Luminous Trails',
-      'Ephemeral Pulses of a Finite Scroll',
+      'OneShot',
     ]);
   });
 

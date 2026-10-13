@@ -30,7 +30,7 @@ const chapters = [
 ---
 
 <BaseLayout title={`${data.title} | Amir Bahador Rostami`} description={data.summary} canonicalPath={`/work/${project.id}/`} image={detailHero.src}>
-  <article class="project-detail container" data-project-detail data-depth={data.depth}>
+  <article class="project-detail container" data-project-detail data-project={project.id} data-depth={data.depth}>
     <header class="project-hero subpage-hero">
       <SubpageBackdrop />
       <a class="text-link project-hero__back" href="/work/">← Selected work</a>
@@ -91,6 +91,8 @@ const chapters = [
   .project-hero__premise { font-size: clamp(1.35rem, 3vw, 2.5rem); font-weight: 400; letter-spacing: -.025em; line-height: 1.35; margin: 0; max-width: 36ch; }
   .project-hero__image { background: var(--surface); border: 1px solid var(--line); margin: clamp(1rem, 3vw, 3rem) 0 0; overflow: hidden; position: relative; }
   .project-hero__image :global([data-hero-art]) { height: auto; max-height: 48rem; object-fit: cover; width: 100%; }
+  .project-detail[data-project='oneshot'] .project-hero__image { justify-self: center; max-width: 48rem; width: 100%; }
+  .project-detail[data-project='oneshot'] .project-hero__image :global([data-hero-art]) { max-height: none; }
   .project-hero__image :global(.project-hero__mark) { height: auto; left: 50%; max-width: 42%; position: absolute; top: 50%; transform: translate(-50%, -50%); width: 38%; }
   .project-detail[data-depth='short'] .project-hero__image { max-width: 64rem; width: 100%; }
   .project-chapter { border-top: 1px solid var(--line); display: grid; gap: 2rem; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); padding-top: 1.5rem; }

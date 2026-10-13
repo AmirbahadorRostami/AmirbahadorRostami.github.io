@@ -96,7 +96,7 @@ test('homepage renders the exact selected work and music inventories', async ({ 
   await expect(selectedProjects.getByRole('heading', { level: 2 })).toHaveText([
     'Encounters',
     'Luminous Trails',
-    'Ephemeral Pulses',
+    'OneShot',
   ]);
 
   const selectedMusic = page.locator('#selected-music [data-music-card]');
@@ -123,7 +123,7 @@ test('selected work cards stay navigable without ordering numbers or redundant c
   await expect(cards).toHaveCount(3);
   await expect(cards.locator('[data-project-index]')).toHaveCount(0);
   await expect(cards.locator('[data-case-study-link]')).toHaveCount(0);
-  for (const [index, slug] of ['encounters', 'luminous-trails', 'ephemeral-pulses-of-a-finite-scroll'].entries()) {
+  for (const [index, slug] of ['encounters', 'luminous-trails', 'oneshot'].entries()) {
     await expect(cards.nth(index).locator('.project-card__image-link')).toHaveAttribute('href', `/work/${slug}/`);
     await expect(cards.nth(index).getByRole('heading').getByRole('link')).toHaveAttribute('href', `/work/${slug}/`);
   }

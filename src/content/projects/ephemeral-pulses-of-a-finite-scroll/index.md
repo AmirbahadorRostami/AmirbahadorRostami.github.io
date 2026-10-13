@@ -5,8 +5,8 @@ year: "2020"
 summary: A sound installation in which wireless swing units complete a chord when their movement reaches rhythmic and harmonic synchronization.
 cardSummary: Networked swings complete a chord when their movements synchronize.
 depth: flagship
-order: 3
-featured: true
+order: 4
+featured: false
 categories: [technology-art, installation]
 roles: [Co-creator]
 tools: [Raspberry Pi, MPU-6050, Python, SuperCollider, Audio interface, Amplifier, Surface transducer]

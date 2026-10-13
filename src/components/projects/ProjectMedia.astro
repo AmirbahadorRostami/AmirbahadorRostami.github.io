@@ -92,6 +92,17 @@ const { project } = Astro.props;
   .project-media[data-project='luminous-trails'] > [data-media-id='ar-avatar'],
   .project-media[data-project='luminous-trails'] > [data-media-id='app-avatar'] { grid-column: 8 / span 4; }
   .project-media[data-project='luminous-trails'] > [data-media-id='map-prototype-testing'] { grid-column: 5 / span 4; }
+  .project-media[data-project='oneshot'] > [data-media-id='gameplay'],
+  .project-media[data-project='oneshot'] > [data-media-id='can-tracking'],
+  .project-media[data-project='oneshot'] > [data-media-id='start-screen'],
+  .project-media[data-project='oneshot'] > [data-media-id='gameplay-concept'],
+  .project-media[data-project='oneshot'] > [data-media-id='runner-animation'] { grid-column: 2 / span 4; }
+  .project-media[data-project='oneshot'] > [data-media-id='campaign-packaging'],
+  .project-media[data-project='oneshot'] > [data-media-id='campaign-introduction'],
+  .project-media[data-project='oneshot'] > [data-media-id='instructions-screen'],
+  .project-media[data-project='oneshot'] > [data-media-id='story-animation'],
+  .project-media[data-project='oneshot'] > [data-media-id='game-over-animation'] { grid-column: 8 / span 4; }
+  .project-media[data-project='oneshot'] > [data-media-id='level-progression'] { grid-column: 1 / -1; }
   .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='participant-interaction'] { grid-column: 2 / span 4; }
   .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='sculpture-floor-layout-renders'] { grid-column: 8 / span 5; }
   .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='sound-synthesis-unit-architecture'] { grid-column: 4 / span 6; }
@@ -133,6 +144,8 @@ const { project } = Astro.props;
     .project-media[data-project='encounters'] > [data-media-id='onboarding-1'],
     .project-media[data-project='encounters'] > [data-media-id='virtual-water-underwater-environment'] { justify-self: center; max-width: 24rem; }
     .project-media[data-project='luminous-trails'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: center; max-width: 24rem; width: 100%; }
+    .project-media[data-project='oneshot'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: center; max-width: 24rem; width: 100%; }
+    .project-media[data-project='oneshot'] > [data-media-id='level-progression']:nth-child(n) { max-width: none; }
     .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > figure:nth-child(n) { grid-column: 1 / -1; justify-self: center; width: 100%; }
     .project-media[data-project='ephemeral-pulses-of-a-finite-scroll'] > [data-media-id='participant-interaction'] { max-width: 24rem; }
   }

@@ -6,6 +6,7 @@ const auditedRoutes = [
   '/work/',
   '/work/encounters/',
   '/work/luminous-trails/',
+  '/work/oneshot/',
   '/work/ephemeral-pulses-of-a-finite-scroll/',
   '/work/biowords/',
   '/experiments/',

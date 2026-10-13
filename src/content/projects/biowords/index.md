@@ -4,7 +4,7 @@ year: "2019"
 summary: An artificial-life work that turns words from participants' sentences into biomorphs whose sentiment and DNA shape flocking, community, and survival.
 cardSummary: Sentences become artificial creatures with word-shaped DNA.
 depth: short
-order: 4
+order: 5
 featured: false
 categories: [artificial-life, generative-art, web-experience]
 roles: [Solo creator]

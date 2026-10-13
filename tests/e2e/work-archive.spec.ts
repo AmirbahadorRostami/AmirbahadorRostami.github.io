@@ -7,15 +7,16 @@ import {
 const projectTitles = [
   'Encounters',
   'Luminous Trails',
+  'OneShot',
   'Ephemeral Pulses of a Finite Scroll',
   'BioWords',
   'Person Is a Data Structure',
 ];
 
-test('lists exactly the five approved work entries without filters', async ({ page }) => {
+test('lists exactly the six approved work entries without filters', async ({ page }) => {
   await page.goto('/work/');
 
-  await expect(page.locator('[data-project-card]')).toHaveCount(5);
+  await expect(page.locator('[data-project-card]')).toHaveCount(6);
   await expect(page.locator('[data-work-filter]')).toHaveCount(0);
   await expect(page.locator('[data-project-card] h2')).toHaveText(projectTitles);
 });
@@ -32,16 +33,17 @@ test('presents the approved archive introduction and editorial card metadata', a
 
   const cards = page.locator('[data-project-card]');
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-depth')))).toEqual([
-    'flagship', 'flagship', 'flagship', 'short', 'short',
+    'flagship', 'flagship', 'flagship', 'flagship', 'short', 'short',
   ]);
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-variant')))).toEqual([
-    'home', 'home', 'home', 'home', 'home',
+    'home', 'home', 'home', 'home', 'home', 'home',
   ]);
   await expect(cards.locator('[data-project-index]')).toHaveCount(0);
-  await expect(cards.locator('[data-project-year]')).toHaveText(['2023', '2022', '2020', '2019', '2018']);
+  await expect(cards.locator('[data-project-year]')).toHaveText(['2023', '2022', '2021', '2020', '2019', '2018']);
   await expect(cards.locator('[data-project-role]')).toHaveText([
     'Co-creator',
     'Lead Technical Architect',
+    'Implementation lead',
     'Co-creator',
     'Solo creator',
     'Technical artist',
@@ -50,6 +52,7 @@ test('presents the approved archive introduction and editorial card metadata', a
   for (const [index, slug] of [
     'encounters',
     'luminous-trails',
+    'oneshot',
     'ephemeral-pulses-of-a-finite-scroll',
     'biowords',
     'person-is-a-data-structure',
@@ -58,9 +61,9 @@ test('presents the approved archive introduction and editorial card metadata', a
     await expect(cards.nth(index).getByRole('heading').getByRole('link')).toHaveAttribute('href', `/work/${slug}/`);
   }
 
-  await expect(page.getByRole('list', { name: 'Projects' }).getByRole('listitem')).toHaveCount(5);
+  await expect(page.getByRole('list', { name: 'Projects' }).getByRole('listitem')).toHaveCount(6);
   expect(await cards.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).borderRadius))).toEqual([
-    '0px', '0px', '0px', '0px', '0px',
+    '0px', '0px', '0px', '0px', '0px', '0px',
   ]);
 });
 

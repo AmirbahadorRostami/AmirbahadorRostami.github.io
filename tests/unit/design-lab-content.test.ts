@@ -8,12 +8,13 @@ const collectionEntries = {
       data: {
         title: 'Ephemeral Pulses of a Finite Scroll',
         alternateTitle: 'Remote Realities',
-        order: 3,
-        featured: true,
+        order: 4,
+        featured: false,
         draft: false,
       },
     },
     { id: 'encounters', data: { title: 'Encounters', order: 1, featured: true, draft: false } },
+    { id: 'oneshot', data: { title: 'OneShot', order: 3, featured: true, draft: false } },
   ],
   music: [
     { id: 'la-paloma', data: { title: 'La Paloma', order: 1, featured: true, draft: false } },
@@ -45,7 +46,7 @@ describe('design lab content contract', () => {
     expect(FEATURED_TRACK_TITLES).toEqual(['Float', 'Flow', 'La Paloma']);
   });
 
-  it('selects the renamed project while preserving the design lab display title', async () => {
+  it('keeps its approved projects and display titles when homepage features change', async () => {
     const { projects } = await loadDesignLabContent();
 
     expect(projects.map(({ id }) => id)).toEqual([

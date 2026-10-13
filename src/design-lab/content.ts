@@ -62,7 +62,7 @@ export async function loadDesignLabContent(): Promise<DesignLabContent> {
   ]);
 
   const projects = sortByOrder(
-    projectEntries.filter(({ data }) => data.featured && !data.draft),
+    projectEntries.filter(({ data }) => !data.draft),
   );
   const music = sortByOrder(
     musicEntries.filter(({ data }) => data.featured && !data.draft),
