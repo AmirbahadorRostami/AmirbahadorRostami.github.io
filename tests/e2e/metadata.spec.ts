@@ -27,10 +27,12 @@ test('all canonical production routes have distinct descriptions and matching so
   }
 });
 
-test('sitemap lists exactly the canonical production routes', () => {
+test('sitemap lists exactly the canonical production routes and published blog posts', async ({ request }) => {
   const xml = readFileSync('dist/sitemap-0.xml', 'utf8');
   const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]).sort();
-  expect(urls).toEqual(productionRoutes.map(route => `${origin}${route}`).sort());
+  const blog = await (await request.get('/blog/')).text();
+  const postPaths = [...blog.matchAll(/href="(\/blog\/[^"]+)"/g)].map(match => match[1]);
+  expect(urls).toEqual([...productionRoutes, ...new Set(postPaths)].map(route => `${origin}${route}`).sort());
 });
 
 test('compatibility redirects publish target canonicals and noindex', async ({ request }) => {

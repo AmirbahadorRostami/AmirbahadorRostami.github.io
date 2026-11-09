@@ -54,12 +54,12 @@ test('Escape never hides the always-visible desktop primary navigation', async (
   await expect(menu).not.toHaveAttribute('hidden');
 });
 
-test('primary navigation exposes the five approved destinations in order', async ({ page }) => {
+test('primary navigation exposes the six approved destinations in order', async ({ page }) => {
   await page.goto('/');
 
   const navigation = page.getByRole('navigation', { name: 'Primary' });
   const links = navigation.getByRole('link');
-  for (const [index, label] of ['Work', 'Experiments', 'Music', 'About', 'Contact'].entries()) {
+  for (const [index, label] of ['Work', 'Experiments', 'Music', 'Blog', 'About', 'Contact'].entries()) {
     await expect(links.nth(index)).toHaveAccessibleName(label);
   }
   await expect(navigation.locator('.primary-menu__number')).toHaveCount(0);
@@ -69,6 +69,7 @@ test('primary navigation exposes the five approved destinations in order', async
     '/work/',
     '/experiments/',
     '/music/',
+    '/blog/',
     '/about/',
     '/contact/',
   ]);

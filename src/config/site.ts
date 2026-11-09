@@ -9,6 +9,7 @@ export const SITE = {
     { label: 'Work', href: '/work/' },
     { label: 'Experiments', href: '/experiments/' },
     { label: 'Music', href: '/music/' },
+    { label: 'Blog', href: '/blog/' },
     { label: 'About', href: '/about/' },
     { label: 'Contact', href: '/contact/' },
   ],

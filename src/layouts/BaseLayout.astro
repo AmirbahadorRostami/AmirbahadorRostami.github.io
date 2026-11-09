@@ -16,6 +16,7 @@ export interface Props {
   image?: string;
   flushMain?: boolean;
   robots?: string;
+  ogType?: 'website' | 'article';
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   image = '/og.png',
   flushMain = false,
   robots = 'index, follow',
+  ogType = 'website',
 } = Astro.props;
 const canonicalUrl = absoluteUrl(canonicalPath);
 const imageUrl = new URL(image, SITE.origin).toString();
@@ -39,7 +41,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />
     <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

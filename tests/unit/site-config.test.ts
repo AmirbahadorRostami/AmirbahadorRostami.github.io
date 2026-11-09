@@ -12,6 +12,7 @@ describe('SITE', () => {
       'Work',
       'Experiments',
       'Music',
+      'Blog',
       'About',
       'Contact',
     ]);

@@ -27,7 +27,7 @@ Use `npm ci` for a clean, lockfile-based install in CI or when reproducing a bui
 
 ## Production pages and content
 
-The static routes are `/`, `/work/`, six project case studies, `/experiments/`, `/music/`, `/about/`, `/contact/`, and `/404.html`. Work has six entries: Encounters, Luminous Trails, OneShot, Ephemeral Pulses of a Finite Scroll, BioWords, and Person Is a Data Structure. Experiments has seven entries: Cellular Automata, Agent Trails, and five intentionally untitled video studies. Music presents eight tracks under Amir's alias Baha in one compact archive list; About has thirteen timeline entries. The old `/work/remote-realities/` and `/work/cellular-automata/` URLs are compatibility redirects.
+The static routes are `/`, `/work/`, six project case studies, `/experiments/`, `/music/`, `/blog/`, `/about/`, `/contact/`, and `/404.html`. Work has six entries: Encounters, Luminous Trails, OneShot, Ephemeral Pulses of a Finite Scroll, BioWords, and Person Is a Data Structure. Experiments has seven entries: Cellular Automata, Agent Trails, and five intentionally untitled video studies. Music presents eight tracks under Amir's alias Baha in one compact archive list; About has thirteen timeline entries. The old `/work/remote-realities/` and `/work/cellular-automata/` URLs are compatibility redirects.
 
 - Projects: `src/content/projects/<slug>/index.md`; project media records are in each file's frontmatter.
 - Experiments: `src/content/experiments/*.json`; all seven supplied videos are connected. Agent Trails is second with an external CodePen source link, and five videos have no public title or card number.
@@ -39,6 +39,30 @@ The homepage and production subpage heroes share the same PixiJS 10 PRINT field 
 The homepage Experiments invitation previews a short Cellular Automata excerpt that starts after its near-black opening, with a still for reduced-motion visitors. The full film remains in Experiments. BioWords places its controls beside the viewport and displays survivors over the drawing at completion. Music tracks link directly to listening platforms without embedded-player loaders.
 
 The five cards on `/work/` share the homepage's unnumbered, no-extra-CTA treatment; artwork and title still open each case study. Encounters includes the owner-supplied `onboarding-1` screen. Its portrait stills use frames matched to their source dimensions; the duplicate opening artwork and social-gathering video card have been removed at Amir's request. The Encounters title mark is centered over its underwater case-study hero.
+
+## Writing blog posts
+
+The blog lives at `/blog/` and uses Markdown files in `src/content/blog/`.
+The included `my-first-post.md` is a draft template; no sample article is published.
+
+1. Copy `src/content/blog/my-first-post.md` to a new file in that folder, for example `a-small-experiment.md`. Use lowercase words separated by hyphens. The filename becomes the URL: `/blog/a-small-experiment/`. Keep it unchanged after publishing so existing links continue to work.
+2. Edit the title, description, date, and body. Keep the date in quotes as `"YYYY-MM-DD"`. The description appears in the archive and link previews. The article title is already the page heading, so start body sections with `##`.
+3. Leave `draft: true` while writing. Drafts are excluded from the archive, generated pages, and sitemap, including in local preview. Draft files are still visible to anyone who can read the repository.
+4. When ready to preview the article, set `draft: false` and run `npm run dev`. Open `/blog/` and follow the post link. Published posts appear newest first; dates are labels, not scheduled publication times.
+5. Run `npm test`, then commit and push to `main` when ready to publish. The existing GitHub Pages workflow rebuilds the blog with the rest of the site. Local edits alone do not update the live website.
+
+Every post requires these fields:
+
+```yaml
+---
+title: "A small experiment"
+description: "What I tried, what happened, and what I learned."
+pubDate: "2026-11-06"
+draft: true
+---
+```
+
+Write Markdown below the closing `---`: paragraphs, links, lists, quotations, and fenced code blocks are supported. To add an image, put it in `public/images/blog/` and use `![A useful image description](/images/blog/your-image.jpg)`. If `draft` is omitted, the post remains a draft. Empty titles/descriptions and invalid dates fail the build so incomplete posts do not publish accidentally.
 
 ## Design lab
 
