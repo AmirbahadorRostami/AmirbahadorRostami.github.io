@@ -19,11 +19,12 @@ export interface Props {
   ogType?: 'website' | 'article';
 }
 
+const defaultImage = '/social-preview.png';
 const {
   title = SITE.title,
   description = SITE.description,
   canonicalPath = Astro.url.pathname,
-  image = '/og.png',
+  image = defaultImage,
   flushMain = false,
   robots = 'index, follow',
   ogType = 'website',
@@ -47,6 +48,7 @@ const imageUrl = new URL(image, SITE.origin).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
+    {image === defaultImage && <meta property="og:image:alt" content="Amir Bahador Rostami, creative technologist and musician, on a dark red diagonal pattern." />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

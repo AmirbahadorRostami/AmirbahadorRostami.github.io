@@ -86,11 +86,11 @@ for (const route of routes) {
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', route.title);
     await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /\S/);
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', route.canonical);
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `${origin}/og.png`);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `${origin}/social-preview.png`);
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', route.title);
     await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', /\S/);
-    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', `${origin}/og.png`);
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', `${origin}/social-preview.png`);
   });
 }
 
