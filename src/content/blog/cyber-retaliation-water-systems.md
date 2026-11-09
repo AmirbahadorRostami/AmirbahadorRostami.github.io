@@ -2,7 +2,7 @@
 title: "Cyber Retaliation Risks to U.S. Water and Wastewater Systems"
 description: "A geopolitical threat and risk assessment of the 2026 U.S.–Iran–Israel war, industrial controller exposure, and priorities for U.S. water utilities."
 pubDate: "2026-11-08"
-draft: true
+draft: false
 ---
 
 **TLP:CLEAR · Geopolitical Threat and Risk Assessment**<br />

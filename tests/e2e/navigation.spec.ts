@@ -116,17 +116,32 @@ test('the production frame shows a compact wordmark, location and public profile
   await expect(footer.locator('a[href=""]')).toHaveCount(0);
 });
 
-test('current section navigation includes a visible signal line on detail pages', async ({ page }) => {
-  await page.goto('/work/encounters/');
-  const currentLink = page.getByRole('navigation', { name: 'Primary' }).locator('[aria-current="page"]');
-  await expect(currentLink).toHaveAccessibleName('Work');
-  const line = await currentLink.evaluate((link) => {
-    const style = getComputedStyle(link, '::after');
-    return { color: style.backgroundColor, height: parseFloat(style.height), opacity: style.opacity };
-  });
-  expect(line.color).toBe('rgb(167, 20, 20)');
-  expect(line.height).toBeGreaterThanOrEqual(2);
-  expect(line.opacity).toBe('1');
+test('the active section underline aligns with its label on desktop and mobile', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/work/encounters/');
+    if (width === 390) await page.getByRole('button', { name: 'Menu' }).click();
+
+    const currentLink = page.getByRole('navigation', { name: 'Primary' }).locator('[aria-current="page"]');
+    await expect(currentLink).toHaveAccessibleName('Work');
+    const line = await currentLink.locator('span').evaluate((label) => {
+      const style = getComputedStyle(label, '::after');
+      const bounds = label.getBoundingClientRect();
+      const text = document.createRange();
+      text.selectNodeContents(label);
+      const textBounds = text.getBoundingClientRect();
+      return {
+        color: style.backgroundColor,
+        height: parseFloat(style.height),
+        leftOffset: bounds.left + parseFloat(style.left) - textBounds.left,
+        widthDifference: parseFloat(style.width) - textBounds.width,
+      };
+    });
+    expect(line.color).toBe('rgb(167, 20, 20)');
+    expect(line.height).toBeGreaterThanOrEqual(2);
+    expect(Math.abs(line.leftOffset)).toBeLessThan(1);
+    expect(Math.abs(line.widthDifference)).toBeLessThan(1);
+  }
 });
 
 test('the homepage 10 PRINT field also renders in production subpage heroes', async ({ page }) => {
